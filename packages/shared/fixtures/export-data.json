@@ -597,7 +597,7 @@
 					"analytics"
 				],
 				"animation": "draw",
-				"svg": "pro-chart",
+				"svg": "chart",
 				"url": "/blog/missing-data-is-not-zero",
 				"external": false,
 				"seoTitle": "Missing data is not zero",
@@ -618,7 +618,7 @@
 					"analytics"
 				],
 				"animation": "draw",
-				"svg": "pro-chart",
+				"svg": "chart",
 				"url": "/blog/un-dato-que-falta-no-equivale-a-cero",
 				"external": false,
 				"seoTitle": "Un dato que falta no equivale a cero",
@@ -639,7 +639,7 @@
 					"analytics"
 				],
 				"animation": "draw",
-				"svg": "pro-chart",
+				"svg": "chart",
 				"url": "/blog/une-donnee-absente-nest-pas-un-zero",
 				"external": false,
 				"seoTitle": "Une donnée absente n’est pas un zéro",
@@ -660,7 +660,7 @@
 					"e-commerce"
 				],
 				"animation": "draw",
-				"svg": "pro-pipeline",
+				"svg": "pipeline",
 				"url": "/blog/ce-quon-peut-preparer-avant-davoir-son-catalogue-definitif",
 				"external": false,
 				"seoTitle": "Avant d’avoir son catalogue définitif",
@@ -681,7 +681,7 @@
 					"e-commerce"
 				],
 				"animation": "draw",
-				"svg": "pro-pipeline",
+				"svg": "pipeline",
 				"url": "/blog/que-se-puede-avanzar-antes-de-tener-el-catalogo-definitivo",
 				"external": false,
 				"seoTitle": "Antes de tener el catálogo definitivo",
@@ -702,7 +702,7 @@
 					"e-commerce"
 				],
 				"animation": "draw",
-				"svg": "pro-pipeline",
+				"svg": "pipeline",
 				"url": "/blog/what-can-move-forward-before-the-product-catalogue-is-final",
 				"external": false,
 				"seoTitle": "Before the product catalogue is final",
@@ -723,7 +723,7 @@
 					"web-development"
 				],
 				"animation": "draw",
-				"svg": "pro-code",
+				"svg": "code",
 				"url": "/blog/cuando-dos-componentes-parecidos-deberian-seguir-separados",
 				"external": false,
 				"seoTitle": "Cuándo dos componentes parecidos deberían seguir separados",
@@ -744,7 +744,7 @@
 					"web-development"
 				],
 				"animation": "draw",
-				"svg": "pro-code",
+				"svg": "code",
 				"url": "/blog/quand-deux-composants-semblables-devraient-rester-separes",
 				"external": false,
 				"seoTitle": "Quand deux composants semblables devraient rester séparés",
@@ -765,7 +765,7 @@
 					"web-development"
 				],
 				"animation": "draw",
-				"svg": "pro-code",
+				"svg": "code",
 				"url": "/blog/when-two-similar-components-should-stay-separate",
 				"external": false,
 				"seoTitle": "When two similar components should stay separate",
@@ -786,7 +786,7 @@
 					"bilingual"
 				],
 				"animation": "draw",
-				"svg": "pro-code",
+				"svg": "code",
 				"url": "/blog/cambiar-de-idioma-sin-empezar-de-nuevo",
 				"external": false,
 				"seoTitle": "Cambiar de idioma sin empezar de nuevo",
@@ -807,7 +807,7 @@
 					"bilingual"
 				],
 				"animation": "draw",
-				"svg": "pro-code",
+				"svg": "code",
 				"url": "/blog/changer-de-langue-sans-recommencer",
 				"external": false,
 				"seoTitle": "Changer de langue sans recommencer",
@@ -828,7 +828,7 @@
 					"bilingual"
 				],
 				"animation": "draw",
-				"svg": "pro-code",
+				"svg": "code",
 				"url": "/blog/changing-language-should-not-mean-starting-over",
 				"external": false,
 				"seoTitle": "Changing language should not mean starting over",
@@ -852,7 +852,7 @@
 					"directus"
 				],
 				"animation": "morph",
-				"svg": "pro-pipeline",
+				"svg": "pipeline",
 				"url": "/blog/does-your-website-need-instant-publishing",
 				"external": false,
 				"seoTitle": "Does Your Website Need Instant Publishing?",
@@ -874,7 +874,7 @@
 					"directus"
 				],
 				"animation": "morph",
-				"svg": "pro-pipeline",
+				"svg": "pipeline",
 				"url": "/blog/tu-sitio-web-necesita-publicacion-instantanea",
 				"external": false,
 				"seoTitle": "¿Tu sitio web necesita publicación instantánea?",
@@ -896,7 +896,7 @@
 					"directus"
 				],
 				"animation": "morph",
-				"svg": "pro-pipeline",
+				"svg": "pipeline",
 				"url": "/blog/votre-site-web-a-t-il-besoin-dune-publication-instantanee",
 				"external": false,
 				"seoTitle": "Votre site web a-t-il besoin d’une publication instantanée?",
@@ -918,7 +918,7 @@
 					"transit-data"
 				],
 				"animation": "morph",
-				"svg": "pro-pipeline",
+				"svg": "pipeline",
 				"url": "/blog/50-to-0-an-oracle-always-free-vm",
 				"external": false,
 				"seoTitle": "$50 to $0: Running Transit on Oracle Always Free",
@@ -940,7 +940,7 @@
 					"transit-data"
 				],
 				"animation": "morph",
-				"svg": "pro-pipeline",
+				"svg": "pipeline",
 				"url": "/blog/de-50-a-0-una-vm-oracle-always-free",
 				"external": false,
 				"seoTitle": "De 50 $ a 0 $: Transit en Oracle Always Free",
@@ -962,7 +962,7 @@
 					"transit-data"
 				],
 				"animation": "morph",
-				"svg": "pro-pipeline",
+				"svg": "pipeline",
 				"url": "/blog/de-50-a-0-une-vm-oracle-always-free",
 				"external": false,
 				"seoTitle": "De 50 $ à 0 $ : faire tourner Transit sur Oracle Always Free",
@@ -984,7 +984,7 @@
 					"code-review"
 				],
 				"animation": "morph",
-				"svg": "pro-database",
+				"svg": "database",
 				"url": "/blog/accelere-par-lia-pilote-par-lhumain-mon-vrai-flux-de-travail",
 				"external": false,
 				"seoTitle": "Accéléré par l’IA, piloté par l’humain : mon flux de travail",
@@ -1006,7 +1006,7 @@
 					"code-review"
 				],
 				"animation": "morph",
-				"svg": "pro-database",
+				"svg": "database",
 				"url": "/blog/acelerado-por-ia-en-manos-humanas-mi-flujo-de-trabajo-real",
 				"external": false,
 				"seoTitle": "Acelerado por IA, en manos humanas: mi flujo de trabajo real",
@@ -1028,7 +1028,7 @@
 					"code-review"
 				],
 				"animation": "morph",
-				"svg": "pro-database",
+				"svg": "database",
 				"url": "/blog/ai-accelerated-human-owned-my-actual-workflow",
 				"external": false,
 				"seoTitle": "AI-Accelerated, Human-Owned: My Development Workflow",
@@ -1050,7 +1050,7 @@
 					"transit-data"
 				],
 				"animation": "morph",
-				"svg": "personal-train",
+				"svg": "train",
 				"url": "/blog/pensar-en-matrices",
 				"external": false,
 				"seoTitle": "Pensar en matrices: de los datos GTFS a las consultas SQL",
@@ -1072,7 +1072,7 @@
 					"transit-data"
 				],
 				"animation": "morph",
-				"svg": "personal-train",
+				"svg": "train",
 				"url": "/blog/penser-en-matrices",
 				"external": false,
 				"seoTitle": "Penser en matrices : des données GTFS aux requêtes SQL",
@@ -1094,7 +1094,7 @@
 					"transit-data"
 				],
 				"animation": "morph",
-				"svg": "personal-train",
+				"svg": "train",
 				"url": "/blog/thinking-in-matrices",
 				"external": false,
 				"seoTitle": "Thinking in Matrices: From GTFS Data to SQL",
@@ -1116,7 +1116,7 @@
 					"ai"
 				],
 				"animation": "morph",
-				"svg": "personal-train",
+				"svg": "train",
 				"url": "/blog/comment-japprends-graviter-autour-dun-systeme-jusquau-declic",
 				"external": false,
 				"seoTitle": "Comment j’apprends : rester au contact jusqu’au déclic",
@@ -1138,7 +1138,7 @@
 					"ai"
 				],
 				"animation": "morph",
-				"svg": "personal-train",
+				"svg": "train",
 				"url": "/blog/como-aprendo-orbitar-un-sistema-hasta-que-encaja",
 				"external": false,
 				"seoTitle": "Cómo aprendo: orbitar un sistema hasta que encaja",
@@ -1160,7 +1160,7 @@
 					"ai"
 				],
 				"animation": "morph",
-				"svg": "personal-train",
+				"svg": "train",
 				"url": "/blog/how-i-learn-orbiting-a-system-until-it-clicks",
 				"external": false,
 				"seoTitle": "How I Learn: Orbiting a System Until It Clicks",
@@ -1182,7 +1182,7 @@
 					"web-development"
 				],
 				"animation": "morph",
-				"svg": "personal-telescope",
+				"svg": "telescope",
 				"url": "/blog/el-turno-de-dos-horas-para-usar-internet",
 				"external": false,
 				"seoTitle": "Dos horas de internet que me llevaron a la informática",
@@ -1204,7 +1204,7 @@
 					"web-development"
 				],
 				"animation": "morph",
-				"svg": "personal-telescope",
+				"svg": "telescope",
 				"url": "/blog/le-creneau-internet-de-deux-heures",
 				"external": false,
 				"seoTitle": "Deux heures d’internet qui m’ont mené à l’informatique",
@@ -1226,7 +1226,7 @@
 					"web-development"
 				],
 				"animation": "morph",
-				"svg": "personal-telescope",
+				"svg": "telescope",
 				"url": "/blog/the-two-hour-internet-slot",
 				"external": false,
 				"seoTitle": "The Two-Hour Internet Slot That Led Me to Computer Science",

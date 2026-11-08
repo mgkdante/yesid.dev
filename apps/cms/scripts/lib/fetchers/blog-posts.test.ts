@@ -123,7 +123,7 @@ describe('blog-posts fetcher transform', () => {
 		const noIllust = { ...POST, svg_illustration: null };
 		const english = toBlogPost(noIllust, ENGLISH);
 		expect(english.svg).toBe(resolveSvgFallbackName('why-bun-is-fast', 'professional'));
-		expect(english.svg).toMatch(/^pro-/);
+		expect(['database', 'code', 'pipeline', 'chart']).toContain(english.svg);
 		expect(toBlogPost(noIllust, FRENCH).svg).toBe(english.svg);
 	});
 
@@ -160,7 +160,19 @@ describe('blog-posts fetcher transform', () => {
 
 describe('SVG fallback resolution', () => {
 	it('uses personal fallbacks for personal category', () => {
-		expect(resolveSvgFallbackName('foo', 'personal')).toMatch(/^personal-/);
+		expect(['rocket', 'train', 'telescope', 'globe']).toContain(resolveSvgFallbackName('foo', 'personal'));
+	});
+
+	it('preserves hash assignments in both categories after renaming topic ids', () => {
+		for (const [key, professional, personal] of [
+			['d', 'database', 'rocket'],
+			['a', 'code', 'train'],
+			['b', 'pipeline', 'telescope'],
+			['c', 'chart', 'globe'],
+		] as const) {
+			expect(resolveSvgFallbackName(key, 'professional')).toBe(professional);
+			expect(resolveSvgFallbackName(key, 'personal')).toBe(personal);
+		}
 	});
 
 	it('is deterministic for the same slug', () => {

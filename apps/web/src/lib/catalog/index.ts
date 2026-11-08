@@ -27,7 +27,7 @@ export interface CatalogSource extends AvailabilityContext {
 	errorPages?: Readonly<Record<number, ErrorPageContent>>;
 }
 
-const svgFiles = import.meta.glob('/src/lib/assets/blog-fallbacks/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const svgFiles = import.meta.glob('/src/lib/assets/blog-icons/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 const svgByName = new Map(Object.entries(svgFiles).map(([path, svg]) => [path.split('/').pop()!.replace(/\.svg$/, ''), svg]));
 const svgContent = (post: BlogPost): string => svgByName.get(post.svg) ?? '';
 
