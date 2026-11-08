@@ -1,7 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <circle cx="24" cy="24" r="15" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
-  <ellipse cx="24" cy="24" rx="6" ry="15" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
-  <path d="M10 19h28M10 29h28" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
-  <path d="M12 10C-3 25 17 46 35 37c11-6 9-17 0-21" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
-  <circle cx="39" cy="34" r="1.5" fill="var(--primary, #E07800)"/>
+  <circle cx="24" cy="24" r="16" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
+  <ellipse cx="24" cy="24" rx="7" ry="16" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
+  <path d="M8 24h32M9.5 17h29M9.5 31h29" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
 </svg>

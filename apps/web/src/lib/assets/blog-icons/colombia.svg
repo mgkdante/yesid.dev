@@ -1,8 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M10 6v37" stroke="var(--primary, #E07800)" stroke-width="1.5"/>
-  <path d="M11 9c10-8 19 8 30 0v14c-11 8-20-8-30 0Z" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
-  <path d="M11 23c10-8 19 8 30 0v7c-11 8-20-8-30 0Z" stroke="var(--accent-text, #FFB627)" stroke-width="1.25" fill="var(--accent-text, #FFB627)" fill-opacity="0.15"/>
-  <path d="M11 30c10-8 19 8 30 0v7c-11 8-20-8-30 0Z" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.3"/>
-  <path d="M6 43h8" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
-  <circle cx="10" cy="6" r="1.5" fill="var(--primary, #E07800)"/>
+  <path d="M12 8c5-2 10-2 15 0s10 2 15 0v12c-5 2-10 2-15 0s-10-2-15 0Z" fill="var(--accent-text, #FFB627)" fill-opacity="0.35"/>
+  <path d="M12 20c5-2 10-2 15 0s10 2 15 0v6c-5 2-10 2-15 0s-10-2-15 0Z" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
+  <path d="M12 26c5-2 10-2 15 0s10 2 15 0v6c-5 2-10 2-15 0s-10-2-15 0Z" fill="var(--primary, #E07800)" fill-opacity="0.45"/>
+  <path d="M12 20c5-2 10-2 15 0s10 2 15 0M12 26c5-2 10-2 15 0s10 2 15 0" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
+  <path d="M12 8c5-2 10-2 15 0s10 2 15 0v24c-5 2-10 2-15 0s-10-2-15 0Z" stroke="var(--primary, #E07800)" stroke-width="1.5"/>
+  <path d="M10 6v36" stroke="var(--primary, #E07800)" stroke-width="1.5"/>
+  <path d="M6 42h8" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
+  <circle cx="10" cy="5" r="1.5" fill="var(--primary, #E07800)"/>
 </svg>

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M25 31 38 8M29 31l12-21" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
-  <path d="M7 25h34c-2 10-7 15-17 15S9 35 7 25Z" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
-  <path d="M5 25h38M17 40v3h14v-3" stroke="var(--primary, #E07800)" stroke-width="1.5"/>
-  <path d="M13 11c-3 3 3 5 0 9m7-11c-3 3 3 5 0 9" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
-  <path d="M10 30c4 3 8 4 14 4s10-1 14-4" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
+  <path d="M12 6v10M17 6v10M22 6v10M12 16c0 5 10 5 10 0" stroke="var(--primary, #E07800)" stroke-width="1.5"/>
+  <rect x="15.5" y="21" width="3" height="21" rx="1.5" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
+  <ellipse cx="31" cy="13" rx="5" ry="7" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
+  <rect x="29.5" y="21" width="3" height="21" rx="1.5" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
+  <path d="M29 10c.5-1.5 1.5-2.5 3-3" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
 </svg>

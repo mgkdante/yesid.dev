@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <rect x="5" y="17" width="9" height="14" rx="2" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
-  <path d="M14 24h6m-3-3 3 3-3 3" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
-  <path d="m26 17 7 7-7 7-7-7Z" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
-  <path d="M33 24h4m-2-2 2 2-2 2" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
-  <path d="M8 13V9h18v5M26 34v5h16v-8" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
-  <rect x="38" y="17" width="5" height="14" rx="2" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
+  <circle cx="9" cy="24" r="5" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
+  <path d="m24 16 8 8-8 8-8-8Z" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
+  <circle cx="39" cy="24" r="5" stroke="var(--primary, #E07800)" stroke-width="1.5" fill="var(--primary, #E07800)" fill-opacity="0.15"/>
+  <path d="M14 24h2M32 24h2" stroke="var(--accent-text, #FFB627)" stroke-width="1.25"/>
+  <circle cx="39" cy="24" r="1.5" fill="var(--primary, #E07800)"/>
 </svg>
