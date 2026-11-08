@@ -70,10 +70,22 @@ The `@yesid/*` packages come from one exact yesid.design release, installed
 by URL and pinned by integrity in `bun.lock`. A version bump gets its own pull
 request, and the packages are never patched here.
 
+## Documentation
+
+Longer documentation lives in Notion. This README and the per-workspace
+READMEs stay the source for local commands.
+
+| Document | Covers | Access |
+|---|---|---|
+| [Architecture wiki](https://yesid-dev.notion.site/3603e8630690813bbe4ac7adac7d1bd7?v=4093e86306908049b5ee000c3e271459) | As-built system: setup, content model, pipeline, web app, CMS, deployment, security, testing, operations and known limits | Public |
+| [yesid.dev Deep Dive](https://app.notion.com/p/4043e863069081e8bcf6c1e814ee4a3e) | Training course: guided source reading through the codebase, lesson by lesson | Workspace members only |
+
+Both are written against a pinned commit of this repository and name it on
+each page.
+
 ## Links
 
 - Live site: [yesid.dev](https://yesid.dev)
-- Documentation: [architecture wiki](https://yesid-dev.notion.site/3603e8630690813bbe4ac7adac7d1bd7?v=4093e86306908049b5ee000c3e271459)
 - Design system: [mgkdante/yesid.design](https://github.com/mgkdante/yesid.design)
 - Contributor guide: [AGENTS.md](AGENTS.md)
 - Security reports: [SECURITY.md](SECURITY.md)
