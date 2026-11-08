@@ -17,7 +17,7 @@ const productionDirectives = {
 	'style-src': ['self', 'unsafe-inline'],
 	'img-src': ['self', 'data:', 'blob:', 'https://i.ytimg.com'],
 	'font-src': ['self', 'data:'],
-	'connect-src': ['self', 'https://plausible.io', 'https://api.web3forms.com', 'https://transit.yesid.dev'],
+	'connect-src': ['self', 'https://api.web3forms.com', 'https://transit.yesid.dev'],
 	'manifest-src': ['self'],
 	'frame-src': ['https://www.youtube-nocookie.com'],
 	'frame-ancestors': ['none'],
@@ -45,7 +45,6 @@ describe('CSP deployment policy', () => {
 			'font-src': ['self', 'data:', 'https://vercel.live', 'https://assets.vercel.com'],
 			'connect-src': [
 				'self',
-				'https://plausible.io',
 				'https://api.web3forms.com',
 				'https://transit.yesid.dev',
 				'https://vercel.live',

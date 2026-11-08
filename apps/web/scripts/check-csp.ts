@@ -9,7 +9,6 @@ const THEME_SCRIPT_HASH = `'${boot.hash}'`;
 
 export const CONNECT_SOURCES = [
 	"'self'",
-	'https://plausible.io',
 	'https://api.web3forms.com',
 	'https://transit.yesid.dev',
 ];

@@ -13,7 +13,6 @@ export function createCspDirectives({ themeScriptHash, vercelEnv }) {
 		'font-src': ['self', 'data:', ...(preview ? /** @type {const} */ (['https://vercel.live', 'https://assets.vercel.com']) : [])],
 		'connect-src': [
 			'self',
-			'https://plausible.io',
 			'https://api.web3forms.com',
 			'https://transit.yesid.dev',
 			...(preview ? /** @type {const} */ (['https://vercel.live', 'wss://ws-us3.pusher.com']) : []),

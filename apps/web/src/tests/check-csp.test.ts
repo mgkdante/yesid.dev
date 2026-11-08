@@ -5,7 +5,7 @@ import { checkHtml, scriptHash } from '../../scripts/check-csp';
 
 const source = '\n  window.ready = true;\n';
 const hash = `'sha256-${createHash('sha256').update(source).digest('base64')}'`;
-const connect = "'self' https://plausible.io https://api.web3forms.com https://transit.yesid.dev";
+const connect = "'self' https://api.web3forms.com https://transit.yesid.dev";
 const meta = `<meta http-equiv="content-security-policy" content="script-src 'self' ${hash}; connect-src ${connect}">`;
 function page(head: string, body = ''): string {
 	return `<!doctype html><html><head>${head}</head><body>${body}</body></html>`;
@@ -102,7 +102,7 @@ describe('post-build CSP guard', () => {
 		expect(checkHtml(page(meta, `<script>${source}</script><script src="/app.js"></script><script type="application/ld+json">{"onclick":"data"}</script><!-- <img onerror="run()"> --><p title="onclick='data'">Text</p>`))).toEqual([]);
 	});
 
-	it.each([connect.replace(' https://plausible.io', ''), `${connect} https://example.com`, connect.replace("'self'", 'https://plausible.io')])('rejects changed connect-src %s', (sources) => {
+	it.each([connect.replace(' https://api.web3forms.com', ''), `${connect} https://plausible.io`, connect.replace("'self'", 'https://plausible.io')])('rejects changed connect-src %s', (sources) => {
 		expect(checkHtml(fixture.replace(connect, sources)).some((error) => error.startsWith('connect-src must equal'))).toBe(true);
 	});
 

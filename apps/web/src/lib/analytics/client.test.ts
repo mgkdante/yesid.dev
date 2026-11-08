@@ -1,9 +1,27 @@
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('$app/env', () => ({ dev: false, building: false, browser: true }));
-vi.mock('$app/env/public', () => ({ PUBLIC_PLAUSIBLE_DOMAIN: '' }));
+vi.mock('$app/env/public', () => ({ PUBLIC_PLAUSIBLE_DOMAIN: 'yesid.dev' }));
+const createAnalytics = vi.hoisted(() => vi.fn(() => ({ trackEvent: vi.fn() })));
+vi.mock('@yesid/analytics/client', async (original) => ({
+	...(await original<typeof import('@yesid/analytics/client')>()),
+	createAnalytics,
+}));
 
-const { reduceVercelEvent } = await import('./client');
+const { reduceVercelEvent, startAnalytics } = await import('./client');
+
+describe('startAnalytics', () => {
+	it('starts one tracker for yesid.dev, sending through the relay, however often it is called', () => {
+		startAnalytics();
+		startAnalytics();
+
+		expect(createAnalytics).toHaveBeenCalledOnce();
+		expect(createAnalytics).toHaveBeenCalledWith(
+			expect.anything(),
+			expect.objectContaining({ domain: 'yesid.dev', endpoint: '/relay/e' }),
+		);
+	});
+});
 
 describe('reduceVercelEvent', () => {
 	it('keeps the path and campaign tags, dropping filters and the hash', () => {
