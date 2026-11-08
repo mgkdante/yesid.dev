@@ -7,13 +7,18 @@ const { POST } = await import('./+server');
 
 const pageview = { n: 'pageview', d: 'yesid.dev', u: 'https://yesid.dev/projects', r: null };
 
-function call(body: unknown, url = 'https://yesid.dev/relay/e', headers: Record<string, string> = {}) {
+function call(
+	body: unknown,
+	url = 'https://yesid.dev/relay/e',
+	headers: Record<string, string> = {},
+	clientAddress = '203.0.113.7',
+) {
 	const request = new Request(url, {
 		method: 'POST',
 		headers: { 'Content-Type': 'text/plain', 'User-Agent': 'Agent/1.0', ...headers },
 		body: JSON.stringify(body),
 	});
-	return POST({ request, getClientAddress: () => '203.0.113.7' } as Parameters<typeof POST>[0]);
+	return POST({ request, getClientAddress: () => clientAddress } as Parameters<typeof POST>[0]);
 }
 
 afterEach(() => {
@@ -39,10 +44,21 @@ describe('POST /relay/e', () => {
 		const upstream = vi.fn(async () => new Response('ok', { status: 202 }));
 		vi.stubGlobal('fetch', upstream);
 
-		await call(pageview, undefined, { 'CF-Connecting-IP': '198.51.100.23' });
+		// Vercel reports the Cloudflare server that connected, here one of Cloudflare's ranges.
+		await call(pageview, undefined, { 'CF-Connecting-IP': '198.51.100.23' }, '162.158.1.1');
 
 		const [, init] = upstream.mock.calls[0] as unknown as [string, RequestInit];
 		expect(init.headers).toMatchObject({ 'X-Forwarded-For': '198.51.100.23' });
+	});
+
+	it('ignores CF-Connecting-IP on a connection that did not come through Cloudflare', async () => {
+		const upstream = vi.fn(async () => new Response('ok', { status: 202 }));
+		vi.stubGlobal('fetch', upstream);
+
+		await call(pageview, undefined, { 'CF-Connecting-IP': '198.51.100.23' });
+
+		const [, init] = upstream.mock.calls[0] as unknown as [string, RequestInit];
+		expect(init.headers).toMatchObject({ 'X-Forwarded-For': '203.0.113.7' });
 	});
 
 	it('answers 502 without a retry when Plausible fails', async () => {
