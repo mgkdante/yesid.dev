@@ -168,10 +168,6 @@ Ops Bot and Build Bot grants for reference. They are not production access
 declarations. Production policy/permission pushes remain refused, including
 after the existing acknowledgement variables are set.
 
-[`ops/permissions/buildbot-cover-permission.json`](ops/permissions/buildbot-cover-permission.json)
-is a production-only permission declaration applied through guarded `cms`
-workflow lanes, and it stays out of the shared dump by design.
-
 ## Recovery
 
 - PROD recovery: use Neon instant restore within the project history window.

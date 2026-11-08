@@ -585,2152 +585,3443 @@
 		},
 		"blogPosts": [
 			{
-				"translationKey": "missing-data-is-not-zero",
-				"slug": "missing-data-is-not-zero",
-				"title": "Missing data is not zero",
-				"excerpt": "One small message in Transit captures a much larger part of the data work: OC Transpo service alerts are unavailable because no alert feed is connected here.",
-				"date": "2026-10-08",
+				"translationKey": "four-projects-four-stacks",
+				"slug": "cuatro-proyectos-cuatro-stacks",
+				"title": "Cuatro proyectos, cuatro stacks",
+				"excerpt": "Fixture copy (es, excerpt, 22b54f9c).",
+				"date": "2026-11-07",
+				"lang": "es",
+				"category": "professional",
+				"tags": [
+					"sveltekit",
+					"directus",
+					"e-commerce",
+					"software-architecture"
+				],
+				"animation": "draw",
+				"svg": "stack",
+				"url": "/blog/cuatro-proyectos-cuatro-stacks",
+				"external": false
+			},
+			{
+				"translationKey": "four-projects-four-stacks",
+				"slug": "four-projects-four-stacks",
+				"title": "Four projects, four stacks",
+				"excerpt": "I always choose SvelteKit as my default when I need a framework. But I wanted to show future clients and employers range, so I built four projects on four different stacks.",
+				"date": "2026-11-07",
 				"lang": "en",
 				"category": "professional",
+				"tags": [
+					"sveltekit",
+					"directus",
+					"e-commerce",
+					"software-architecture"
+				],
+				"animation": "draw",
+				"svg": "stack",
+				"url": "/blog/four-projects-four-stacks",
+				"external": false
+			},
+			{
+				"translationKey": "four-projects-four-stacks",
+				"slug": "quatre-projets-quatre-piles-technologiques",
+				"title": "Quatre projets, quatre piles technologiques",
+				"excerpt": "Fixture copy (fr, excerpt, dd339684).",
+				"date": "2026-11-07",
+				"lang": "fr",
+				"category": "professional",
+				"tags": [
+					"sveltekit",
+					"directus",
+					"e-commerce",
+					"software-architecture"
+				],
+				"animation": "draw",
+				"svg": "stack",
+				"url": "/blog/quatre-projets-quatre-piles-technologiques",
+				"external": false
+			},
+			{
+				"translationKey": "websites-where-only-the-domain-costs-money",
+				"slug": "des-sites-web-ou-seul-le-nom-de-domaine-coute-quelque-chose",
+				"title": "Des sites Web où seul le nom de domaine coûte quelque chose",
+				"excerpt": "Fixture copy (fr, excerpt, ea09180e).",
+				"date": "2026-11-07",
+				"lang": "fr",
+				"category": "professional",
+				"tags": [
+					"web-development",
+					"sveltekit",
+					"cms"
+				],
+				"animation": "draw",
+				"svg": "website",
+				"url": "/blog/des-sites-web-ou-seul-le-nom-de-domaine-coute-quelque-chose",
+				"external": false
+			},
+			{
+				"translationKey": "websites-where-only-the-domain-costs-money",
+				"slug": "sitios-web-donde-solo-el-dominio-cuesta",
+				"title": "Sitios web donde solo el dominio cuesta",
+				"excerpt": "Fixture copy (es, excerpt, 4696bcdc).",
+				"date": "2026-11-07",
+				"lang": "es",
+				"category": "professional",
+				"tags": [
+					"web-development",
+					"sveltekit",
+					"cms"
+				],
+				"animation": "draw",
+				"svg": "website",
+				"url": "/blog/sitios-web-donde-solo-el-dominio-cuesta",
+				"external": false
+			},
+			{
+				"translationKey": "websites-where-only-the-domain-costs-money",
+				"slug": "websites-where-only-the-domain-costs-money",
+				"title": "Websites where only the domain costs money",
+				"excerpt": "Fixture copy (en, excerpt, 1cf4e1dd).",
+				"date": "2026-11-07",
+				"lang": "en",
+				"category": "professional",
+				"tags": [
+					"web-development",
+					"sveltekit",
+					"cms"
+				],
+				"animation": "draw",
+				"svg": "website",
+				"url": "/blog/websites-where-only-the-domain-costs-money",
+				"external": false
+			},
+			{
+				"translationKey": "shopify-without-a-subscription-until-launch",
+				"slug": "shopify-sans-abonnement-jusquau-lancement",
+				"title": "Shopify sans abonnement jusqu'au lancement",
+				"excerpt": "Fixture copy (fr, excerpt, 6887c95c).",
+				"date": "2026-11-05",
+				"lang": "fr",
+				"category": "professional",
+				"tags": [
+					"e-commerce",
+					"web-development",
+					"learning"
+				],
+				"animation": "draw",
+				"svg": "shop",
+				"url": "/blog/shopify-sans-abonnement-jusquau-lancement",
+				"external": false
+			},
+			{
+				"translationKey": "shopify-without-a-subscription-until-launch",
+				"slug": "shopify-sin-suscripcion-hasta-el-lanzamiento",
+				"title": "Shopify sin suscripción hasta el lanzamiento",
+				"excerpt": "Fixture copy (es, excerpt, 065197d3).",
+				"date": "2026-11-05",
+				"lang": "es",
+				"category": "professional",
+				"tags": [
+					"e-commerce",
+					"web-development",
+					"learning"
+				],
+				"animation": "draw",
+				"svg": "shop",
+				"url": "/blog/shopify-sin-suscripcion-hasta-el-lanzamiento",
+				"external": false
+			},
+			{
+				"translationKey": "shopify-without-a-subscription-until-launch",
+				"slug": "shopify-without-a-subscription-until-launch",
+				"title": "Shopify without a subscription until launch",
+				"excerpt": "Fixture copy (en, excerpt, 870541e7).",
+				"date": "2026-11-05",
+				"lang": "en",
+				"category": "professional",
+				"tags": [
+					"e-commerce",
+					"web-development",
+					"learning"
+				],
+				"animation": "draw",
+				"svg": "shop",
+				"url": "/blog/shopify-without-a-subscription-until-launch",
+				"external": false
+			},
+			{
+				"translationKey": "friday-and-jarvis-a-personal-assistant-and-a-chief-of-staff",
+				"slug": "friday-and-jarvis-a-personal-assistant-and-a-chief-of-staff",
+				"title": "Friday and Jarvis: a personal assistant and a chief of staff",
+				"excerpt": "Fixture copy (en, excerpt, 6775e870).",
+				"date": "2026-11-02",
+				"lang": "en",
+				"category": "professional",
+				"tags": [
+					"ai",
+					"systems-thinking",
+					"ai-assisted-development"
+				],
+				"animation": "draw",
+				"svg": "assistant",
+				"url": "/blog/friday-and-jarvis-a-personal-assistant-and-a-chief-of-staff",
+				"external": false
+			},
+			{
+				"translationKey": "friday-and-jarvis-a-personal-assistant-and-a-chief-of-staff",
+				"slug": "friday-et-jarvis-une-assistante-personnelle-et-un-chef-de-cabinet",
+				"title": "Friday et Jarvis : une assistante personnelle et un chef de cabinet",
+				"excerpt": "Fixture copy (fr, excerpt, 656bd436).",
+				"date": "2026-11-02",
+				"lang": "fr",
+				"category": "professional",
+				"tags": [
+					"ai",
+					"systems-thinking",
+					"ai-assisted-development"
+				],
+				"animation": "draw",
+				"svg": "assistant",
+				"url": "/blog/friday-et-jarvis-une-assistante-personnelle-et-un-chef-de-cabinet",
+				"external": false
+			},
+			{
+				"translationKey": "friday-and-jarvis-a-personal-assistant-and-a-chief-of-staff",
+				"slug": "friday-y-jarvis-una-asistente-personal-y-un-jefe-de-gabinete",
+				"title": "Friday y Jarvis: una asistente personal y un jefe de gabinete",
+				"excerpt": "Fixture copy (es, excerpt, 0771314d).",
+				"date": "2026-11-02",
+				"lang": "es",
+				"category": "professional",
+				"tags": [
+					"ai",
+					"systems-thinking",
+					"ai-assisted-development"
+				],
+				"animation": "draw",
+				"svg": "assistant",
+				"url": "/blog/friday-y-jarvis-una-asistente-personal-y-un-jefe-de-gabinete",
+				"external": false
+			},
+			{
+				"translationKey": "one-brain-for-five-ai-tools-t3-code-and-notion",
+				"slug": "one-brain-for-five-ai-tools-t3-code-and-notion",
+				"title": "One brain for four AI tools: T3 Code and Notion",
+				"excerpt": "I work with Codex, Claude, OpenCode and Antigravity. Each one has its own instructions, its own memory and its own way of knowing who I am.",
+				"date": "2026-11-01",
+				"lang": "en",
+				"category": "professional",
+				"tags": [
+					"ai",
+					"ai-assisted-development",
+					"systems-thinking"
+				],
+				"animation": "draw",
+				"svg": "ai",
+				"url": "/blog/one-brain-for-five-ai-tools-t3-code-and-notion",
+				"external": false
+			},
+			{
+				"translationKey": "one-brain-for-five-ai-tools-t3-code-and-notion",
+				"slug": "un-seul-cerveau-pour-cinq-outils-dia-t3-code-et-notion",
+				"title": "Un seul cerveau pour quatre outils d'IA : T3 Code et Notion",
+				"excerpt": "Je travaille avec Codex, Claude, OpenCode et Antigravity. Chacun a ses propres instructions, sa propre mémoire et sa propre façon de savoir qui je suis.",
+				"date": "2026-11-01",
+				"lang": "fr",
+				"category": "professional",
+				"tags": [
+					"ai",
+					"ai-assisted-development",
+					"systems-thinking"
+				],
+				"animation": "draw",
+				"svg": "ai",
+				"url": "/blog/un-seul-cerveau-pour-cinq-outils-dia-t3-code-et-notion",
+				"external": false
+			},
+			{
+				"translationKey": "one-brain-for-five-ai-tools-t3-code-and-notion",
+				"slug": "un-solo-cerebro-para-cinco-herramientas-de-ia-t3-code-y-notion",
+				"title": "Un solo cerebro para cuatro herramientas de IA: T3 Code y Notion",
+				"excerpt": "Trabajo con Codex, Claude, OpenCode y Antigravity. Cada una tiene sus propias instrucciones, su propia memoria y su propia forma de saber quién soy.",
+				"date": "2026-11-01",
+				"lang": "es",
+				"category": "professional",
+				"tags": [
+					"ai",
+					"ai-assisted-development",
+					"systems-thinking"
+				],
+				"animation": "draw",
+				"svg": "ai",
+				"url": "/blog/un-solo-cerebro-para-cinco-herramientas-de-ia-t3-code-y-notion",
+				"external": false
+			},
+			{
+				"translationKey": "why-i-m-betting-on-public-transit",
+				"slug": "por-que-le-apuesto-al-transporte-publico",
+				"title": "Por qué le apuesto al transporte público",
+				"excerpt": "Todo empezó con el REM. Cuando supe qué era el REM y cómo lo construyeron, me interesó muchísimo. Me pareció un proyecto hermoso. Era lo mejor de los dos mundos.",
+				"date": "2026-10-17",
+				"lang": "es",
+				"category": "personal",
 				"tags": [
 					"transit-data",
-					"analytics"
+					"personal-story",
+					"systems-thinking"
 				],
-				"animation": "draw",
-				"svg": "chart",
-				"url": "/blog/missing-data-is-not-zero",
-				"external": false,
-				"seoTitle": "Missing data is not zero",
-				"seoDescription": "What one small \"unavailable\" message in Transit says about honest data work. Read the article.",
-				"coverImage": "2c41a9a0-34aa-4e3b-b333-5e6dcd53497c",
-				"coverImageAlt": "STM network map and reported positions. Browser capture, 8 October 2026."
+				"animation": "morph",
+				"svg": "train",
+				"url": "/blog/por-que-le-apuesto-al-transporte-publico",
+				"external": false
 			},
 			{
-				"translationKey": "missing-data-is-not-zero",
-				"slug": "un-dato-que-falta-no-equivale-a-cero",
-				"title": "Un dato que falta no equivale a cero",
-				"excerpt": "En Transit hay un mensaje pequeño que resume una parte importante del trabajo con los datos: los avisos de servicio de OC Transpo no están disponibles porque no hay un flujo de avisos conectado.",
-				"date": "2026-10-08",
-				"lang": "es",
-				"category": "professional",
+				"translationKey": "why-i-m-betting-on-public-transit",
+				"slug": "pourquoi-je-mise-sur-le-transport-en-commun",
+				"title": "Pourquoi je mise sur le transport en commun",
+				"excerpt": "Tout a commencé avec le REM. Quand j'ai appris ce qu'était le REM et comment il avait été bâti, ça m'a vraiment intéressé. Je trouvais ce projet magnifique. C'était le meilleur des deux mondes.",
+				"date": "2026-10-17",
+				"lang": "fr",
+				"category": "personal",
 				"tags": [
 					"transit-data",
-					"analytics"
+					"personal-story",
+					"systems-thinking"
 				],
-				"animation": "draw",
-				"svg": "chart",
-				"url": "/blog/un-dato-que-falta-no-equivale-a-cero",
-				"external": false,
-				"seoTitle": "Un dato que falta no equivale a cero",
-				"seoDescription": "Lo que un pequeño mensaje de «no disponible» en Transit dice del trabajo honesto con datos. Leer el artículo.",
-				"coverImage": "2c41a9a0-34aa-4e3b-b333-5e6dcd53497c",
-				"coverImageAlt": "STM network map and reported positions. Browser capture, 8 October 2026."
+				"animation": "morph",
+				"svg": "train",
+				"url": "/blog/pourquoi-je-mise-sur-le-transport-en-commun",
+				"external": false
 			},
 			{
-				"translationKey": "missing-data-is-not-zero",
-				"slug": "une-donnee-absente-nest-pas-un-zero",
-				"title": "Une donnée absente n’est pas un zéro",
-				"excerpt": "Dans Transit, un petit message résume une bonne partie du travail sur les données : les avis de service d’OC Transpo sont indisponibles parce qu’aucun flux d’avis n’est connecté ici.",
-				"date": "2026-10-08",
-				"lang": "fr",
-				"category": "professional",
+				"translationKey": "why-i-m-betting-on-public-transit",
+				"slug": "why-im-betting-on-public-transit",
+				"title": "Why I'm betting on public transit",
+				"excerpt": "It started with the REM. When I learned what the REM was and how it was built, I got really interested. I thought that project was beautiful. It was the best of both worlds.",
+				"date": "2026-10-17",
+				"lang": "en",
+				"category": "personal",
 				"tags": [
 					"transit-data",
-					"analytics"
-				],
-				"animation": "draw",
-				"svg": "chart",
-				"url": "/blog/une-donnee-absente-nest-pas-un-zero",
-				"external": false,
-				"seoTitle": "Une donnée absente n’est pas un zéro",
-				"seoDescription": "Ce qu’un petit message « indisponible » dans Transit dit d’un travail honnête sur les données. Lire l’article.",
-				"coverImage": "2c41a9a0-34aa-4e3b-b333-5e6dcd53497c",
-				"coverImageAlt": "STM network map and reported positions. Browser capture, 8 October 2026."
-			},
-			{
-				"translationKey": "what-can-move-forward-before-the-product-catalogue-is-final",
-				"slug": "ce-quon-peut-preparer-avant-davoir-son-catalogue-definitif",
-				"title": "Ce qu’on peut préparer avant d’avoir son catalogue définitif",
-				"excerpt": "Un site peut présenter une entreprise avant d’inclure un catalogue complet. Le site actuel de Café Arona est informatif et permet de prendre contact. Un catalogue pourra s’ajouter plus tard.",
-				"date": "2026-10-08",
-				"lang": "fr",
-				"category": "professional",
-				"tags": [
-					"web-development",
-					"e-commerce"
-				],
-				"animation": "draw",
-				"svg": "pipeline",
-				"url": "/blog/ce-quon-peut-preparer-avant-davoir-son-catalogue-definitif",
-				"external": false,
-				"seoTitle": "Avant d’avoir son catalogue définitif",
-				"seoDescription": "Structure, pages modifiables et rôles clairs : ce qui peut avancer avant le catalogue final. Lire l’article.",
-				"coverImage": "4b396e9c-b5b5-4a24-b5a4-c8cce0a2063d",
-				"coverImageAlt": "Café Arona’s Shopify development storefront, 8 October 2026. Client handover remains ahead."
-			},
-			{
-				"translationKey": "what-can-move-forward-before-the-product-catalogue-is-final",
-				"slug": "que-se-puede-avanzar-antes-de-tener-el-catalogo-definitivo",
-				"title": "Qué se puede avanzar antes de tener el catálogo definitivo",
-				"excerpt": "Un sitio puede presentar una empresa antes de incluir un catálogo completo. El sitio actual de Café Arona es informativo y permite ponerse en contacto. El catálogo se puede agregar más adelante.",
-				"date": "2026-10-08",
-				"lang": "es",
-				"category": "professional",
-				"tags": [
-					"web-development",
-					"e-commerce"
-				],
-				"animation": "draw",
-				"svg": "pipeline",
-				"url": "/blog/que-se-puede-avanzar-antes-de-tener-el-catalogo-definitivo",
-				"external": false,
-				"seoTitle": "Antes de tener el catálogo definitivo",
-				"seoDescription": "Estructura, páginas editables y roles claros: lo que puede avanzar antes del catálogo final. Leer el artículo.",
-				"coverImage": "4b396e9c-b5b5-4a24-b5a4-c8cce0a2063d",
-				"coverImageAlt": "Café Arona’s Shopify development storefront, 8 October 2026. Client handover remains ahead."
-			},
-			{
-				"translationKey": "what-can-move-forward-before-the-product-catalogue-is-final",
-				"slug": "what-can-move-forward-before-the-product-catalogue-is-final",
-				"title": "What can move forward before the product catalogue is final?",
-				"excerpt": "A website can present a business before it includes a complete product catalogue. Café Arona’s current site focuses on information and contact. A catalogue can be added later.",
-				"date": "2026-10-08",
-				"lang": "en",
-				"category": "professional",
-				"tags": [
-					"web-development",
-					"e-commerce"
-				],
-				"animation": "draw",
-				"svg": "pipeline",
-				"url": "/blog/what-can-move-forward-before-the-product-catalogue-is-final",
-				"external": false,
-				"seoTitle": "Before the product catalogue is final",
-				"seoDescription": "Content structure, editable pages and clear roles: what can start before the catalogue is final. Read the article.",
-				"coverImage": "4b396e9c-b5b5-4a24-b5a4-c8cce0a2063d",
-				"coverImageAlt": "Café Arona’s Shopify development storefront, 8 October 2026. Client handover remains ahead."
-			},
-			{
-				"translationKey": "when-two-similar-components-should-stay-separate",
-				"slug": "cuando-dos-componentes-parecidos-deberian-seguir-separados",
-				"title": "Cuándo dos componentes parecidos deberían seguir separados",
-				"excerpt": "Dos tarjetas pueden parecer de la misma familia y necesitar contratos distintos.",
-				"date": "2026-10-08",
-				"lang": "es",
-				"category": "professional",
-				"tags": [
-					"software-architecture",
-					"web-development"
-				],
-				"animation": "draw",
-				"svg": "code",
-				"url": "/blog/cuando-dos-componentes-parecidos-deberian-seguir-separados",
-				"external": false,
-				"seoTitle": "Cuándo dos componentes parecidos deberían seguir separados",
-				"seoDescription": "Dos tarjetas pueden parecerse y necesitar contratos distintos. Leer el artículo.",
-				"coverImage": "2d257b93-bb5c-451a-9f2e-143291d881ad",
-				"coverImageAlt": "Component Gallery desktop dark reference. Full-page browser-test image; capture date unknown. Demonstration, not a production-site capture."
-			},
-			{
-				"translationKey": "when-two-similar-components-should-stay-separate",
-				"slug": "quand-deux-composants-semblables-devraient-rester-separes",
-				"title": "Quand deux composants semblables devraient rester séparés",
-				"excerpt": "Deux cartes peuvent avoir un air de famille et répondre à des exigences différentes.",
-				"date": "2026-10-08",
-				"lang": "fr",
-				"category": "professional",
-				"tags": [
-					"software-architecture",
-					"web-development"
-				],
-				"animation": "draw",
-				"svg": "code",
-				"url": "/blog/quand-deux-composants-semblables-devraient-rester-separes",
-				"external": false,
-				"seoTitle": "Quand deux composants semblables devraient rester séparés",
-				"seoDescription": "Deux cartes peuvent se ressembler et répondre à des exigences différentes. Lire l’article.",
-				"coverImage": "2d257b93-bb5c-451a-9f2e-143291d881ad",
-				"coverImageAlt": "Component Gallery desktop dark reference. Full-page browser-test image; capture date unknown. Demonstration, not a production-site capture."
-			},
-			{
-				"translationKey": "when-two-similar-components-should-stay-separate",
-				"slug": "when-two-similar-components-should-stay-separate",
-				"title": "When two similar components should stay separate",
-				"excerpt": "Two cards can look related and still need different contracts.",
-				"date": "2026-10-08",
-				"lang": "en",
-				"category": "professional",
-				"tags": [
-					"software-architecture",
-					"web-development"
-				],
-				"animation": "draw",
-				"svg": "code",
-				"url": "/blog/when-two-similar-components-should-stay-separate",
-				"external": false,
-				"seoTitle": "When two similar components should stay separate",
-				"seoDescription": "Two cards can look related and still need different contracts. Read the article.",
-				"coverImage": "2d257b93-bb5c-451a-9f2e-143291d881ad",
-				"coverImageAlt": "Component Gallery desktop dark reference. Full-page browser-test image; capture date unknown. Demonstration, not a production-site capture."
-			},
-			{
-				"translationKey": "changing-language-should-not-mean-starting-over",
-				"slug": "cambiar-de-idioma-sin-empezar-de-nuevo",
-				"title": "Cambiar de idioma sin empezar de nuevo",
-				"excerpt": "Un sitio multilingüe necesita algo más que títulos traducidos. También importa conservar el punto de lectura, los filtros elegidos y el mensaje que alguien está escribiendo.",
-				"date": "2026-10-08",
-				"lang": "es",
-				"category": "professional",
-				"tags": [
-					"web-development",
-					"bilingual"
-				],
-				"animation": "draw",
-				"svg": "code",
-				"url": "/blog/cambiar-de-idioma-sin-empezar-de-nuevo",
-				"external": false,
-				"seoTitle": "Cambiar de idioma sin empezar de nuevo",
-				"seoDescription": "Un sitio multilingüe debería conservar tu lugar, tus filtros y tu mensaje. Leer el artículo.",
-				"coverImage": "42024627-5dab-496e-9d69-18387300802e",
-				"coverImageAlt": "French tools page on yesid.dev, desktop browser capture, 8 October 2026."
-			},
-			{
-				"translationKey": "changing-language-should-not-mean-starting-over",
-				"slug": "changer-de-langue-sans-recommencer",
-				"title": "Changer de langue sans recommencer",
-				"excerpt": "Un site multilingue ne se limite pas à traduire ses titres. Il faut aussi penser à la position de lecture, aux filtres choisis et au message en cours.",
-				"date": "2026-10-08",
-				"lang": "fr",
-				"category": "professional",
-				"tags": [
-					"web-development",
-					"bilingual"
-				],
-				"animation": "draw",
-				"svg": "code",
-				"url": "/blog/changer-de-langue-sans-recommencer",
-				"external": false,
-				"seoTitle": "Changer de langue sans recommencer",
-				"seoDescription": "Un site multilingue devrait garder ta position, tes filtres et ton message en cours. Lire l’article.",
-				"coverImage": "42024627-5dab-496e-9d69-18387300802e",
-				"coverImageAlt": "French tools page on yesid.dev, desktop browser capture, 8 October 2026."
-			},
-			{
-				"translationKey": "changing-language-should-not-mean-starting-over",
-				"slug": "changing-language-should-not-mean-starting-over",
-				"title": "Changing language should not mean starting over",
-				"excerpt": "A multilingual website has more to translate than its headings. The reader's place, selected filters, and unfinished message also deserve attention.",
-				"date": "2026-10-08",
-				"lang": "en",
-				"category": "professional",
-				"tags": [
-					"web-development",
-					"bilingual"
-				],
-				"animation": "draw",
-				"svg": "code",
-				"url": "/blog/changing-language-should-not-mean-starting-over",
-				"external": false,
-				"seoTitle": "Changing language should not mean starting over",
-				"seoDescription": "A multilingual site should keep your place, filters and unfinished message. Read the article.",
-				"coverImage": "42024627-5dab-496e-9d69-18387300802e",
-				"coverImageAlt": "French tools page on yesid.dev, desktop browser capture, 8 October 2026."
-			},
-			{
-				"translationKey": "does-your-website-need-instant-publishing",
-				"slug": "does-your-website-need-instant-publishing",
-				"title": "Does your website need instant publishing?",
-				"excerpt": "If updates can take a few minutes to go live, you can separate the editor from the public site, keep published pages independent from the CMS, and give the owner one place to edit content.",
-				"date": "2026-07-11",
-				"dateModified": "2026-07-11",
-				"lang": "en",
-				"category": "professional",
-				"tags": [
-					"web-development",
-					"cms",
-					"sveltekit",
-					"directus"
-				],
-				"animation": "morph",
-				"svg": "pipeline",
-				"url": "/blog/does-your-website-need-instant-publishing",
-				"external": false,
-				"seoTitle": "Does Your Website Need Instant Publishing?",
-				"seoDescription": "Instant publishing or a build-time CMS? A practical guide for business owners. Read the article."
-			},
-			{
-				"translationKey": "does-your-website-need-instant-publishing",
-				"slug": "tu-sitio-web-necesita-publicacion-instantanea",
-				"title": "¿Tu sitio web necesita publicación instantánea?",
-				"excerpt": "Fixture copy (es, excerpt, 96b67d05).",
-				"date": "2026-07-11",
-				"dateModified": "2026-07-11",
-				"lang": "es",
-				"category": "professional",
-				"tags": [
-					"web-development",
-					"cms",
-					"sveltekit",
-					"directus"
-				],
-				"animation": "morph",
-				"svg": "pipeline",
-				"url": "/blog/tu-sitio-web-necesita-publicacion-instantanea",
-				"external": false,
-				"seoTitle": "¿Tu sitio web necesita publicación instantánea?",
-				"seoDescription": "¿Publicación instantánea o CMS con compilación? Una guía práctica. Leer el artículo."
-			},
-			{
-				"translationKey": "does-your-website-need-instant-publishing",
-				"slug": "votre-site-web-a-t-il-besoin-dune-publication-instantanee",
-				"title": "Votre site web a-t-il besoin d’une publication instantanée?",
-				"excerpt": "Fixture copy (fr, excerpt, 3204d8be).",
-				"date": "2026-07-11",
-				"dateModified": "2026-07-11",
-				"lang": "fr",
-				"category": "professional",
-				"tags": [
-					"web-development",
-					"cms",
-					"sveltekit",
-					"directus"
-				],
-				"animation": "morph",
-				"svg": "pipeline",
-				"url": "/blog/votre-site-web-a-t-il-besoin-dune-publication-instantanee",
-				"external": false,
-				"seoTitle": "Votre site web a-t-il besoin d’une publication instantanée?",
-				"seoDescription": "Publication instantanée ou CMS avec compilation? Un guide pratique. Lire l’article."
-			},
-			{
-				"translationKey": "50-to-0-an-oracle-always-free-vm",
-				"slug": "50-to-0-an-oracle-always-free-vm",
-				"title": "$50 to $0: an Oracle Always Free VM",
-				"excerpt": "Fixture copy (en, excerpt, 337330e9).",
-				"date": "2026-07-03",
-				"dateModified": "2026-07-11",
-				"lang": "en",
-				"category": "professional",
-				"tags": [
-					"oracle-cloud",
-					"self-hosting",
-					"postgresql",
-					"transit-data"
-				],
-				"animation": "morph",
-				"svg": "pipeline",
-				"url": "/blog/50-to-0-an-oracle-always-free-vm",
-				"external": false,
-				"seoTitle": "$50 to $0: Running Transit on Oracle Always Free",
-				"seoDescription": "Moving Transit’s database and worker to a $0 Oracle VM, tradeoffs included. Read the article."
-			},
-			{
-				"translationKey": "50-to-0-an-oracle-always-free-vm",
-				"slug": "de-50-a-0-una-vm-oracle-always-free",
-				"title": "De 50 $ a 0 $: una VM Oracle Always Free",
-				"excerpt": "Fixture copy (es, excerpt, c99e24a3).",
-				"date": "2026-07-03",
-				"dateModified": "2026-07-11",
-				"lang": "es",
-				"category": "professional",
-				"tags": [
-					"oracle-cloud",
-					"self-hosting",
-					"postgresql",
-					"transit-data"
-				],
-				"animation": "morph",
-				"svg": "pipeline",
-				"url": "/blog/de-50-a-0-una-vm-oracle-always-free",
-				"external": false,
-				"seoTitle": "De 50 $ a 0 $: Transit en Oracle Always Free",
-				"seoDescription": "Transit trasladado a una VM Oracle de 0 $, con sus contrapartidas. Leer el artículo."
-			},
-			{
-				"translationKey": "50-to-0-an-oracle-always-free-vm",
-				"slug": "de-50-a-0-une-vm-oracle-always-free",
-				"title": "De 50 $ à 0 $ : une VM Oracle Always Free",
-				"excerpt": "Fixture copy (fr, excerpt, 5ccc527e).",
-				"date": "2026-07-03",
-				"dateModified": "2026-07-11",
-				"lang": "fr",
-				"category": "professional",
-				"tags": [
-					"oracle-cloud",
-					"self-hosting",
-					"postgresql",
-					"transit-data"
-				],
-				"animation": "morph",
-				"svg": "pipeline",
-				"url": "/blog/de-50-a-0-une-vm-oracle-always-free",
-				"external": false,
-				"seoTitle": "De 50 $ à 0 $ : faire tourner Transit sur Oracle Always Free",
-				"seoDescription": "Transit déplacé vers une VM Oracle à 0 $, compromis inclus. Lire l’article."
-			},
-			{
-				"translationKey": "ai-accelerated-human-owned-my-actual-workflow",
-				"slug": "accelere-par-lia-pilote-par-lhumain-mon-vrai-flux-de-travail",
-				"title": "Accéléré par l’IA, piloté par l’humain : mon vrai flux de travail",
-				"excerpt": "Fixture copy (fr, excerpt, bc28e32e).",
-				"date": "2026-06-25",
-				"dateModified": "2026-07-11",
-				"lang": "fr",
-				"category": "professional",
-				"tags": [
-					"ai-assisted-development",
-					"software-architecture",
-					"cms",
-					"code-review"
-				],
-				"animation": "morph",
-				"svg": "database",
-				"url": "/blog/accelere-par-lia-pilote-par-lhumain-mon-vrai-flux-de-travail",
-				"external": false,
-				"seoTitle": "Accéléré par l’IA, piloté par l’humain : mon flux de travail",
-				"seoDescription": "Je choisis l’architecture, inspecte les fichiers, repère les erreurs et assume ce qui est livré. Lire l’article."
-			},
-			{
-				"translationKey": "ai-accelerated-human-owned-my-actual-workflow",
-				"slug": "acelerado-por-ia-en-manos-humanas-mi-flujo-de-trabajo-real",
-				"title": "Acelerado por IA, en manos humanas: mi flujo de trabajo real",
-				"excerpt": "Fixture copy (es, excerpt, 027000ff).",
-				"date": "2026-06-25",
-				"dateModified": "2026-07-11",
-				"lang": "es",
-				"category": "professional",
-				"tags": [
-					"ai-assisted-development",
-					"software-architecture",
-					"cms",
-					"code-review"
-				],
-				"animation": "morph",
-				"svg": "database",
-				"url": "/blog/acelerado-por-ia-en-manos-humanas-mi-flujo-de-trabajo-real",
-				"external": false,
-				"seoTitle": "Acelerado por IA, en manos humanas: mi flujo de trabajo real",
-				"seoDescription": "Elijo la arquitectura, inspecciono archivos, detecto errores y respondo por lo que publico. Leer el artículo."
-			},
-			{
-				"translationKey": "ai-accelerated-human-owned-my-actual-workflow",
-				"slug": "ai-accelerated-human-owned-my-actual-workflow",
-				"title": "AI-accelerated, human-owned: my actual workflow",
-				"excerpt": "Fixture copy (en, excerpt, c6e2a906).",
-				"date": "2026-06-25",
-				"dateModified": "2026-07-11",
-				"lang": "en",
-				"category": "professional",
-				"tags": [
-					"ai-assisted-development",
-					"software-architecture",
-					"cms",
-					"code-review"
-				],
-				"animation": "morph",
-				"svg": "database",
-				"url": "/blog/ai-accelerated-human-owned-my-actual-workflow",
-				"external": false,
-				"seoTitle": "AI-Accelerated, Human-Owned: My Development Workflow",
-				"seoDescription": "I choose the architecture, inspect the files, catch the mistakes and own what ships. Read the article."
-			},
-			{
-				"translationKey": "thinking-in-matrices",
-				"slug": "pensar-en-matrices",
-				"title": "Pensar en matrices",
-				"excerpt": "Veo filas y columnas cuando observo sistemas. Ese hábito me ayudó a construir un proyecto de transporte público y me enseñó dónde terminan los datos.",
-				"date": "2026-06-17",
-				"dateModified": "2026-07-11",
-				"lang": "es",
-				"category": "personal",
-				"tags": [
-					"systems-thinking",
-					"sql",
-					"gtfs",
-					"transit-data"
-				],
-				"animation": "morph",
-				"svg": "train",
-				"url": "/blog/pensar-en-matrices",
-				"external": false,
-				"seoTitle": "Pensar en matrices: de los datos GTFS a las consultas SQL",
-				"seoDescription": "Filas, columnas, GTFS, SQL y contabilidad, y dónde termina la medición. Leer el artículo."
-			},
-			{
-				"translationKey": "thinking-in-matrices",
-				"slug": "penser-en-matrices",
-				"title": "Penser en matrices",
-				"excerpt": "Je vois des lignes et des colonnes quand j’observe les systèmes. Cette habitude m’a aidé à bâtir un projet de transport collectif et m’a appris où les données s’arrêtent.",
-				"date": "2026-06-17",
-				"dateModified": "2026-07-11",
-				"lang": "fr",
-				"category": "personal",
-				"tags": [
-					"systems-thinking",
-					"sql",
-					"gtfs",
-					"transit-data"
-				],
-				"animation": "morph",
-				"svg": "train",
-				"url": "/blog/penser-en-matrices",
-				"external": false,
-				"seoTitle": "Penser en matrices : des données GTFS aux requêtes SQL",
-				"seoDescription": "Lignes, colonnes, GTFS, SQL et comptabilité, et là où la mesure s’arrête. Lire l’article."
-			},
-			{
-				"translationKey": "thinking-in-matrices",
-				"slug": "thinking-in-matrices",
-				"title": "Thinking in matrices",
-				"excerpt": "I see rows and columns when I look at systems. That habit helped me build a transit project, and taught me where data stops.",
-				"date": "2026-06-17",
-				"dateModified": "2026-07-11",
-				"lang": "en",
-				"category": "personal",
-				"tags": [
-					"systems-thinking",
-					"sql",
-					"gtfs",
-					"transit-data"
-				],
-				"animation": "morph",
-				"svg": "train",
-				"url": "/blog/thinking-in-matrices",
-				"external": false,
-				"seoTitle": "Thinking in Matrices: From GTFS Data to SQL",
-				"seoDescription": "Rows, columns, GTFS, SQL and accounting, and where measurement stops. Read the article."
-			},
-			{
-				"translationKey": "how-i-learn-orbiting-a-system-until-it-clicks",
-				"slug": "comment-japprends-graviter-autour-dun-systeme-jusquau-declic",
-				"title": "Comment j’apprends : graviter autour d’un système jusqu’au déclic",
-				"excerpt": "Pendant deux ans, la comptabilité n’avait aucun sens pour moi. Puis une conversation m’a révélé le système derrière les règles.",
-				"date": "2026-06-09",
-				"dateModified": "2026-07-11",
-				"lang": "fr",
-				"category": "personal",
-				"tags": [
-					"learning",
-					"systems-thinking",
-					"accounting",
-					"ai"
-				],
-				"animation": "morph",
-				"svg": "train",
-				"url": "/blog/comment-japprends-graviter-autour-dun-systeme-jusquau-declic",
-				"external": false,
-				"seoTitle": "Comment j’apprends : rester au contact jusqu’au déclic",
-				"seoDescription": "Deux ans de confusion en comptabilité, un déclic, et ma façon d’apprendre. Lire l’article."
-			},
-			{
-				"translationKey": "how-i-learn-orbiting-a-system-until-it-clicks",
-				"slug": "como-aprendo-orbitar-un-sistema-hasta-que-encaja",
-				"title": "Cómo aprendo: orbitar un sistema hasta que encaja",
-				"excerpt": "Durante dos años, la contabilidad no tenía sentido para mí. Luego, una conversación reveló el sistema que había detrás de las reglas.",
-				"date": "2026-06-09",
-				"dateModified": "2026-07-11",
-				"lang": "es",
-				"category": "personal",
-				"tags": [
-					"learning",
-					"systems-thinking",
-					"accounting",
-					"ai"
-				],
-				"animation": "morph",
-				"svg": "train",
-				"url": "/blog/como-aprendo-orbitar-un-sistema-hasta-que-encaja",
-				"external": false,
-				"seoTitle": "Cómo aprendo: orbitar un sistema hasta que encaja",
-				"seoDescription": "Dos años de confusión con la contabilidad, un momento de claridad y cómo aprendo. Leer el artículo."
-			},
-			{
-				"translationKey": "how-i-learn-orbiting-a-system-until-it-clicks",
-				"slug": "how-i-learn-orbiting-a-system-until-it-clicks",
-				"title": "How I learn: orbiting a system until it clicks",
-				"excerpt": "Accounting made no sense to me for two years. Then one conversation revealed the system underneath the rules.",
-				"date": "2026-06-09",
-				"dateModified": "2026-07-11",
-				"lang": "en",
-				"category": "personal",
-				"tags": [
-					"learning",
-					"systems-thinking",
-					"accounting",
-					"ai"
-				],
-				"animation": "morph",
-				"svg": "train",
-				"url": "/blog/how-i-learn-orbiting-a-system-until-it-clicks",
-				"external": false,
-				"seoTitle": "How I Learn: Orbiting a System Until It Clicks",
-				"seoDescription": "Two years of accounting confusion, one breakthrough, and how I learn hard systems. Read the article."
-			},
-			{
-				"translationKey": "the-two-hour-internet-slot",
-				"slug": "el-turno-de-dos-horas-para-usar-internet",
-				"title": "El turno de dos horas para usar internet",
-				"excerpt": "Seis personas compartíamos una computadora. Mi turno de fin de semana empezaba a las ocho. Años después, no poder crear una sola aplicación útil me llevó a estudiar ciencias de la computación.",
-				"date": "2026-06-01",
-				"dateModified": "2026-07-11",
-				"lang": "es",
-				"category": "personal",
-				"tags": [
 					"personal-story",
-					"computer-science",
-					"ubuntu",
-					"web-development"
+					"systems-thinking"
 				],
 				"animation": "morph",
-				"svg": "telescope",
-				"url": "/blog/el-turno-de-dos-horas-para-usar-internet",
-				"external": false,
-				"seoTitle": "Dos horas de internet que me llevaron a la informática",
-				"seoDescription": "Una computadora compartida, Ubuntu 9.04, una app fallida y el camino a la informática. Leer el artículo."
+				"svg": "train",
+				"url": "/blog/why-im-betting-on-public-transit",
+				"external": false
 			},
 			{
-				"translationKey": "the-two-hour-internet-slot",
-				"slug": "le-creneau-internet-de-deux-heures",
-				"title": "Le créneau internet de deux heures",
-				"excerpt": "Fixture copy (fr, excerpt, ce6d4309).",
-				"date": "2026-06-01",
-				"dateModified": "2026-07-11",
+				"translationKey": "leave-earth-alone-why-i-m-hopeful-about-space-mining",
+				"slug": "dejemos-la-tierra-en-paz-por-que-la-mineria-espacial-me-da-esperanza",
+				"title": "Dejemos la Tierra en paz: por qué la minería espacial me da esperanza",
+				"excerpt": "No sabría decir exactamente dónde empezó. Soy muy fan de los superhéroes, el anime y Star Wars, y muchas de esas historias tienen temas intergalácticos.",
+				"date": "2026-08-31",
+				"lang": "es",
+				"category": "personal",
+				"tags": [
+					"systems-thinking",
+					"personal-story"
+				],
+				"animation": "morph",
+				"svg": "asteroid",
+				"url": "/blog/dejemos-la-tierra-en-paz-por-que-la-mineria-espacial-me-da-esperanza",
+				"external": false
+			},
+			{
+				"translationKey": "leave-earth-alone-why-i-m-hopeful-about-space-mining",
+				"slug": "laissons-la-terre-tranquille-pourquoi-lexploitation-miniere-spatiale-me-donne-espoir",
+				"title": "Laissons la Terre tranquille : pourquoi l'exploitation minière spatiale me donne espoir",
+				"excerpt": "Je ne saurais pas dire exactement où ça a commencé. Je suis un grand fan de superhéros, d'anime et de Star Wars, et beaucoup de ces histoires ont des thèmes intergalactiques.",
+				"date": "2026-08-31",
 				"lang": "fr",
 				"category": "personal",
 				"tags": [
-					"personal-story",
-					"computer-science",
-					"ubuntu",
-					"web-development"
+					"systems-thinking",
+					"personal-story"
 				],
 				"animation": "morph",
-				"svg": "telescope",
-				"url": "/blog/le-creneau-internet-de-deux-heures",
-				"external": false,
-				"seoTitle": "Deux heures d’internet qui m’ont mené à l’informatique",
-				"seoDescription": "Un ordinateur familial partagé, Ubuntu 9.04, une appli ratée et le chemin vers l’informatique. Lire l’article."
+				"svg": "asteroid",
+				"url": "/blog/laissons-la-terre-tranquille-pourquoi-lexploitation-miniere-spatiale-me-donne-espoir",
+				"external": false
 			},
 			{
-				"translationKey": "the-two-hour-internet-slot",
-				"slug": "the-two-hour-internet-slot",
-				"title": "The two-hour internet slot",
-				"excerpt": "Six people shared one computer. My weekend turn began at eight. Years later, failing to build one useful app pushed me into computer science.",
-				"date": "2026-06-01",
-				"dateModified": "2026-07-11",
+				"translationKey": "leave-earth-alone-why-i-m-hopeful-about-space-mining",
+				"slug": "leave-earth-alone-why-im-hopeful-about-space-mining",
+				"title": "Leave Earth alone: why I'm hopeful about space mining",
+				"excerpt": "I can't really pinpoint where it started. I'm a big superhero, anime and Star Wars fan, and a lot of those stories have intergalactic themes.",
+				"date": "2026-08-31",
 				"lang": "en",
 				"category": "personal",
 				"tags": [
-					"personal-story",
-					"computer-science",
-					"ubuntu",
-					"web-development"
+					"systems-thinking",
+					"personal-story"
 				],
 				"animation": "morph",
-				"svg": "telescope",
-				"url": "/blog/the-two-hour-internet-slot",
-				"external": false,
-				"seoTitle": "The Two-Hour Internet Slot That Led Me to Computer Science",
-				"seoDescription": "A shared family computer, Ubuntu 9.04, a failed app, and the road to computer science. Read the article."
+				"svg": "asteroid",
+				"url": "/blog/leave-earth-alone-why-im-hopeful-about-space-mining",
+				"external": false
+			},
+			{
+				"translationKey": "everybody-is-entitled-to-a-bit-of-compute",
+				"slug": "chacun-a-droit-a-un-peu-de-puissance-de-calcul",
+				"title": "Chacun a droit à un peu de puissance de calcul",
+				"excerpt": "Fixture copy (fr, excerpt, ebcf6e76).",
+				"date": "2026-08-26",
+				"lang": "fr",
+				"category": "professional",
+				"tags": [
+					"ai",
+					"ai-assisted-development",
+					"personal-story"
+				],
+				"animation": "draw",
+				"svg": "compute",
+				"url": "/blog/chacun-a-droit-a-un-peu-de-puissance-de-calcul",
+				"external": false
+			},
+			{
+				"translationKey": "everybody-is-entitled-to-a-bit-of-compute",
+				"slug": "everybody-is-entitled-to-a-bit-of-compute",
+				"title": "Everybody is entitled to a bit of compute",
+				"excerpt": "Fixture copy (en, excerpt, 0d2d5612).",
+				"date": "2026-08-26",
+				"lang": "en",
+				"category": "professional",
+				"tags": [
+					"ai",
+					"ai-assisted-development",
+					"personal-story"
+				],
+				"animation": "draw",
+				"svg": "compute",
+				"url": "/blog/everybody-is-entitled-to-a-bit-of-compute",
+				"external": false
+			},
+			{
+				"translationKey": "everybody-is-entitled-to-a-bit-of-compute",
+				"slug": "todo-el-mundo-tiene-derecho-a-un-poco-de-computo",
+				"title": "Todo el mundo tiene derecho a un poco de cómputo",
+				"excerpt": "Fixture copy (es, excerpt, d0c1a876).",
+				"date": "2026-08-26",
+				"lang": "es",
+				"category": "professional",
+				"tags": [
+					"ai",
+					"ai-assisted-development",
+					"personal-story"
+				],
+				"animation": "draw",
+				"svg": "compute",
+				"url": "/blog/todo-el-mundo-tiene-derecho-a-un-poco-de-computo",
+				"external": false
 			}
 		],
 		"blogBodies": {
-			"missing-data-is-not-zero": {
-				"time": 1791432000000,
+			"cuatro-proyectos-cuatro-stacks": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "6a35881282f37472-0",
+						"id": "e2c3a7c2d3e4f503-0",
 						"type": "paragraph",
 						"data": {
-							"text": "One small message in Transit captures a much larger part of the data work: OC Transpo service alerts are unavailable because no alert feed is connected here."
+							"text": "Fixture copy (es, text, 22b54f9c)."
 						}
 					},
 					{
-						"id": "4cd6dd5c8a181f29-9",
+						"id": "e2c3a7c2d3e4f503-1",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Proyecto",
+									"Stack",
+									"Por qué este stack"
+								],
+								[
+									"<a href=\"https://yesid.dev\">yesid.dev</a>",
+									"SvelteKit + Directus",
+									"Un CMS con base de datos, separado del sitio"
+								],
+								[
+									"Sitios de pequeños negocios, como <a href=\"https://vitreva.ca\">Vitreva</a>",
+									"SvelteKit + Sveltia CMS",
+									"El contenido en Git; solo el dominio cuesta"
+								],
+								[
+									"<a href=\"https://cafearona.com\">Café Arona</a>",
+									"Shopify + Liquid",
+									"Pagos, inventario y canales ya resueltos"
+								],
+								[
+									"<a href=\"https://transit.yesid.dev\">Transit</a>",
+									"Python + PostgreSQL + SvelteKit en Cloudflare",
+									"Un pipeline de datos real con flujos en vivo"
+								]
+							]
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f503-2",
+						"type": "header",
+						"data": {
+							"text": "yesid.dev: SvelteKit y Directus",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f503-6",
+						"type": "header",
+						"data": {
+							"text": "Sitios de pequeños negocios: SvelteKit y Sveltia CMS",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f503-7",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/projects/transit-data-pipeline\">Read the project story</a>"
+							"text": "Fixture copy (es, text, 66d2cbff).<a href=\"https://vitreva.ca\">Fixture copy (es, text, 66d2cbff).</a>Fixture copy (es, text, 66d2cbff)."
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f503-8",
+						"type": "header",
+						"data": {
+							"text": "Café Arona: Shopify y Liquid",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f503-12",
+						"type": "header",
+						"data": {
+							"text": "Transit: Python, PostgreSQL y SvelteKit en Cloudflare",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f503-15",
+						"type": "nestedlist",
+						"data": {
+							"style": "ordered",
+							"items": [
+								{
+									"content": "Las llamadas a los flujos de datos de las empresas de transporte.",
+									"items": []
+								},
+								{
+									"content": "Los archivos de horarios estáticos, cargados una vez al día. Si cambiaron, los agregamos. Si no, conservamos la versión anterior.",
+									"items": []
+								},
+								{
+									"content": "El flujo en tiempo real, cada 30 segundos, donde la fecha de los datos tiene que estar bien. Los archivos crudos van a Cloudflare R2 para guardar el historial.",
+									"items": []
+								},
+								{
+									"content": "Una capa \"plata\" limpia en PostgreSQL. Esos datos son tontos: no se infiere nada.",
+									"items": []
+								},
+								{
+									"content": "Una capa \"oro\" encima, donde viven los datos inferidos: los indicadores y las métricas.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f503-16",
+						"type": "code",
+						"data": {
+							"code": "```mermaid\nflowchart LR\n  A[Flujos de la STM y OC Transpo] -->|cada 30 s| B[(Historial crudo en R2)]\n  B --> C[(Plata: datos limpios)]\n  C --> D[(Oro: indicadores y métricas)]\n  D --> E[Instantáneas publicadas]\n  E --> F[Tablero de Transit]\n```"
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f503-20",
+						"type": "header",
+						"data": {
+							"text": "Cuándo no escoger cada uno",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f503-21",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Stack",
+									"No lo escoja cuando"
+								],
+								[
+									"Shopify",
+									"No vende ningún producto"
+								],
+								[
+									"Un CMS con base de datos como Directus",
+									"Es un pequeño negocio con un sitio pequeño, donde el texto no es pesado y se puede guardar simplemente en archivos"
+								],
+								[
+									"Sveltia CMS y Git",
+									"Es una empresa grande con muchas páginas, más de unas 20, además de blog y artículos. Ahí Directus encaja mejor"
+								]
+							]
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"un-dato-que-falta-no-equivale-a-cero": {
-				"time": 1791432000000,
+			"four-projects-four-stacks": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "52d0bbae6433e6dd-0",
+						"id": "e2c3a7c2d3e4f501-0",
 						"type": "paragraph",
 						"data": {
-							"text": "En Transit hay un mensaje pequeño que resume una parte importante del trabajo con los datos: los avisos de servicio de OC Transpo no están disponibles porque no hay un flujo de avisos conectado."
+							"text": "I always choose SvelteKit as my default when I need a framework. But I wanted to show future clients and employers range, so I built four projects on four different stacks."
 						}
 					},
 					{
-						"id": "af1d6ec46296cf77-9",
+						"id": "e2c3a7c2d3e4f501-1",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Project",
+									"Stack",
+									"Why this stack"
+								],
+								[
+									"<a href=\"https://yesid.dev\">yesid.dev</a>",
+									"SvelteKit + Directus",
+									"A database-backed CMS, separate from the site"
+								],
+								[
+									"Small business sites, like <a href=\"https://vitreva.ca\">Vitreva</a>",
+									"SvelteKit + Sveltia CMS",
+									"Content in Git; only the domain costs money"
+								],
+								[
+									"<a href=\"https://cafearona.com\">Café Arona</a>",
+									"Shopify + Liquid",
+									"Payments, inventory and channels already solved"
+								],
+								[
+									"<a href=\"https://transit.yesid.dev\">Transit</a>",
+									"Python + PostgreSQL + SvelteKit on Cloudflare",
+									"A real data pipeline with live feeds"
+								]
+							]
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f501-2",
+						"type": "header",
+						"data": {
+							"text": "yesid.dev: SvelteKit and Directus",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f501-6",
+						"type": "header",
+						"data": {
+							"text": "Small business sites: SvelteKit and Sveltia CMS",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f501-7",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/es/projects/transit-data-pipeline\">Conocer el proyecto</a>"
+							"text": "Fixture copy (en, text, 4c81a1cf).<a href=\"https://vitreva.ca\">Fixture copy (en, text, 4c81a1cf).</a>Fixture copy (en, text, 4c81a1cf)."
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f501-8",
+						"type": "header",
+						"data": {
+							"text": "Café Arona: Shopify and Liquid",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f501-12",
+						"type": "header",
+						"data": {
+							"text": "Transit: Python, PostgreSQL and SvelteKit on Cloudflare",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f501-15",
+						"type": "nestedlist",
+						"data": {
+							"style": "ordered",
+							"items": [
+								{
+									"content": "The calls to the transit agencies' feeds.",
+									"items": []
+								},
+								{
+									"content": "The static schedule files, loaded once a day. If they changed, we add them. If they didn't, we keep the old version.",
+									"items": []
+								},
+								{
+									"content": "The realtime feed, every 30 seconds, where the date of the data has to be right. The raw files go to Cloudflare R2 to keep the history.",
+									"items": []
+								},
+								{
+									"content": "A cleaned \"silver\" layer in PostgreSQL. That data is dumb: nothing is inferred.",
+									"items": []
+								},
+								{
+									"content": "A \"gold\" layer on top, where the inferred data lives: the KPIs and metrics.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f501-16",
+						"type": "code",
+						"data": {
+							"code": "```mermaid\nflowchart LR\n  A[STM and OC Transpo feeds] -->|every 30 s| B[(Raw history in R2)]\n  B --> C[(Silver: cleaned data)]\n  C --> D[(Gold: KPIs and metrics)]\n  D --> E[Published snapshots]\n  E --> F[Transit dashboard]\n```"
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f501-20",
+						"type": "header",
+						"data": {
+							"text": "When not to pick each",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f501-21",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Stack",
+									"Don't pick it when"
+								],
+								[
+									"Shopify",
+									"You're not selling any products"
+								],
+								[
+									"A database-backed CMS like Directus",
+									"You're a small business with a small site, where the text isn't heavy and can simply be stored as files"
+								],
+								[
+									"Sveltia CMS and Git",
+									"You're a big company with lots of pages, more than about 20, plus blogs and articles. Then Directus fits better"
+								]
+							]
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"une-donnee-absente-nest-pas-un-zero": {
-				"time": 1791432000000,
+			"quatre-projets-quatre-piles-technologiques": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "43f34f090843a56f-0",
+						"id": "e2c3a7c2d3e4f502-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Dans Transit, un petit message résume une bonne partie du travail sur les données : les avis de service d’OC Transpo sont indisponibles parce qu’aucun flux d’avis n’est connecté ici."
+							"text": "Fixture copy (fr, text, dd339684)."
 						}
 					},
 					{
-						"id": "3f6cf0377394fb3a-9",
+						"id": "e2c3a7c2d3e4f502-1",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Projet",
+									"Pile",
+									"Pourquoi cette pile"
+								],
+								[
+									"<a href=\"https://yesid.dev\">yesid.dev</a>",
+									"SvelteKit + Directus",
+									"Un CMS avec base de données, séparé du site"
+								],
+								[
+									"Sites de petites entreprises, comme <a href=\"https://vitreva.ca\">Vitreva</a>",
+									"SvelteKit + Sveltia CMS",
+									"Le contenu dans Git; seul le nom de domaine coûte quelque chose"
+								],
+								[
+									"<a href=\"https://cafearona.com\">Café Arona</a>",
+									"Shopify + Liquid",
+									"Paiements, inventaire et canaux déjà réglés"
+								],
+								[
+									"<a href=\"https://transit.yesid.dev\">Transit</a>",
+									"Python + PostgreSQL + SvelteKit sur Cloudflare",
+									"Un vrai pipeline de données avec des flux en direct"
+								]
+							]
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f502-2",
+						"type": "header",
+						"data": {
+							"text": "yesid.dev : SvelteKit et Directus",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f502-6",
+						"type": "header",
+						"data": {
+							"text": "Sites de petites entreprises : SvelteKit et Sveltia CMS",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f502-7",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/fr/projects/transit-data-pipeline\">Découvrir le projet</a>"
+							"text": "Fixture copy (fr, text, 90a955e0).<a href=\"https://vitreva.ca\">Fixture copy (fr, text, 90a955e0).</a>Fixture copy (fr, text, 90a955e0)."
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f502-8",
+						"type": "header",
+						"data": {
+							"text": "Café Arona : Shopify et Liquid",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f502-12",
+						"type": "header",
+						"data": {
+							"text": "Transit : Python, PostgreSQL et SvelteKit sur Cloudflare",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f502-15",
+						"type": "nestedlist",
+						"data": {
+							"style": "ordered",
+							"items": [
+								{
+									"content": "Les appels aux flux des sociétés de transport.",
+									"items": []
+								},
+								{
+									"content": "Les fichiers d'horaires statiques, chargés une fois par jour. S'ils ont changé, on les ajoute. Sinon, on garde l'ancienne version.",
+									"items": []
+								},
+								{
+									"content": "Le flux en temps réel, aux 30 secondes, où la date des données doit être exacte. Les fichiers bruts vont dans Cloudflare R2 pour garder l'historique.",
+									"items": []
+								},
+								{
+									"content": "Une couche « argent » nettoyée dans PostgreSQL. Ces données-là sont bêtes : rien n'est déduit.",
+									"items": []
+								},
+								{
+									"content": "Une couche « or » par-dessus, où vivent les données déduites : les indicateurs et les métriques.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f502-16",
+						"type": "code",
+						"data": {
+							"code": "```mermaid\nflowchart LR\n  A[Flux de la STM et d'OC Transpo] -->|aux 30 s| B[(Historique brut dans R2)]\n  B --> C[(Argent : données nettoyées)]\n  C --> D[(Or : indicateurs et métriques)]\n  D --> E[Instantanés publiés]\n  E --> F[Tableau de bord Transit]\n```"
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f502-20",
+						"type": "header",
+						"data": {
+							"text": "Quand ne pas choisir chacune",
+							"level": 2
+						}
+					},
+					{
+						"id": "e2c3a7c2d3e4f502-21",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Pile",
+									"À éviter quand"
+								],
+								[
+									"Shopify",
+									"Vous ne vendez aucun produit"
+								],
+								[
+									"Un CMS avec base de données comme Directus",
+									"Vous êtes une petite entreprise avec un petit site, où le texte n'est pas lourd et peut simplement être stocké dans des fichiers"
+								],
+								[
+									"Sveltia CMS et Git",
+									"Vous êtes une grande entreprise avec beaucoup de pages, plus d'une vingtaine, en plus d'un blogue et d'articles. Directus convient alors mieux"
+								]
+							]
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"ce-quon-peut-preparer-avant-davoir-son-catalogue-definitif": {
-				"time": 1791432000000,
+			"des-sites-web-ou-seul-le-nom-de-domaine-coute-quelque-chose": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "d1608cdfad5e7e29-0",
+						"id": "d1b2f6b1c2d3e402-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (fr, text, 715ea71e).<a href=\"https://cafearona.com\">Fixture copy (fr, text, 715ea71e).</a>Fixture copy (fr, text, 715ea71e).<a href=\"https://cafearona.com/en\">Fixture copy (fr, text, 715ea71e).</a>Fixture copy (fr, text, 715ea71e)."
+							"text": "Disons que vous êtes massothérapeute. Un de mes amis l'est."
 						}
 					},
 					{
-						"id": "71152788199cb54d-1",
+						"id": "d1b2f6b1c2d3e402-3",
 						"type": "paragraph",
 						"data": {
-							"text": "Ce contexte m’amène à séparer les décisions qui peuvent avancer de celles qui dépendent encore du produit."
+							"text": "Fixture copy (fr, text, c5f1f346).<a href=\"https://support.google.com/business/answer/7091?hl=fr\">Fixture copy (fr, text, c5f1f346).</a>Fixture copy (fr, text, c5f1f346)."
 						}
 					},
 					{
-						"id": "7263df529f4e4f8a-2",
+						"id": "d1b2f6b1c2d3e402-4",
 						"type": "header",
 						"data": {
-							"text": "Commencer par ce qu’on sait",
+							"text": "Ce que ça coûte",
 							"level": 2
 						}
 					},
 					{
-						"id": "4200219fcc09fcca-5",
+						"id": "d1b2f6b1c2d3e402-7",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>1 500 $ plus taxes</b> pour le bâtir. Un prix modique unique, pour un maximum de 10 pages par langue. Ajouter une langue ne coûte rien de plus.",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (fr, content, 71d0778c).</b>Fixture copy (fr, content, 71d0778c).",
+									"items": []
+								},
+								{
+									"content": "<b>Après vos trois vœux :</b> 500 $ pour 3 vœux supplémentaires, qui n'expirent pas non plus.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e402-8",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"",
+									"Votre site"
+								],
+								[
+									"Construction",
+									"1 500 $ + taxes"
+								],
+								[
+									"Vœux inclus",
+									"3, n'expirent jamais"
+								],
+								[
+									"Vœux supplémentaires",
+									"3 pour 500 $, sans expiration"
+								],
+								[
+									"Chaque année",
+									"Votre nom de domaine seulement"
+								]
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e402-11",
 						"type": "header",
 						"data": {
-							"text": "Garder les décisions provisoires visibles",
+							"text": "Il y a une attrape?",
 							"level": 2
 						}
 					},
 					{
-						"id": "de0d8c11276c5f5b-8",
+						"id": "d1b2f6b1c2d3e402-14",
 						"type": "header",
 						"data": {
-							"text": "Préparer les gestes de gestion",
+							"text": "Pourquoi je le fais",
 							"level": 2
 						}
 					},
 					{
-						"id": "3657a9802e7b77e0-12",
+						"id": "d1b2f6b1c2d3e402-18",
+						"type": "header",
+						"data": {
+							"text": "Pour les développeurs : la pile technologique",
+							"level": 2
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e402-20",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Partie",
+									"Choix"
+								],
+								[
+									"Site",
+									"SvelteKit, compilé en fichiers statiques. Les pages n'envoient aucun JavaScript"
+								],
+								[
+									"Éditeur",
+									"<a href=\"https://sveltiacms.app/\">Sveltia CMS</a>. Il enregistre de simples fichiers JSON ou Markdown, donc le contenu vit dans Git"
+								],
+								[
+									"Hébergement",
+									"Cloudflare Workers. <a href=\"https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/\">Les requêtes de fichiers statiques sont gratuites et illimitées</a>"
+								],
+								[
+									"Code et déploiements",
+									"Un dépôt GitHub privé par client; GitHub Actions publie chaque enregistrement"
+								],
+								[
+									"Connexion",
+									"Des codes à usage unique par courriel, avec Better Auth sur un Worker et D1. Pas de mot de passe, pas de compte GitHub pour les clients"
+								]
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e402-22",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/fr/projects/cafe-arona\">Découvrir le projet</a>"
+							"text": "Fixture copy (fr, text, cbeba1f3).<a href=\"https://better-auth.com/docs/plugins/email-otp\">Fixture copy (fr, text, cbeba1f3).</a>Fixture copy (fr, text, cbeba1f3)."
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e402-24",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Service",
+									"Limite gratuite",
+									"Ce que ça veut dire"
+								],
+								[
+									"<a href=\"https://developers.cloudflare.com/workers/platform/limits/\">Cloudflare Workers</a>",
+									"100 Workers par compte",
+									"Environ 100 sites clients"
+								],
+								[
+									"<a href=\"https://resend.com/pricing\">Resend</a>",
+									"3 000 courriels par mois, 100 par jour",
+									"Les codes de connexion, partagés entre tous les clients"
+								]
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e402-25",
+						"type": "paragraph",
+						"data": {
+							"text": "Fixture copy (fr, text, e0e3fe08).<a href=\"https://github.com/mgkdante/yesid.static-template\">Fixture copy (fr, text, e0e3fe08).</a>Fixture copy (fr, text, e0e3fe08)."
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e402-26",
+						"type": "header",
+						"data": {
+							"text": "Vous en voulez un?",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"que-se-puede-avanzar-antes-de-tener-el-catalogo-definitivo": {
-				"time": 1791432000000,
+			"sitios-web-donde-solo-el-dominio-cuesta": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "d04acc38ca3a0bf4-0",
+						"id": "d1b2f6b1c2d3e403-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (es, text, a8d892e5).<a href=\"https://cafearona.com\">Fixture copy (es, text, a8d892e5).</a>Fixture copy (es, text, a8d892e5).<a href=\"https://cafearona.com/en\">Fixture copy (es, text, a8d892e5).</a>Fixture copy (es, text, a8d892e5)."
+							"text": "Digamos que usted es masajista. Un amigo mío lo es."
 						}
 					},
 					{
-						"id": "7a52481939c2aa12-1",
+						"id": "d1b2f6b1c2d3e403-3",
 						"type": "paragraph",
 						"data": {
-							"text": "Este contexto me lleva a separar las decisiones que se pueden tomar de las que aún dependen del producto."
+							"text": "Fixture copy (es, text, fb9d718a).<a href=\"https://support.google.com/business/answer/7091?hl=es\">Fixture copy (es, text, fb9d718a).</a>Fixture copy (es, text, fb9d718a)."
 						}
 					},
 					{
-						"id": "8a3936fbe2b4b0ec-2",
+						"id": "d1b2f6b1c2d3e403-4",
 						"type": "header",
 						"data": {
-							"text": "Empezar por lo que ya se conoce",
+							"text": "Cuánto cuesta",
 							"level": 2
 						}
 					},
 					{
-						"id": "800a826d598cebda-5",
+						"id": "d1b2f6b1c2d3e403-7",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>1.500 dólares canadienses más impuestos</b> por construirlo. Un precio módico único, para hasta 10 páginas por idioma. Agregar un idioma no cuesta nada más.",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (es, content, ec187237).</b>Fixture copy (es, content, ec187237).",
+									"items": []
+								},
+								{
+									"content": "<b>Después de sus tres deseos:</b> 500 dólares por 3 deseos adicionales, que tampoco vencen.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e403-8",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"",
+									"Su sitio"
+								],
+								[
+									"Construcción",
+									"1.500 dólares + impuestos"
+								],
+								[
+									"Deseos incluidos",
+									"3, nunca vencen"
+								],
+								[
+									"Más deseos",
+									"3 por 500 dólares, sin vencimiento"
+								],
+								[
+									"Cada año",
+									"Solo su dominio"
+								]
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e403-11",
 						"type": "header",
 						"data": {
-							"text": "Identificar lo que sigue siendo provisional",
+							"text": "¿Cuál es la trampa?",
 							"level": 2
 						}
 					},
 					{
-						"id": "189aed9345950780-8",
+						"id": "d1b2f6b1c2d3e403-14",
 						"type": "header",
 						"data": {
-							"text": "Preparar las tareas habituales",
+							"text": "Por qué lo hago",
 							"level": 2
 						}
 					},
 					{
-						"id": "2dd7facab5251a55-12",
+						"id": "d1b2f6b1c2d3e403-18",
+						"type": "header",
+						"data": {
+							"text": "Para desarrolladores: el stack",
+							"level": 2
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e403-20",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Parte",
+									"Elección"
+								],
+								[
+									"Sitio",
+									"SvelteKit, compilado a archivos estáticos. Las páginas no envían JavaScript"
+								],
+								[
+									"Editor",
+									"<a href=\"https://sveltiacms.app/\">Sveltia CMS</a>. Guarda archivos JSON o Markdown sencillos, así que el contenido vive en Git"
+								],
+								[
+									"Hosting",
+									"Cloudflare Workers. <a href=\"https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/\">Las solicitudes de archivos estáticos son gratis e ilimitadas</a>"
+								],
+								[
+									"Código y despliegues",
+									"Un repositorio privado de GitHub por cliente; GitHub Actions publica cada cambio guardado"
+								],
+								[
+									"Inicio de sesión",
+									"Códigos de un solo uso por correo, con Better Auth en un Worker y D1. Sin contraseñas ni cuentas de GitHub para los clientes"
+								]
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e403-22",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/es/projects/cafe-arona\">Conocer el proyecto</a>"
+							"text": "Fixture copy (es, text, e42160cd).<a href=\"https://better-auth.com/docs/plugins/email-otp\">Fixture copy (es, text, e42160cd).</a>Fixture copy (es, text, e42160cd)."
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e403-24",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Servicio",
+									"Límite gratis",
+									"Qué significa"
+								],
+								[
+									"<a href=\"https://developers.cloudflare.com/workers/platform/limits/\">Cloudflare Workers</a>",
+									"100 Workers por cuenta",
+									"Unos 100 sitios de clientes"
+								],
+								[
+									"<a href=\"https://resend.com/pricing\">Resend</a>",
+									"3.000 correos al mes, 100 al día",
+									"Los códigos de inicio de sesión, compartidos entre todos los clientes"
+								]
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e403-25",
+						"type": "paragraph",
+						"data": {
+							"text": "Fixture copy (es, text, 135bf916).<a href=\"https://github.com/mgkdante/yesid.static-template\">Fixture copy (es, text, 135bf916).</a>Fixture copy (es, text, 135bf916)."
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e403-26",
+						"type": "header",
+						"data": {
+							"text": "¿Quiere uno?",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"what-can-move-forward-before-the-product-catalogue-is-final": {
-				"time": 1791432000000,
+			"websites-where-only-the-domain-costs-money": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "62d811137cffd6d0-0",
+						"id": "d1b2f6b1c2d3e401-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (en, text, dc06b2e2).<a href=\"https://cafearona.com\">Fixture copy (en, text, dc06b2e2).</a>Fixture copy (en, text, dc06b2e2).<a href=\"https://cafearona.com/en\">Fixture copy (en, text, dc06b2e2).</a>Fixture copy (en, text, dc06b2e2)."
+							"text": "Say you're a massage therapist. A friend of mine is one."
 						}
 					},
 					{
-						"id": "de5a600b3b57a9bd-1",
+						"id": "d1b2f6b1c2d3e401-3",
 						"type": "paragraph",
 						"data": {
-							"text": "That context helps me separate decisions we can make from decisions that depend on the product."
+							"text": "One tip: on Google, <a href=\"https://support.google.com/business/answer/7091\">local results lean on your free Business Profile</a> and your reviews. Point it to your site and your booking link."
 						}
 					},
 					{
-						"id": "a1da136a4dbf8b05-2",
+						"id": "d1b2f6b1c2d3e401-4",
 						"type": "header",
 						"data": {
-							"text": "Start with what is known",
+							"text": "What it costs",
 							"level": 2
 						}
 					},
 					{
-						"id": "e4786278f07729db-5",
+						"id": "d1b2f6b1c2d3e401-7",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>$1,500 plus taxes</b> to build it. One modest price that fits all, for up to 10 pages per language. Adding a language costs nothing extra.",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (en, content, 9cc5220e).</b>Fixture copy (en, content, 9cc5220e).",
+									"items": []
+								},
+								{
+									"content": "<b>After your three wishes:</b> $500 for 3 extra wishes, no expiry either.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e401-8",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"",
+									"Your site"
+								],
+								[
+									"Build",
+									"$1,500 + tax"
+								],
+								[
+									"Wishes included",
+									"3, never expire"
+								],
+								[
+									"More wishes",
+									"3 for $500, no expiry"
+								],
+								[
+									"Every year",
+									"Your domain only"
+								]
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e401-11",
 						"type": "header",
 						"data": {
-							"text": "Keep provisional decisions visible",
+							"text": "Is there a catch?",
 							"level": 2
 						}
 					},
 					{
-						"id": "094fbf516b3f6d43-8",
+						"id": "d1b2f6b1c2d3e401-14",
 						"type": "header",
 						"data": {
-							"text": "Prepare the everyday work",
+							"text": "Why I do it",
 							"level": 2
 						}
 					},
 					{
-						"id": "e6cb61bf8d706fb8-12",
-						"type": "delimiter",
-						"data": {}
+						"id": "d1b2f6b1c2d3e401-18",
+						"type": "header",
+						"data": {
+							"text": "For developers: the stack",
+							"level": 2
+						}
 					},
 					{
-						"id": "acc5ba0dc8ae4fc7-13",
+						"id": "d1b2f6b1c2d3e401-20",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Part",
+									"Choice"
+								],
+								[
+									"Site",
+									"SvelteKit, built to static files. Pages ship no JavaScript"
+								],
+								[
+									"Editor",
+									"<a href=\"https://sveltiacms.app/\">Sveltia CMS</a>. It saves plain JSON or Markdown files, so content lives in Git"
+								],
+								[
+									"Hosting",
+									"Cloudflare Workers. <a href=\"https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/\">Static asset requests are free and unlimited</a>"
+								],
+								[
+									"Code and deploys",
+									"A private GitHub repo per client; GitHub Actions publishes every save"
+								],
+								[
+									"Sign-in",
+									"One-time codes by email, with Better Auth on a Worker and D1. No passwords, no GitHub accounts for clients"
+								]
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e401-22",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/projects/cafe-arona\">Read the project story</a>"
+							"text": "Fixture copy (en, text, 9466b0e5).<a href=\"https://better-auth.com/docs/plugins/email-otp\">Fixture copy (en, text, 9466b0e5).</a>Fixture copy (en, text, 9466b0e5)."
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e401-24",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Service",
+									"Free limit",
+									"What it means"
+								],
+								[
+									"<a href=\"https://developers.cloudflare.com/workers/platform/limits/\">Cloudflare Workers</a>",
+									"100 Workers per account",
+									"About 100 client sites"
+								],
+								[
+									"<a href=\"https://resend.com/pricing\">Resend</a>",
+									"3,000 emails a month, 100 a day",
+									"Sign-in codes, shared across every client"
+								]
+							]
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e401-25",
+						"type": "paragraph",
+						"data": {
+							"text": "Fixture copy (en, text, 3ee7435b).<a href=\"https://github.com/mgkdante/yesid.static-template\">Fixture copy (en, text, 3ee7435b).</a>Fixture copy (en, text, 3ee7435b)."
+						}
+					},
+					{
+						"id": "d1b2f6b1c2d3e401-26",
+						"type": "header",
+						"data": {
+							"text": "Want one?",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"cuando-dos-componentes-parecidos-deberian-seguir-separados": {
-				"time": 1791432000000,
+			"shopify-sans-abonnement-jusquau-lancement": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "891f24a8b5e72cb5-0",
+						"id": "f3d4b8d3e4f5a602-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Dos tarjetas pueden parecer de la misma familia y necesitar contratos distintos."
+							"text": "Fixture copy (fr, text, 78344fbb)."
 						}
 					},
 					{
-						"id": "aa48870a3966ce52-1",
-						"type": "paragraph",
+						"id": "f3d4b8d3e4f5a602-2",
+						"type": "header",
 						"data": {
-							"text": "Fixture copy (es, text, 01a96d9a).<a href=\"http://yesid.dev\">Fixture copy (es, text, 01a96d9a).</a>Fixture copy (es, text, 01a96d9a).<a href=\"http://yesid.dev\">Fixture copy (es, text, 01a96d9a).</a>Fixture copy (es, text, 01a96d9a).<a href=\"http://yesid.dev\">Fixture copy (es, text, 01a96d9a).</a>Fixture copy (es, text, 01a96d9a)."
+							"text": "Comment ça fonctionne",
+							"level": 2
 						}
 					},
 					{
-						"id": "545ee6f03e4666f3-11",
+						"id": "f3d4b8d3e4f5a602-3",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/es/projects/yesid-design\">Conocer el proyecto</a>"
+							"text": "Fixture copy (fr, text, 200dbf55).<a href=\"https://shopify.dev/docs/apps/build/stores/client-transfer-stores\">Fixture copy (fr, text, 200dbf55).</a>Fixture copy (fr, text, 200dbf55)."
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a602-4",
+						"type": "nestedlist",
+						"data": {
+							"style": "ordered",
+							"items": [
+								{
+									"content": "Je crée et je bâtis votre boutique dans mon compte partenaire.",
+									"items": []
+								},
+								{
+									"content": "Vous voyez la vraie boutique, protégée par un mot de passe, et vous l'approuvez.",
+									"items": []
+								},
+								{
+									"content": "Quand vous êtes prêt à lancer, je vous la transfère.",
+									"items": []
+								},
+								{
+									"content": "Vous acceptez, vous choisissez votre forfait Shopify et vous entrez les informations de votre entreprise. Votre abonnement commence à ce moment-là, pas avant.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a602-5",
+						"type": "code",
+						"data": {
+							"code": "```mermaid\nflowchart LR\n  A[Je bâtis votre boutique] --> B[Vous la voyez et l'approuvez]\n  B --> C[Je vous la transfère]\n  C --> D[Vous choisissez un forfait et lancez]\n```"
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a602-7",
+						"type": "header",
+						"data": {
+							"text": "Comment je l'ai appris à la dure",
+							"level": 2
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a602-11",
+						"type": "header",
+						"data": {
+							"text": "Vous avez déjà une boutique Shopify?",
+							"level": 2
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a602-14",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Votre situation",
+									"Ce que je fais"
+								],
+								[
+									"Nouveau sur Shopify",
+									"Je bâtis une boutique de transfert client; vous ne payez rien avant le lancement"
+								],
+								[
+									"Déjà sur Shopify",
+									"Je travaille dans votre boutique comme collaborateur"
+								],
+								[
+									"Tests et démos",
+									"Ma propre boutique de développement"
+								]
+							]
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a602-15",
+						"type": "header",
+						"data": {
+							"text": "Vous voulez une boutique?",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"quand-deux-composants-semblables-devraient-rester-separes": {
-				"time": 1791432000000,
+			"shopify-sin-suscripcion-hasta-el-lanzamiento": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "906aa49ceeb4dfe9-0",
+						"id": "f3d4b8d3e4f5a603-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Deux cartes peuvent avoir un air de famille et répondre à des exigences différentes."
+							"text": "Pagar por algo que todavía no se ve da preocupación. Mucha gente paga por adelantado, y eso le quita un poco de esperanza: acaban de gastar plata en algo cuyo resultado todavía no pueden ver."
 						}
 					},
 					{
-						"id": "23c19af75651ada9-1",
-						"type": "paragraph",
+						"id": "f3d4b8d3e4f5a603-2",
+						"type": "header",
 						"data": {
-							"text": "Fixture copy (fr, text, e507adda).<a href=\"http://yesid.dev\">Fixture copy (fr, text, e507adda).</a>Fixture copy (fr, text, e507adda).<a href=\"http://yesid.dev\">Fixture copy (fr, text, e507adda).</a>Fixture copy (fr, text, e507adda).<a href=\"http://yesid.dev\">Fixture copy (fr, text, e507adda).</a>Fixture copy (fr, text, e507adda)."
+							"text": "Cómo funciona",
+							"level": 2
 						}
 					},
 					{
-						"id": "0ced3869e13dc74c-11",
+						"id": "f3d4b8d3e4f5a603-3",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/fr/projects/yesid-design\">Découvrir le projet</a>"
+							"text": "Fixture copy (es, text, 0239c058).<a href=\"https://shopify.dev/docs/apps/build/stores/client-transfer-stores\">Fixture copy (es, text, 0239c058).</a>Fixture copy (es, text, 0239c058)."
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a603-4",
+						"type": "nestedlist",
+						"data": {
+							"style": "ordered",
+							"items": [
+								{
+									"content": "Creo y construyo su tienda en mi cuenta de partner.",
+									"items": []
+								},
+								{
+									"content": "Usted ve la tienda real, protegida con contraseña, y la aprueba.",
+									"items": []
+								},
+								{
+									"content": "Cuando esté listo para lanzar, se la transfiero.",
+									"items": []
+								},
+								{
+									"content": "Usted acepta, escoge su plan de Shopify e ingresa los datos de su negocio. Su suscripción empieza ahí, no antes.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a603-5",
+						"type": "code",
+						"data": {
+							"code": "```mermaid\nflowchart LR\n  A[Construyo su tienda] --> B[Usted la ve y la aprueba]\n  B --> C[Se la transfiero]\n  C --> D[Escoge un plan y lanza]\n```"
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a603-7",
+						"type": "header",
+						"data": {
+							"text": "Cómo lo aprendí por las malas",
+							"level": 2
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a603-11",
+						"type": "header",
+						"data": {
+							"text": "¿Ya tiene una tienda en Shopify?",
+							"level": 2
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a603-14",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Su situación",
+									"Lo que hago"
+								],
+								[
+									"Nuevo en Shopify",
+									"Construyo una tienda de transferencia a cliente; no paga nada hasta el lanzamiento"
+								],
+								[
+									"Ya está en Shopify",
+									"Trabajo en su tienda como colaborador"
+								],
+								[
+									"Pruebas y demos",
+									"Mi propia tienda de desarrollo"
+								]
+							]
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a603-15",
+						"type": "header",
+						"data": {
+							"text": "¿Quiere una tienda?",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"when-two-similar-components-should-stay-separate": {
-				"time": 1791432000000,
+			"shopify-without-a-subscription-until-launch": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "f0e109d7f4b29e0b-0",
+						"id": "f3d4b8d3e4f5a601-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Two cards can look related and still need different contracts."
+							"text": "Paying for something you can't see yet is a worry. Many people pay up front, and that takes away a bit of hope: they just spent money on something they can't see the results of yet."
 						}
 					},
 					{
-						"id": "32d667584c4c02ff-1",
-						"type": "paragraph",
+						"id": "f3d4b8d3e4f5a601-2",
+						"type": "header",
 						"data": {
-							"text": "Fixture copy (en, text, 71c8f09d).<a href=\"http://yesid.dev\">Fixture copy (en, text, 71c8f09d).</a>Fixture copy (en, text, 71c8f09d).<a href=\"http://yesid.dev\">Fixture copy (en, text, 71c8f09d).</a>Fixture copy (en, text, 71c8f09d).<a href=\"http://yesid.dev\">Fixture copy (en, text, 71c8f09d).</a>Fixture copy (en, text, 71c8f09d)."
+							"text": "How it works",
+							"level": 2
 						}
 					},
 					{
-						"id": "b0d5561e2204c7da-11",
+						"id": "f3d4b8d3e4f5a601-3",
 						"type": "paragraph",
 						"data": {
-							"text": "<a href=\"/projects/yesid-design\">Read the project story</a>"
+							"text": "I have a Shopify Partner account. With it, Shopify lets me build your store as a <a href=\"https://shopify.dev/docs/apps/build/stores/client-transfer-stores\">client transfer store</a>:"
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a601-4",
+						"type": "nestedlist",
+						"data": {
+							"style": "ordered",
+							"items": [
+								{
+									"content": "I create and build your store in my Partner account.",
+									"items": []
+								},
+								{
+									"content": "You preview the real store, behind a password, and approve it.",
+									"items": []
+								},
+								{
+									"content": "When you're ready to launch, I transfer it to you.",
+									"items": []
+								},
+								{
+									"content": "You accept, pick your Shopify plan and enter your business details. Your subscription starts then, not before.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a601-5",
+						"type": "code",
+						"data": {
+							"code": "```mermaid\nflowchart LR\n  A[I build your store] --> B[You preview and approve]\n  B --> C[I transfer it to you]\n  C --> D[You pick a plan and launch]\n```"
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a601-7",
+						"type": "header",
+						"data": {
+							"text": "How I learned it the hard way",
+							"level": 2
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a601-11",
+						"type": "header",
+						"data": {
+							"text": "Already have a Shopify store?",
+							"level": 2
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a601-14",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Your situation",
+									"What I do"
+								],
+								[
+									"New to Shopify",
+									"Build a client transfer store; you pay nothing until launch"
+								],
+								[
+									"Already on Shopify",
+									"Work in your store as a collaborator"
+								],
+								[
+									"Testing and demos",
+									"My own development store"
+								]
+							]
+						}
+					},
+					{
+						"id": "f3d4b8d3e4f5a601-15",
+						"type": "header",
+						"data": {
+							"text": "Want a store?",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"cambiar-de-idioma-sin-empezar-de-nuevo": {
-				"time": 1791432000000,
+			"friday-and-jarvis-a-personal-assistant-and-a-chief-of-staff": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "55dfc2aaf018ed12-0",
+						"id": "b5f6daf5a6b7c801-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Imagina que ya escribiste las primeras líneas de un mensaje y decides pasar el sitio a español. Las etiquetas cambian. El mensaje desaparece."
+							"text": "I run two AI assistants. Friday handles my personal life. Jarvis is my chief of staff."
 						}
 					},
 					{
-						"id": "8d7e8a081e5a9ddc-2",
-						"type": "paragraph",
+						"id": "b5f6daf5a6b7c801-2",
+						"type": "table",
 						"data": {
-							"text": "Fixture copy (es, text, 7495647d).<a href=\"http://yesid.dev\">Fixture copy (es, text, 7495647d).</a>Fixture copy (es, text, 7495647d)."
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"",
+									"Friday",
+									"Jarvis"
+								],
+								[
+									"Role",
+									"Personal assistant",
+									"Chief of staff"
+								],
+								[
+									"Runs on",
+									"Muse (Meta)",
+									"Dot (ChatGPT)"
+								],
+								[
+									"Handles",
+									"Health, workouts, food, groceries, finances",
+									"Pull requests, issues, failures, alert emails"
+								],
+								[
+									"Boundary",
+									"Keeps its own personal Notion space",
+									"Watches only; never touches Friday's space"
+								]
+							]
 						}
 					},
 					{
-						"id": "c53f379c87a966d1-10",
-						"type": "paragraph",
+						"id": "b5f6daf5a6b7c801-3",
+						"type": "header",
 						"data": {
-							"text": "<a href=\"/es/projects/yesid-dev\">Conocer el proyecto</a>"
+							"text": "Friday: my personal life",
+							"level": 2
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c801-5",
+						"type": "header",
+						"data": {
+							"text": "Jarvis: my chief of staff",
+							"level": 2
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c801-8",
+						"type": "header",
+						"data": {
+							"text": "The rules",
+							"level": 2
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c801-9",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "Jarvis watches; it doesn't act. It doesn't merge, rerun builds, deploy or send email on its own.",
+									"items": []
+								},
+								{
+									"content": "Quiet hours on weeknights, from 11 p.m. to 7 a.m., unless it's urgent: security, cost or a service that's down.",
+									"items": []
+								},
+								{
+									"content": "Jarvis never modifies the personal Notion spaces reserved for Friday.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c801-11",
+						"type": "header",
+						"data": {
+							"text": "Keep them apart",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"changer-de-langue-sans-recommencer": {
-				"time": 1791432000000,
+			"friday-et-jarvis-une-assistante-personnelle-et-un-chef-de-cabinet": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "c98daf7387315611-0",
+						"id": "b5f6daf5a6b7c802-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Imaginez avoir commencé à écrire un message, puis décider de passer le site en français. Les libellés changent. Votre message disparaît."
+							"text": "J'utilise deux assistants d'IA. Friday s'occupe de ma vie personnelle. Jarvis est mon chef de cabinet."
 						}
 					},
 					{
-						"id": "26ae33a6769dddcb-2",
-						"type": "paragraph",
+						"id": "b5f6daf5a6b7c802-2",
+						"type": "table",
 						"data": {
-							"text": "Fixture copy (fr, text, f4db094d).<a href=\"http://yesid.dev\">Fixture copy (fr, text, f4db094d).</a>Fixture copy (fr, text, f4db094d)."
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"",
+									"Friday",
+									"Jarvis"
+								],
+								[
+									"Rôle",
+									"Assistante personnelle",
+									"Chef de cabinet"
+								],
+								[
+									"Roule sur",
+									"Muse (Meta)",
+									"Dot (ChatGPT)"
+								],
+								[
+									"S'occupe de",
+									"Santé, entraînements, alimentation, épicerie, finances",
+									"Pull requests, problèmes, échecs, courriels d'alerte"
+								],
+								[
+									"Limite",
+									"Garde son propre espace personnel dans Notion",
+									"Observe seulement; ne touche jamais à l'espace de Friday"
+								]
+							]
 						}
 					},
 					{
-						"id": "219bce8950d117bf-10",
-						"type": "paragraph",
+						"id": "b5f6daf5a6b7c802-3",
+						"type": "header",
 						"data": {
-							"text": "<a href=\"/fr/projects/yesid-dev\">Découvrir le projet</a>"
+							"text": "Friday : ma vie personnelle",
+							"level": 2
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c802-5",
+						"type": "header",
+						"data": {
+							"text": "Jarvis : mon chef de cabinet",
+							"level": 2
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c802-8",
+						"type": "header",
+						"data": {
+							"text": "Les règles",
+							"level": 2
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c802-9",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "Jarvis observe; il n'agit pas. Il ne fusionne rien, ne relance pas de builds, ne déploie pas et n'envoie pas de courriels de lui-même.",
+									"items": []
+								},
+								{
+									"content": "Heures de silence les soirs de semaine, de 23 h à 7 h, sauf si c'est urgent : sécurité, coûts ou un service en panne.",
+									"items": []
+								},
+								{
+									"content": "Jarvis ne modifie jamais les espaces personnels de Notion réservés à Friday.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c802-11",
+						"type": "header",
+						"data": {
+							"text": "Gardez-les séparés",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"changing-language-should-not-mean-starting-over": {
-				"time": 1791432000000,
+			"friday-y-jarvis-una-asistente-personal-y-un-jefe-de-gabinete": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "733f3e29cf81c241-0",
+						"id": "b5f6daf5a6b7c803-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Imagine writing the first few lines of a message, then deciding you would rather use the site in French. The labels change. Your message disappears."
+							"text": "Uso dos asistentes de IA. Friday se encarga de mi vida personal. Jarvis es mi jefe de gabinete."
 						}
 					},
 					{
-						"id": "f4815712aebcfe86-2",
-						"type": "paragraph",
+						"id": "b5f6daf5a6b7c803-2",
+						"type": "table",
 						"data": {
-							"text": "Fixture copy (en, text, 846ee2a2).<a href=\"http://yesid.dev\">Fixture copy (en, text, 846ee2a2).</a>Fixture copy (en, text, 846ee2a2)."
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"",
+									"Friday",
+									"Jarvis"
+								],
+								[
+									"Rol",
+									"Asistente personal",
+									"Jefe de gabinete"
+								],
+								[
+									"Corre en",
+									"Muse (Meta)",
+									"Dot (ChatGPT)"
+								],
+								[
+									"Se encarga de",
+									"Salud, entrenamientos, comida, mercado, finanzas",
+									"Pull requests, incidencias, fallas, correos de alerta"
+								],
+								[
+									"Límite",
+									"Tiene su propio espacio personal en Notion",
+									"Solo observa; nunca toca el espacio de Friday"
+								]
+							]
 						}
 					},
 					{
-						"id": "6fdedb7263e7976f-10",
-						"type": "paragraph",
+						"id": "b5f6daf5a6b7c803-3",
+						"type": "header",
 						"data": {
-							"text": "<a href=\"/projects/yesid-dev\">Read the project story</a>"
+							"text": "Friday: mi vida personal",
+							"level": 2
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c803-5",
+						"type": "header",
+						"data": {
+							"text": "Jarvis: mi jefe de gabinete",
+							"level": 2
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c803-8",
+						"type": "header",
+						"data": {
+							"text": "Las reglas",
+							"level": 2
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c803-9",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "Jarvis observa; no actúa. No fusiona, no vuelve a correr builds, no despliega ni manda correos por su cuenta.",
+									"items": []
+								},
+								{
+									"content": "Horas de silencio entre semana, de 11 p. m. a 7 a. m., salvo que sea urgente: seguridad, costos o un servicio caído.",
+									"items": []
+								},
+								{
+									"content": "Jarvis nunca modifica los espacios personales de Notion reservados para Friday.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "b5f6daf5a6b7c803-11",
+						"type": "header",
+						"data": {
+							"text": "Manténgalos separados",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"does-your-website-need-instant-publishing": {
-				"time": 1783742400005,
+			"one-brain-for-five-ai-tools-t3-code-and-notion": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch6-001",
+						"id": "a4e5c9e4f5a6b701-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Before choosing how a website publishes, ask one practical question: does an update need to be public in seconds, or can it take a few minutes? The answer changes the architecture."
+							"text": "I work with Codex, Claude, OpenCode and Antigravity. Each one has its own instructions, its own memory and its own way of knowing who I am."
 						}
 					},
 					{
-						"id": "ch6-003",
+						"id": "a4e5c9e4f5a6b701-1",
 						"type": "header",
 						"data": {
-							"text": "The editor and the public site",
+							"text": "The runaround",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-005",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (en, text, 41abb21e).<a href=\"https://yesid.dev\">Fixture copy (en, text, 41abb21e).</a>Fixture copy (en, text, 41abb21e).<a href=\"https://yesid.dev/projects/yesid-dev\">Fixture copy (en, text, 41abb21e).</a>Fixture copy (en, text, 41abb21e).<a href=\"https://yesid.dev\">Fixture copy (en, text, 41abb21e).</a>Fixture copy (en, text, 41abb21e).<code>Fixture copy (en, text, 41abb21e).</code>Fixture copy (en, text, 41abb21e)."
-						}
-					},
-					{
-						"id": "ch6-008",
+						"id": "a4e5c9e4f5a6b701-3",
 						"type": "header",
 						"data": {
-							"text": "What happens after Publish",
+							"text": "One home: Notion",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-010",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (en, text, 90fc9c4d).<code>Fixture copy (en, text, 90fc9c4d).</code>Fixture copy (en, text, 90fc9c4d).<code>https://cms.yesid.dev</code>Fixture copy (en, text, 90fc9c4d)."
-						}
-					},
-					{
-						"id": "ch6-011",
+						"id": "a4e5c9e4f5a6b701-7",
 						"type": "header",
 						"data": {
-							"text": "The delay is part of the design",
+							"text": "The skill I'm proudest of",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-014",
+						"id": "a4e5c9e4f5a6b701-9",
 						"type": "header",
 						"data": {
-							"text": "Who should choose something else",
+							"text": "T3 Code: a harness on top of harnesses",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-017",
-						"type": "paragraph",
+						"id": "a4e5c9e4f5a6b701-13",
+						"type": "table",
 						"data": {
-							"text": "If that trade fits your site, see how the <a href=\"https://yesid.dev/services/web-development\">Websites &amp; Online Stores service</a> approaches web projects."
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Tool",
+									"What it does for me"
+								],
+								[
+									"Notion",
+									"Memories and skills, in one place, for every tool"
+								],
+								[
+									"T3 Code",
+									"One harness over Codex, Claude, Antigravity and OpenCode; handoffs and child sessions"
+								],
+								[
+									"T3 Code MCP",
+									"Keeps Dot (ChatGPT), Duet (Claude) and Muse (Meta) aware of my coding projects"
+								],
+								[
+									"T3 environments",
+									"Windows, WSL and my phone, from one interface"
+								]
+							]
 						}
 					},
 					{
-						"id": "ch6-footer",
-						"type": "paragraph",
+						"id": "a4e5c9e4f5a6b701-15",
+						"type": "header",
 						"data": {
-							"text": "This is chapter 6 of a six-chapter epic. Chapters 1–3: who I am. Chapters 4–6: what I build. Previous: <a href=\"/blog/50-to-0-an-oracle-always-free-vm\">$50 to $0: an Oracle Always Free VM</a>."
+							"text": "What's still tedious",
+							"level": 2
+						}
+					},
+					{
+						"id": "a4e5c9e4f5a6b701-17",
+						"type": "header",
+						"data": {
+							"text": "Is it overkill?",
+							"level": 2
+						}
+					},
+					{
+						"id": "a4e5c9e4f5a6b701-19",
+						"type": "header",
+						"data": {
+							"text": "Try it",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"tu-sitio-web-necesita-publicacion-instantanea": {
-				"time": 1783742400005,
+			"un-seul-cerveau-pour-cinq-outils-dia-t3-code-et-notion": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch6-es-001",
+						"id": "a4e5c9e4f5a6b702-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (es, text, 31041fe5)."
+							"text": "Je travaille avec Codex, Claude, OpenCode et Antigravity. Chacun a ses propres instructions, sa propre mémoire et sa propre façon de savoir qui je suis."
 						}
 					},
 					{
-						"id": "ch6-es-003",
+						"id": "a4e5c9e4f5a6b702-1",
 						"type": "header",
 						"data": {
-							"text": "El editor y el sitio público",
+							"text": "Le tournage en rond",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-es-005",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (es, text, 47e2cb98).<a href=\"https://yesid.dev\">Fixture copy (es, text, 47e2cb98).</a>Fixture copy (es, text, 47e2cb98).<a href=\"https://yesid.dev/projects/yesid-dev\">Fixture copy (es, text, 47e2cb98).</a>Fixture copy (es, text, 47e2cb98).<a href=\"https://yesid.dev\">Fixture copy (es, text, 47e2cb98).</a>Fixture copy (es, text, 47e2cb98).<code>Fixture copy (es, text, 47e2cb98).</code>Fixture copy (es, text, 47e2cb98)."
-						}
-					},
-					{
-						"id": "ch6-es-008",
+						"id": "a4e5c9e4f5a6b702-3",
 						"type": "header",
 						"data": {
-							"text": "Qué pasa después de «Publicar»",
+							"text": "Un seul chez-soi : Notion",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-es-010",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (es, text, b4392d43).<code>Fixture copy (es, text, b4392d43).</code>Fixture copy (es, text, b4392d43).<code>https://cms.yesid.dev</code>Fixture copy (es, text, b4392d43)."
-						}
-					},
-					{
-						"id": "ch6-es-011",
+						"id": "a4e5c9e4f5a6b702-7",
 						"type": "header",
 						"data": {
-							"text": "La demora es parte del diseño",
+							"text": "La compétence dont je suis le plus fier",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-es-014",
+						"id": "a4e5c9e4f5a6b702-9",
 						"type": "header",
 						"data": {
-							"text": "Quién debería elegir otra opción",
+							"text": "T3 Code : un harnais par-dessus les harnais",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-es-017",
-						"type": "paragraph",
+						"id": "a4e5c9e4f5a6b702-13",
+						"type": "table",
 						"data": {
-							"text": "Si ese equilibrio funciona para tu sitio, mira cómo el <a href=\"https://yesid.dev/services/web-development\">servicio de Sitios web y tiendas en línea</a> aborda los proyectos web."
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Outil",
+									"Ce qu'il fait pour moi"
+								],
+								[
+									"Notion",
+									"Mémoires et compétences, à un seul endroit, pour chaque outil"
+								],
+								[
+									"T3 Code",
+									"Un harnais par-dessus Codex, Claude, Antigravity et OpenCode; passations et sessions enfants"
+								],
+								[
+									"MCP de T3 Code",
+									"Garde Dot (ChatGPT), Duet (Claude) et Muse (Meta) au courant de mes projets de code"
+								],
+								[
+									"Environnements T3",
+									"Windows, WSL et mon téléphone, d'une seule interface"
+								]
+							]
 						}
 					},
 					{
-						"id": "ch6-es-footer",
-						"type": "paragraph",
+						"id": "a4e5c9e4f5a6b702-15",
+						"type": "header",
 						"data": {
-							"text": "Fixture copy (es, text, af130f59).<a href=\"/es/blog/de-50-a-0-una-vm-oracle-always-free\">Fixture copy (es, text, af130f59).</a>Fixture copy (es, text, af130f59)."
+							"text": "Ce qui reste fastidieux",
+							"level": 2
+						}
+					},
+					{
+						"id": "a4e5c9e4f5a6b702-17",
+						"type": "header",
+						"data": {
+							"text": "Est-ce trop?",
+							"level": 2
+						}
+					},
+					{
+						"id": "a4e5c9e4f5a6b702-19",
+						"type": "header",
+						"data": {
+							"text": "Essayez-le",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"votre-site-web-a-t-il-besoin-dune-publication-instantanee": {
-				"time": 1783742400005,
+			"un-solo-cerebro-para-cinco-herramientas-de-ia-t3-code-y-notion": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch6-fr-001",
+						"id": "a4e5c9e4f5a6b703-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (fr, text, 9dfac60a)."
+							"text": "Trabajo con Codex, Claude, OpenCode y Antigravity. Cada una tiene sus propias instrucciones, su propia memoria y su propia forma de saber quién soy."
 						}
 					},
 					{
-						"id": "ch6-fr-003",
+						"id": "a4e5c9e4f5a6b703-1",
 						"type": "header",
 						"data": {
-							"text": "L’éditeur et le site public",
+							"text": "El ir y venir",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-fr-005",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (fr, text, 79a8a9ca).<a href=\"https://yesid.dev\">Fixture copy (fr, text, 79a8a9ca).</a>Fixture copy (fr, text, 79a8a9ca).<a href=\"https://yesid.dev/projects/yesid-dev\">Fixture copy (fr, text, 79a8a9ca).</a>Fixture copy (fr, text, 79a8a9ca).<a href=\"https://yesid.dev\">Fixture copy (fr, text, 79a8a9ca).</a>Fixture copy (fr, text, 79a8a9ca).<code>Fixture copy (fr, text, 79a8a9ca).</code>Fixture copy (fr, text, 79a8a9ca)."
-						}
-					},
-					{
-						"id": "ch6-fr-008",
+						"id": "a4e5c9e4f5a6b703-3",
 						"type": "header",
 						"data": {
-							"text": "Ce qui se passe après « Publier »",
+							"text": "Un solo hogar: Notion",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-fr-010",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (fr, text, 427dd5ec).<code>Fixture copy (fr, text, 427dd5ec).</code>Fixture copy (fr, text, 427dd5ec).<code>https://cms.yesid.dev</code>Fixture copy (fr, text, 427dd5ec)."
-						}
-					},
-					{
-						"id": "ch6-fr-011",
+						"id": "a4e5c9e4f5a6b703-7",
 						"type": "header",
 						"data": {
-							"text": "Le délai fait partie de la conception",
+							"text": "La habilidad de la que más orgulloso estoy",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-fr-014",
+						"id": "a4e5c9e4f5a6b703-9",
 						"type": "header",
 						"data": {
-							"text": "Qui devrait choisir autre chose",
+							"text": "T3 Code: un arnés encima de otros arneses",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch6-fr-017",
-						"type": "paragraph",
+						"id": "a4e5c9e4f5a6b703-13",
+						"type": "table",
 						"data": {
-							"text": "Si ce compromis convient à votre site, voyez comment le <a href=\"https://yesid.dev/services/web-development\">service Sites web et boutiques en ligne</a> aborde les projets web."
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Herramienta",
+									"Lo que hace por mí"
+								],
+								[
+									"Notion",
+									"Memorias y habilidades, en un solo lugar, para cada herramienta"
+								],
+								[
+									"T3 Code",
+									"Un arnés sobre Codex, Claude, Antigravity y OpenCode; traspasos y sesiones hijas"
+								],
+								[
+									"MCP de T3 Code",
+									"Mantiene a Dot (ChatGPT), Duet (Claude) y Muse (Meta) al tanto de mis proyectos de código"
+								],
+								[
+									"Entornos de T3",
+									"Windows, WSL y mi celular, desde una sola interfaz"
+								]
+							]
 						}
 					},
 					{
-						"id": "ch6-fr-footer",
-						"type": "paragraph",
+						"id": "a4e5c9e4f5a6b703-15",
+						"type": "header",
 						"data": {
-							"text": "Fixture copy (fr, text, e2a5c929).<a href=\"/fr/blog/de-50-a-0-une-vm-oracle-always-free\">Fixture copy (fr, text, e2a5c929).</a>Fixture copy (fr, text, e2a5c929)."
+							"text": "Lo que todavía es tedioso",
+							"level": 2
+						}
+					},
+					{
+						"id": "a4e5c9e4f5a6b703-17",
+						"type": "header",
+						"data": {
+							"text": "¿Es demasiado?",
+							"level": 2
+						}
+					},
+					{
+						"id": "a4e5c9e4f5a6b703-19",
+						"type": "header",
+						"data": {
+							"text": "Pruébelo",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"50-to-0-an-oracle-always-free-vm": {
-				"time": 1783742400004,
+			"por-que-le-apuesto-al-transporte-publico": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch5-001",
+						"id": "c6a7ebc6b7c8d903-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (en, text, f44cc512).<a href=\"https://transit.yesid.dev\">Fixture copy (en, text, f44cc512).</a>Fixture copy (en, text, f44cc512)."
+							"text": "Todo empezó con el REM."
 						}
 					},
 					{
-						"id": "ch5-002",
+						"id": "c6a7ebc6b7c8d903-1",
+						"type": "header",
+						"data": {
+							"text": "Lo mejor de los dos mundos",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-3",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (en, text, 8fbbbad2)."
+							"text": "Fixture copy (es, text, 27531b6d).<a href=\"https://cib-bic.ca/en/projects/public-transit/reseau-express-metropolitain-rem/\">Fixture copy (es, text, 27531b6d).</a>Fixture copy (es, text, 27531b6d)."
 						}
 					},
 					{
-						"id": "ch5-003",
-						"type": "header",
-						"data": {
-							"text": "The move",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-006",
-						"type": "header",
-						"data": {
-							"text": "What 200 GB forced me to decide",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-011",
-						"type": "header",
-						"data": {
-							"text": "$0 is not zero work",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-015",
-						"type": "header",
-						"data": {
-							"text": "Rented land",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-footer",
+						"id": "c6a7ebc6b7c8d903-4",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (en, text, 5ebb398e).<a href=\"/blog/ai-accelerated-human-owned-my-actual-workflow\">Fixture copy (en, text, 5ebb398e).</a>Fixture copy (en, text, 5ebb398e).<a href=\"/blog/does-your-website-need-instant-publishing\">Fixture copy (en, text, 5ebb398e).</a>Fixture copy (en, text, 5ebb398e)."
+							"text": "Fixture copy (es, text, 288fb32f).<a href=\"https://www.alstom.com/press-releases-news/2025/11/alstom-welcomes-commissioning-additional-33-kilometers-reseau-express-metropolitain-montreal-canada\">Fixture copy (es, text, 288fb32f).</a>Fixture copy (es, text, 288fb32f).<a href=\"https://amp.cbc.ca/lite/story/1.6965566\">Fixture copy (es, text, 288fb32f).</a>Fixture copy (es, text, 288fb32f).<a href=\"https://macleans.ca/society/montreals-new-rail-line-is-the-future/\">Fixture copy (es, text, 288fb32f).</a>Fixture copy (es, text, 288fb32f)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-5",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>REM:</b> unos 140 millones de dólares por kilómetro.",
+									"items": []
+								},
+								{
+									"content": "<b>Eglinton Crosstown, en Toronto:</b> unos 684 millones de dólares por kilómetro.",
+									"items": []
+								},
+								{
+									"content": "<b>Hoy:</b> el REM <a href=\"https://railwaynews.net/montreal-rem-opens-14-kilometre-western-extension.html\">funciona en 64 km</a> de los 67 planeados.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-6",
+						"type": "header",
+						"data": {
+							"text": "Por qué transporte público y no dependencia del carro",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-9",
+						"type": "paragraph",
+						"data": {
+							"text": "Fixture copy (es, text, f190b0b2).<a href=\"https://www.quebec.ca/nouvelles/actualites/details/rapport-sur-la-cible-de-reduction-de-ges-2021-inventaire-des-emissions-de-gaz-a-effet-de-serre-en-2021-le-quebec-a-enregistre-des-niveaux-inferieurs-a-ceux-de-la-periode-prepandemique-malgre-la-reprise-economique-52963\">Fixture copy (es, text, f190b0b2).</a>Fixture copy (es, text, f190b0b2)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-11",
+						"type": "header",
+						"data": {
+							"text": "Lo que he vivido",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-13",
+						"type": "paragraph",
+						"data": {
+							"text": "Fixture copy (es, text, 59464c91).<a href=\"https://amp.cbc.ca/lite/story/1.6668152\">Fixture copy (es, text, 59464c91).</a>Fixture copy (es, text, 59464c91)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-15",
+						"type": "header",
+						"data": {
+							"text": "Dónde encajo yo",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-18",
+						"type": "header",
+						"data": {
+							"text": "A la gente de los pueblos pequeños",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-20",
+						"type": "paragraph",
+						"data": {
+							"text": "<a href=\"https://www.cp24.com/news/canada/2026/01/13/construction-on-toronto-quebec-city-leg-of-high-speed-rail-line-slated-for-2032-ceo/\">Fixture copy (es, text, ee0a47ad).</a>Fixture copy (es, text, ee0a47ad)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-21",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Ruta",
+									"Hoy",
+									"Mi idea"
+								],
+								[
+									"Toronto a Quebec",
+									"<a href=\"https://www.cp24.com/news/canada/2026/01/13/construction-on-toronto-quebec-city-leg-of-high-speed-rail-line-slated-for-2032-ceo/\">Alto</a>, planeado",
+									"Un buen comienzo"
+								],
+								[
+									"Montreal a Sherbrooke",
+									"Sin tren de pasajeros",
+									"Conectarlas"
+								],
+								[
+									"Gatineau a Gaspé",
+									"<a href=\"https://en.wikipedia.org/wiki/Montreal%E2%80%93Gasp%C3%A9_train\">Sin tren de pasajeros a Gaspé desde 2013</a>",
+									"Tren de alta velocidad por toda la Belle Province: desde el Outaouais, a lo largo del San Lorenzo, hasta la punta de la península de Gaspé"
+								],
+								[
+									"Y mucho más",
+									"Casi todo en carro",
+									"Podemos hacer muchísimo más si de verdad queremos"
+								]
+							]
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d903-24",
+						"type": "header",
+						"data": {
+							"text": "Por ahora",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"de-50-a-0-una-vm-oracle-always-free": {
-				"time": 1783742400004,
+			"pourquoi-je-mise-sur-le-transport-en-commun": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch5-es-001",
+						"id": "c6a7ebc6b7c8d902-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (es, text, 2c249c3e).<a href=\"https://transit.yesid.dev\">Fixture copy (es, text, 2c249c3e).</a>Fixture copy (es, text, 2c249c3e)."
+							"text": "Tout a commencé avec le REM."
 						}
 					},
 					{
-						"id": "ch5-es-002",
+						"id": "c6a7ebc6b7c8d902-1",
+						"type": "header",
+						"data": {
+							"text": "Le meilleur des deux mondes",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-3",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (es, text, f63d43eb)."
+							"text": "Fixture copy (fr, text, bf1e05dc).<a href=\"https://cib-bic.ca/en/projects/public-transit/reseau-express-metropolitain-rem/\">Fixture copy (fr, text, bf1e05dc).</a>Fixture copy (fr, text, bf1e05dc)."
 						}
 					},
 					{
-						"id": "ch5-es-003",
-						"type": "header",
-						"data": {
-							"text": "La migración",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-es-006",
-						"type": "header",
-						"data": {
-							"text": "Las decisiones que me impuso el límite de 200 GB",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-es-011",
-						"type": "header",
-						"data": {
-							"text": "0 $ no significa cero trabajo",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-es-015",
-						"type": "header",
-						"data": {
-							"text": "Terreno alquilado",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-es-footer",
+						"id": "c6a7ebc6b7c8d902-4",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (es, text, 6c859a4e).<a href=\"/es/blog/acelerado-por-ia-en-manos-humanas-mi-flujo-de-trabajo-real\">Fixture copy (es, text, 6c859a4e).</a>Fixture copy (es, text, 6c859a4e).<a href=\"/es/blog/tu-sitio-web-necesita-publicacion-instantanea\">Fixture copy (es, text, 6c859a4e).</a>Fixture copy (es, text, 6c859a4e)."
+							"text": "Fixture copy (fr, text, b943c96f).<a href=\"https://www.alstom.com/press-releases-news/2025/11/alstom-welcomes-commissioning-additional-33-kilometers-reseau-express-metropolitain-montreal-canada\">Fixture copy (fr, text, b943c96f).</a>Fixture copy (fr, text, b943c96f).<a href=\"https://amp.cbc.ca/lite/story/1.6965566\">Fixture copy (fr, text, b943c96f).</a>Fixture copy (fr, text, b943c96f).<a href=\"https://macleans.ca/society/montreals-new-rail-line-is-the-future/\">Fixture copy (fr, text, b943c96f).</a>Fixture copy (fr, text, b943c96f)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-5",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>REM :</b> environ 140 millions $ par kilomètre.",
+									"items": []
+								},
+								{
+									"content": "<b>Eglinton Crosstown, à Toronto :</b> environ 684 millions $ par kilomètre.",
+									"items": []
+								},
+								{
+									"content": "<b>Aujourd'hui :</b> le REM <a href=\"https://railwaynews.net/montreal-rem-opens-14-kilometre-western-extension.html\">roule sur 64 km</a> des 67 prévus.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-6",
+						"type": "header",
+						"data": {
+							"text": "Pourquoi le transport en commun plutôt que la dépendance à l'auto",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-9",
+						"type": "paragraph",
+						"data": {
+							"text": "Fixture copy (fr, text, c02a5608).<a href=\"https://www.quebec.ca/nouvelles/actualites/details/rapport-sur-la-cible-de-reduction-de-ges-2021-inventaire-des-emissions-de-gaz-a-effet-de-serre-en-2021-le-quebec-a-enregistre-des-niveaux-inferieurs-a-ceux-de-la-periode-prepandemique-malgre-la-reprise-economique-52963\">Fixture copy (fr, text, c02a5608).</a>Fixture copy (fr, text, c02a5608)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-11",
+						"type": "header",
+						"data": {
+							"text": "Ce que j'ai vécu",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-13",
+						"type": "paragraph",
+						"data": {
+							"text": "Fixture copy (fr, text, bdc2f3cc).<a href=\"https://amp.cbc.ca/lite/story/1.6668152\">Fixture copy (fr, text, bdc2f3cc).</a>Fixture copy (fr, text, bdc2f3cc)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-15",
+						"type": "header",
+						"data": {
+							"text": "Ma place là-dedans",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-18",
+						"type": "header",
+						"data": {
+							"text": "Aux gens des petites villes",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-20",
+						"type": "paragraph",
+						"data": {
+							"text": "<a href=\"https://www.cp24.com/news/canada/2026/01/13/construction-on-toronto-quebec-city-leg-of-high-speed-rail-line-slated-for-2032-ceo/\">Fixture copy (fr, text, 189b6096).</a>Fixture copy (fr, text, 189b6096)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-21",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Trajet",
+									"Aujourd'hui",
+									"Mon idée"
+								],
+								[
+									"Toronto à Québec",
+									"<a href=\"https://www.cp24.com/news/canada/2026/01/13/construction-on-toronto-quebec-city-leg-of-high-speed-rail-line-slated-for-2032-ceo/\">Alto</a>, prévu",
+									"Un bon début"
+								],
+								[
+									"Montréal à Sherbrooke",
+									"Pas de train de passagers",
+									"Les relier"
+								],
+								[
+									"Gatineau à Gaspé",
+									"<a href=\"https://en.wikipedia.org/wiki/Montreal%E2%80%93Gasp%C3%A9_train\">Plus de train de passagers vers Gaspé depuis 2013</a>",
+									"Un train à grande vitesse à travers la Belle Province : de l'Outaouais, le long du Saint-Laurent, jusqu'au bout de la Gaspésie"
+								],
+								[
+									"Et plus loin encore",
+									"Surtout l'auto",
+									"On peut faire tellement plus si on le veut vraiment"
+								]
+							]
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d902-24",
+						"type": "header",
+						"data": {
+							"text": "Pour l'instant",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"de-50-a-0-une-vm-oracle-always-free": {
-				"time": 1783742400004,
+			"why-im-betting-on-public-transit": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch5-fr-001",
+						"id": "c6a7ebc6b7c8d901-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (fr, text, 243aef03).<a href=\"https://transit.yesid.dev\">Fixture copy (fr, text, 243aef03).</a>Fixture copy (fr, text, 243aef03)."
+							"text": "It started with the REM."
 						}
 					},
 					{
-						"id": "ch5-fr-002",
+						"id": "c6a7ebc6b7c8d901-1",
+						"type": "header",
+						"data": {
+							"text": "The best of both worlds",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-3",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (fr, text, e4d89a5a)."
+							"text": "Fixture copy (en, text, 0bfe186e).<a href=\"https://cib-bic.ca/en/projects/public-transit/reseau-express-metropolitain-rem/\">Fixture copy (en, text, 0bfe186e).</a>Fixture copy (en, text, 0bfe186e)."
 						}
 					},
 					{
-						"id": "ch5-fr-003",
-						"type": "header",
-						"data": {
-							"text": "La migration",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-fr-006",
-						"type": "header",
-						"data": {
-							"text": "Les décisions imposées par la limite de 200 Go",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-fr-011",
-						"type": "header",
-						"data": {
-							"text": "0 $ ne veut pas dire zéro travail",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-fr-015",
-						"type": "header",
-						"data": {
-							"text": "Sur un terrain loué",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch5-fr-footer",
+						"id": "c6a7ebc6b7c8d901-4",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (fr, text, da83ae42).<a href=\"/fr/blog/accelere-par-lia-pilote-par-lhumain-mon-vrai-flux-de-travail\">Fixture copy (fr, text, da83ae42).</a>Fixture copy (fr, text, da83ae42).<a href=\"/fr/blog/votre-site-web-a-t-il-besoin-dune-publication-instantanee\">Fixture copy (fr, text, da83ae42).</a>Fixture copy (fr, text, da83ae42)."
+							"text": "Fixture copy (en, text, 3e6b18bd).<a href=\"https://www.alstom.com/press-releases-news/2025/11/alstom-welcomes-commissioning-additional-33-kilometers-reseau-express-metropolitain-montreal-canada\">Fixture copy (en, text, 3e6b18bd).</a>Fixture copy (en, text, 3e6b18bd).<a href=\"https://amp.cbc.ca/lite/story/1.6965566\">Fixture copy (en, text, 3e6b18bd).</a>Fixture copy (en, text, 3e6b18bd).<a href=\"https://macleans.ca/society/montreals-new-rail-line-is-the-future/\">Fixture copy (en, text, 3e6b18bd).</a>Fixture copy (en, text, 3e6b18bd)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-5",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>REM:</b> about $140 million per kilometre.",
+									"items": []
+								},
+								{
+									"content": "<b>Toronto's Eglinton Crosstown:</b> about $684 million per kilometre.",
+									"items": []
+								},
+								{
+									"content": "<b>Today:</b> the REM <a href=\"https://railwaynews.net/montreal-rem-opens-14-kilometre-western-extension.html\">runs 64 km</a> of the 67 planned.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-6",
+						"type": "header",
+						"data": {
+							"text": "Why transit, not car dependence",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-9",
+						"type": "paragraph",
+						"data": {
+							"text": "Fixture copy (en, text, efcf3c84).<a href=\"https://www.quebec.ca/nouvelles/actualites/details/rapport-sur-la-cible-de-reduction-de-ges-2021-inventaire-des-emissions-de-gaz-a-effet-de-serre-en-2021-le-quebec-a-enregistre-des-niveaux-inferieurs-a-ceux-de-la-periode-prepandemique-malgre-la-reprise-economique-52963\">Fixture copy (en, text, efcf3c84).</a>Fixture copy (en, text, efcf3c84)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-11",
+						"type": "header",
+						"data": {
+							"text": "What I've lived",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-13",
+						"type": "paragraph",
+						"data": {
+							"text": "Fixture copy (en, text, 0bdccbb7).<a href=\"https://amp.cbc.ca/lite/story/1.6668152\">Fixture copy (en, text, 0bdccbb7).</a>Fixture copy (en, text, 0bdccbb7)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-15",
+						"type": "header",
+						"data": {
+							"text": "Where I fit",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-18",
+						"type": "header",
+						"data": {
+							"text": "To people in small towns",
+							"level": 2
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-20",
+						"type": "paragraph",
+						"data": {
+							"text": "<a href=\"https://www.cp24.com/news/canada/2026/01/13/construction-on-toronto-quebec-city-leg-of-high-speed-rail-line-slated-for-2032-ceo/\">Fixture copy (en, text, bd204145).</a>Fixture copy (en, text, bd204145)."
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-21",
+						"type": "table",
+						"data": {
+							"withHeadings": true,
+							"stretched": false,
+							"content": [
+								[
+									"Route",
+									"Today",
+									"My idea"
+								],
+								[
+									"Toronto to Québec City",
+									"<a href=\"https://www.cp24.com/news/canada/2026/01/13/construction-on-toronto-quebec-city-leg-of-high-speed-rail-line-slated-for-2032-ceo/\">Alto</a>, planned",
+									"A good start"
+								],
+								[
+									"Montréal to Sherbrooke",
+									"No passenger rail",
+									"Connect them"
+								],
+								[
+									"Gatineau to Gaspé",
+									"<a href=\"https://en.wikipedia.org/wiki/Montreal%E2%80%93Gasp%C3%A9_train\">No passenger train to Gaspé since 2013</a>",
+									"High-speed rail across la Belle Province: from the Outaouais, along the St. Lawrence, to the tip of the Gaspé Peninsula"
+								],
+								[
+									"And beyond",
+									"Mostly cars",
+									"We can do so much more if we really want to"
+								]
+							]
+						}
+					},
+					{
+						"id": "c6a7ebc6b7c8d901-24",
+						"type": "header",
+						"data": {
+							"text": "For now",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"accelere-par-lia-pilote-par-lhumain-mon-vrai-flux-de-travail": {
-				"time": 1783742400003,
+			"dejemos-la-tierra-en-paz-por-que-la-mineria-espacial-me-da-esperanza": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch4-fr-001",
+						"id": "d7b8fcd7c8d9ea03-0",
+						"type": "paragraph",
+						"data": {
+							"text": "No sabría decir exactamente dónde empezó. Soy muy fan de los superhéroes, el anime y Star Wars, y muchas de esas historias tienen temas intergalácticos."
+						}
+					},
+					{
+						"id": "d7b8fcd7c8d9ea03-1",
 						"type": "header",
 						"data": {
-							"text": "Le piège",
+							"text": "La Tierra como reserva verde",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-fr-002",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (fr, text, 2b75ebce).<a href=\"https://yesid.dev\">Fixture copy (fr, text, 2b75ebce).</a>Fixture copy (fr, text, 2b75ebce)."
-						}
-					},
-					{
-						"id": "ch4-fr-003",
+						"id": "d7b8fcd7c8d9ea03-4",
 						"type": "header",
 						"data": {
-							"text": "La répartition du travail",
+							"text": "Una solución en bandeja de plata",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-fr-004",
+						"id": "d7b8fcd7c8d9ea03-8",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (fr, text, 22899bb8).<a href=\"https://yesid.dev\">Fixture copy (fr, text, 22899bb8).</a>Fixture copy (fr, text, 22899bb8).<a href=\"https://transit.yesid.dev\">Fixture copy (fr, text, 22899bb8).</a>Fixture copy (fr, text, 22899bb8)."
+							"text": "Fixture copy (es, text, 1ba2a726).<a href=\"https://www.esa.int/Space_Safety/Space_Debris/ESA_Space_Environment_Report_2025\">Fixture copy (es, text, 1ba2a726).</a>Fixture copy (es, text, 1ba2a726)."
 						}
 					},
 					{
-						"id": "ch4-fr-005",
-						"type": "paragraph",
-						"data": {
-							"text": "Le travail s’est rapproché de la direction de projet. Au lieu d’écrire le code moi-même pour chaque implémentation, je dirigeais les projets, gardais l’architecture en tête et vérifiais les résultats."
-						}
-					},
-					{
-						"id": "ch4-fr-006",
+						"id": "d7b8fcd7c8d9ea03-10",
 						"type": "header",
 						"data": {
-							"text": "Les contrôles en place aujourd’hui",
+							"text": "Cómo sería la vida diaria",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-fr-007",
+						"id": "d7b8fcd7c8d9ea03-13",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (fr, text, d77f8f29).<a href=\"https://yesid.dev\">Fixture copy (fr, text, d77f8f29).</a>Fixture copy (fr, text, d77f8f29).<code>Fixture copy (fr, text, d77f8f29).</code>Fixture copy (fr, text, d77f8f29)."
+							"text": "Fixture copy (es, text, 29593e66).<a href=\"https://en.wikipedia.org/wiki/O%27Neill_cylinder\">Fixture copy (es, text, 29593e66).</a>Fixture copy (es, text, 29593e66).<a href=\"https://en.wikipedia.org/wiki/Biosphere_2\">Fixture copy (es, text, 29593e66).</a>Fixture copy (es, text, 29593e66)."
 						}
 					},
 					{
-						"id": "ch4-fr-009",
+						"id": "d7b8fcd7c8d9ea03-15",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>8.300 millones</b> de personas en un solo planeta finito.",
+									"items": []
+								},
+								{
+									"content": "<b>121,6 gramos:</b> lo que <a href=\"https://science.nasa.gov/blogs/osiris-rex/2024/02/15/nasa-announces-osiris-rex-bulk-sample-mass/\">trajo</a> la misión más reciente de la NASA a un asteroide.",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (es, content, 1d0efcda).</b>Fixture copy (es, content, 1d0efcda).<a href=\"https://usafacts.org/explainers/what-does-the-us-government-do/agency/national-aeronautics-and-space-administration/\">Fixture copy (es, content, 1d0efcda).</a>Fixture copy (es, content, 1d0efcda).",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "d7b8fcd7c8d9ea03-17",
 						"type": "header",
 						"data": {
-							"text": "Comment cet article a été créé",
+							"text": "\"¿Por qué no arreglar primero la Tierra?\"",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-fr-011",
+						"id": "d7b8fcd7c8d9ea03-21",
 						"type": "header",
 						"data": {
-							"text": "Le test du client",
+							"text": "Mi parte",
 							"level": 2
-						}
-					},
-					{
-						"id": "ch4-fr-013",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (fr, text, 966014ed).<a href=\"https://yesid.dev\">Fixture copy (fr, text, 966014ed).</a>Fixture copy (fr, text, 966014ed).<a href=\"https://transit.yesid.dev\">Fixture copy (fr, text, 966014ed).</a>Fixture copy (fr, text, 966014ed)."
-						}
-					},
-					{
-						"id": "ch4-fr-footer",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (fr, text, 66e43213).<a href=\"/fr/blog/penser-en-matrices\">Fixture copy (fr, text, 66e43213).</a>Fixture copy (fr, text, 66e43213).<a href=\"/fr/blog/de-50-a-0-une-vm-oracle-always-free\">Fixture copy (fr, text, 66e43213).</a>Fixture copy (fr, text, 66e43213)."
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"acelerado-por-ia-en-manos-humanas-mi-flujo-de-trabajo-real": {
-				"time": 1783742400003,
+			"laissons-la-terre-tranquille-pourquoi-lexploitation-miniere-spatiale-me-donne-espoir": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch4-es-001",
+						"id": "d7b8fcd7c8d9ea02-0",
+						"type": "paragraph",
+						"data": {
+							"text": "Je ne saurais pas dire exactement où ça a commencé. Je suis un grand fan de superhéros, d'anime et de Star Wars, et beaucoup de ces histoires ont des thèmes intergalactiques."
+						}
+					},
+					{
+						"id": "d7b8fcd7c8d9ea02-1",
 						"type": "header",
 						"data": {
-							"text": "La trampa",
+							"text": "La Terre comme réserve verte",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-es-002",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (es, text, 10146a0c).<a href=\"https://yesid.dev\">Fixture copy (es, text, 10146a0c).</a>Fixture copy (es, text, 10146a0c)."
-						}
-					},
-					{
-						"id": "ch4-es-003",
+						"id": "d7b8fcd7c8d9ea02-4",
 						"type": "header",
 						"data": {
-							"text": "La división del trabajo",
+							"text": "Une solution sur un plateau d'argent",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-es-004",
+						"id": "d7b8fcd7c8d9ea02-8",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (es, text, d0dbe1da).<a href=\"https://yesid.dev\">Fixture copy (es, text, d0dbe1da).</a>Fixture copy (es, text, d0dbe1da).<a href=\"https://transit.yesid.dev\">Fixture copy (es, text, d0dbe1da).</a>Fixture copy (es, text, d0dbe1da)."
+							"text": "Fixture copy (fr, text, 9823accb).<a href=\"https://www.esa.int/Space_Safety/Space_Debris/ESA_Space_Environment_Report_2025\">Fixture copy (fr, text, 9823accb).</a>Fixture copy (fr, text, 9823accb)."
 						}
 					},
 					{
-						"id": "ch4-es-005",
-						"type": "paragraph",
-						"data": {
-							"text": "El trabajo pasó a ser más de gestión. En lugar de escribir yo mismo el código de cada implementación, dirigía los proyectos, mantenía la arquitectura a la vista y revisaba lo que recibía."
-						}
-					},
-					{
-						"id": "ch4-es-006",
+						"id": "d7b8fcd7c8d9ea02-10",
 						"type": "header",
 						"data": {
-							"text": "Los controles actuales",
+							"text": "À quoi ressemblerait la vie de tous les jours",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-es-007",
+						"id": "d7b8fcd7c8d9ea02-13",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (es, text, a6b5333e).<a href=\"https://yesid.dev\">Fixture copy (es, text, a6b5333e).</a>Fixture copy (es, text, a6b5333e).<code>Fixture copy (es, text, a6b5333e).</code>Fixture copy (es, text, a6b5333e)."
+							"text": "Fixture copy (fr, text, 8420a6c3).<a href=\"https://en.wikipedia.org/wiki/O%27Neill_cylinder\">Fixture copy (fr, text, 8420a6c3).</a>Fixture copy (fr, text, 8420a6c3).<a href=\"https://en.wikipedia.org/wiki/Biosphere_2\">Fixture copy (fr, text, 8420a6c3).</a>Fixture copy (fr, text, 8420a6c3)."
 						}
 					},
 					{
-						"id": "ch4-es-009",
+						"id": "d7b8fcd7c8d9ea02-15",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>8,3 milliards</b> de personnes sur une seule planète limitée.",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (fr, content, e605e942).</b>Fixture copy (fr, content, e605e942).<a href=\"https://science.nasa.gov/blogs/osiris-rex/2024/02/15/nasa-announces-osiris-rex-bulk-sample-mass/\">Fixture copy (fr, content, e605e942).</a>Fixture copy (fr, content, e605e942).",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (fr, content, 661b8c27).</b>Fixture copy (fr, content, 661b8c27).<a href=\"https://usafacts.org/explainers/what-does-the-us-government-do/agency/national-aeronautics-and-space-administration/\">Fixture copy (fr, content, 661b8c27).</a>Fixture copy (fr, content, 661b8c27).",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "d7b8fcd7c8d9ea02-17",
 						"type": "header",
 						"data": {
-							"text": "Cómo se hizo este artículo",
+							"text": "« Pourquoi ne pas régler les problèmes de la Terre d'abord? »",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-es-011",
+						"id": "d7b8fcd7c8d9ea02-21",
 						"type": "header",
 						"data": {
-							"text": "La prueba del cliente",
+							"text": "Ma part",
 							"level": 2
-						}
-					},
-					{
-						"id": "ch4-es-013",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (es, text, 0bf33900).<a href=\"https://yesid.dev\">Fixture copy (es, text, 0bf33900).</a>Fixture copy (es, text, 0bf33900).<a href=\"https://transit.yesid.dev\">Fixture copy (es, text, 0bf33900).</a>Fixture copy (es, text, 0bf33900)."
-						}
-					},
-					{
-						"id": "ch4-es-footer",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (es, text, 92ad074a).<a href=\"/es/blog/pensar-en-matrices\">Fixture copy (es, text, 92ad074a).</a>Fixture copy (es, text, 92ad074a).<a href=\"/es/blog/de-50-a-0-una-vm-oracle-always-free\">Fixture copy (es, text, 92ad074a).</a>Fixture copy (es, text, 92ad074a)."
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"ai-accelerated-human-owned-my-actual-workflow": {
-				"time": 1783742400003,
+			"leave-earth-alone-why-im-hopeful-about-space-mining": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch4-001",
+						"id": "d7b8fcd7c8d9ea01-0",
+						"type": "paragraph",
+						"data": {
+							"text": "I can't really pinpoint where it started. I'm a big superhero, anime and Star Wars fan, and a lot of those stories have intergalactic themes."
+						}
+					},
+					{
+						"id": "d7b8fcd7c8d9ea01-1",
 						"type": "header",
 						"data": {
-							"text": "The catch",
+							"text": "Earth as a green reserve",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-002",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (en, text, a5b187cc).<a href=\"https://yesid.dev\">Fixture copy (en, text, a5b187cc).</a>Fixture copy (en, text, a5b187cc)."
-						}
-					},
-					{
-						"id": "ch4-003",
+						"id": "d7b8fcd7c8d9ea01-4",
 						"type": "header",
 						"data": {
-							"text": "The division of labor",
+							"text": "A solution on a silver platter",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-004",
+						"id": "d7b8fcd7c8d9ea01-8",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (en, text, 9436d93a).<a href=\"https://yesid.dev\">Fixture copy (en, text, 9436d93a).</a>Fixture copy (en, text, 9436d93a).<a href=\"https://transit.yesid.dev\">Fixture copy (en, text, 9436d93a).</a>Fixture copy (en, text, 9436d93a)."
+							"text": "Fixture copy (en, text, 52f95c99).<a href=\"https://www.esa.int/Space_Safety/Space_Debris/ESA_Space_Environment_Report_2025\">Fixture copy (en, text, 52f95c99).</a>Fixture copy (en, text, 52f95c99)."
 						}
 					},
 					{
-						"id": "ch4-005",
-						"type": "paragraph",
-						"data": {
-							"text": "The work became more managerial. Instead of typing each implementation, I was directing the projects, keeping the architecture in view, and checking what came back."
-						}
-					},
-					{
-						"id": "ch4-006",
+						"id": "d7b8fcd7c8d9ea01-10",
 						"type": "header",
 						"data": {
-							"text": "The controls",
+							"text": "What daily life looks like",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-007",
+						"id": "d7b8fcd7c8d9ea01-13",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (en, text, fc5f21e8).<a href=\"https://yesid.dev\">Fixture copy (en, text, fc5f21e8).</a>Fixture copy (en, text, fc5f21e8).<code>Fixture copy (en, text, fc5f21e8).</code>Fixture copy (en, text, fc5f21e8)."
+							"text": "Fixture copy (en, text, 8d3b3ce6).<a href=\"https://en.wikipedia.org/wiki/O%27Neill_cylinder\">Fixture copy (en, text, 8d3b3ce6).</a>Fixture copy (en, text, 8d3b3ce6).<a href=\"https://en.wikipedia.org/wiki/Biosphere_2\">Fixture copy (en, text, 8d3b3ce6).</a>Fixture copy (en, text, 8d3b3ce6)."
 						}
 					},
 					{
-						"id": "ch4-009",
+						"id": "d7b8fcd7c8d9ea01-15",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>8.3 billion</b> people on one finite planet.",
+									"items": []
+								},
+								{
+									"content": "<b>121.6 grams:</b> what NASA's latest asteroid mission <a href=\"https://science.nasa.gov/blogs/osiris-rex/2024/02/15/nasa-announces-osiris-rex-bulk-sample-mass/\">brought back</a>.",
+									"items": []
+								},
+								{
+									"content": "<b>Less than half a percent:</b> NASA's <a href=\"https://usafacts.org/explainers/what-does-the-us-government-do/agency/national-aeronautics-and-space-administration/\">share of US federal spending</a>.",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "d7b8fcd7c8d9ea01-17",
 						"type": "header",
 						"data": {
-							"text": "How this article was made",
+							"text": "\"Why not fix Earth first?\"",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch4-011",
+						"id": "d7b8fcd7c8d9ea01-21",
 						"type": "header",
 						"data": {
-							"text": "The client test",
+							"text": "My part",
 							"level": 2
-						}
-					},
-					{
-						"id": "ch4-013",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (en, text, f860d965).<a href=\"https://yesid.dev\">Fixture copy (en, text, f860d965).</a>Fixture copy (en, text, f860d965).<a href=\"https://transit.yesid.dev\">Fixture copy (en, text, f860d965).</a>Fixture copy (en, text, f860d965)."
-						}
-					},
-					{
-						"id": "ch4-footer",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (en, text, 63eae18b).<a href=\"/blog/thinking-in-matrices\">Fixture copy (en, text, 63eae18b).</a>Fixture copy (en, text, 63eae18b).<a href=\"/blog/50-to-0-an-oracle-always-free-vm\">Fixture copy (en, text, 63eae18b).</a>Fixture copy (en, text, 63eae18b)."
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"pensar-en-matrices": {
-				"time": 1783742400002,
+			"chacun-a-droit-a-un-peu-de-puissance-de-calcul": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch3-es-001",
+						"id": "c0a1e5a0b1c2d302-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (es, text, d92b1096).<a href=\"https://transit.yesid.dev\">Fixture copy (es, text, d92b1096).</a>Fixture copy (es, text, d92b1096)."
+							"text": "J'avais 12 ans la première fois que j'ai réparé un ordinateur pour ma famille."
 						}
 					},
 					{
-						"id": "ch3-es-002",
+						"id": "c0a1e5a0b1c2d302-1",
+						"type": "header",
+						"data": {
+							"text": "Le petit gars et son PC trop lent",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d302-6",
+						"type": "header",
+						"data": {
+							"text": "Même résultat, autre abstraction",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d302-9",
+						"type": "header",
+						"data": {
+							"text": "Ce que l'IA a changé",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d302-12",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (es, text, eae07369)."
+							"text": "Fixture copy (fr, text, 64e47a91).<a href=\"https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm\">Fixture copy (fr, text, 64e47a91).</a>Fixture copy (fr, text, 64e47a91)."
 						}
 					},
 					{
-						"id": "ch3-es-004",
+						"id": "c0a1e5a0b1c2d302-13",
 						"type": "header",
 						"data": {
-							"text": "Filas y columnas, literalmente",
+							"text": "Pourquoi les propriétaires ont encore besoin de quelqu'un",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch3-es-008",
+						"id": "c0a1e5a0b1c2d302-16",
 						"type": "header",
 						"data": {
-							"text": "La contabilidad y SQL riman",
+							"text": "Mon inquiétude",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch3-es-010",
+						"id": "c0a1e5a0b1c2d302-19",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>5 × par année :</b> la vitesse à laquelle <a href=\"https://epoch.ai/data-trends\">croît</a> la puissance de calcul derrière les meilleurs modèles d'IA.",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (fr, content, 7505976e).</b>Fixture copy (fr, content, 7505976e).<a href=\"https://www150.statcan.gc.ca/n1/pub/11-621-m/11-621-m2025008-fra.htm\">Fixture copy (fr, content, 7505976e).</a>Fixture copy (fr, content, 7505976e).<a href=\"https://publications.gc.ca/collections/collection_2026/statcan/11-621-m/11-621-m2026010-eng.pdf\">Fixture copy (fr, content, 7505976e).</a>Fixture copy (fr, content, 7505976e).",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (fr, content, a7f508b7).</b>Fixture copy (fr, content, a7f508b7).<a href=\"https://ised-isde.canada.ca/site/sme-research-statistics/en/survey-data-and-analysis/survey-financing-and-growth-small-and-medium-enterprises/summary-survey-financing-and-growth-small-and-medium-enterprises-2023\">Fixture copy (fr, content, a7f508b7).</a>Fixture copy (fr, content, a7f508b7).",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d302-20",
 						"type": "header",
 						"data": {
-							"text": "Tienes dos manos",
+							"text": "Mon espoir",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch3-es-013",
-						"type": "header",
-						"data": {
-							"text": "Donde termina la medición",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch3-es-footer",
+						"id": "c0a1e5a0b1c2d302-22",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (es, text, 3f0850f9).<a href=\"/es/blog/como-aprendo-orbitar-un-sistema-hasta-que-encaja\">Fixture copy (es, text, 3f0850f9).</a>Fixture copy (es, text, 3f0850f9).<a href=\"/es/blog/acelerado-por-ia-en-manos-humanas-mi-flujo-de-trabajo-real\">Fixture copy (es, text, 3f0850f9).</a>Fixture copy (es, text, 3f0850f9)."
+							"text": "Fixture copy (fr, text, e2b21457).<a href=\"https://epoch.ai/data-insights/llm-inference-price-trends\">Fixture copy (fr, text, e2b21457).</a>Fixture copy (fr, text, e2b21457)."
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d302-25",
+						"type": "header",
+						"data": {
+							"text": "Pourquoi le Canada",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d302-27",
+						"type": "header",
+						"data": {
+							"text": "Je commence par mon voisin",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"penser-en-matrices": {
-				"time": 1783742400002,
+			"everybody-is-entitled-to-a-bit-of-compute": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch3-fr-001",
+						"id": "c0a1e5a0b1c2d301-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (fr, text, 4aacf2c6).<a href=\"https://transit.yesid.dev\">Fixture copy (fr, text, 4aacf2c6).</a>Fixture copy (fr, text, 4aacf2c6)."
+							"text": "I was 12 the first time I fixed a computer for my family."
 						}
 					},
 					{
-						"id": "ch3-fr-002",
+						"id": "c0a1e5a0b1c2d301-1",
+						"type": "header",
+						"data": {
+							"text": "The kid with the slow PC",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d301-6",
+						"type": "header",
+						"data": {
+							"text": "Same outcome, different abstraction",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d301-9",
+						"type": "header",
+						"data": {
+							"text": "What AI changed",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d301-12",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (fr, text, 611ca1bd)."
+							"text": "Fixture copy (en, text, 746a577f).<a href=\"https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm\">Fixture copy (en, text, 746a577f).</a>Fixture copy (en, text, 746a577f)."
 						}
 					},
 					{
-						"id": "ch3-fr-004",
+						"id": "c0a1e5a0b1c2d301-13",
 						"type": "header",
 						"data": {
-							"text": "Des lignes et des colonnes, littéralement",
+							"text": "Why owners still need someone",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch3-fr-008",
+						"id": "c0a1e5a0b1c2d301-16",
 						"type": "header",
 						"data": {
-							"text": "La comptabilité et SQL se font écho",
+							"text": "My worry",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch3-fr-010",
+						"id": "c0a1e5a0b1c2d301-19",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>5× a year:</b> how fast the computing power behind the top AI models <a href=\"https://epoch.ai/data-trends\">is growing</a>.",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (en, content, 1861e06a).</b>Fixture copy (en, content, 1861e06a).<a href=\"https://www150.statcan.gc.ca/n1/pub/11-621-m/11-621-m2025008-eng.htm\">Fixture copy (en, content, 1861e06a).</a>Fixture copy (en, content, 1861e06a).<a href=\"https://publications.gc.ca/collections/collection_2026/statcan/11-621-m/11-621-m2026010-eng.pdf\">Fixture copy (en, content, 1861e06a).</a>Fixture copy (en, content, 1861e06a).",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (en, content, ce746135).</b>Fixture copy (en, content, ce746135).<a href=\"https://ised-isde.canada.ca/site/sme-research-statistics/en/survey-data-and-analysis/survey-financing-and-growth-small-and-medium-enterprises/summary-survey-financing-and-growth-small-and-medium-enterprises-2023\">Fixture copy (en, content, ce746135).</a>Fixture copy (en, content, ce746135).",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d301-20",
 						"type": "header",
 						"data": {
-							"text": "Tu as deux mains",
+							"text": "My hope",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch3-fr-013",
-						"type": "header",
-						"data": {
-							"text": "Là où la mesure s’arrête",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch3-fr-footer",
+						"id": "c0a1e5a0b1c2d301-22",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (fr, text, 19f9f205).<a href=\"/fr/blog/comment-japprends-graviter-autour-dun-systeme-jusquau-declic\">Fixture copy (fr, text, 19f9f205).</a>Fixture copy (fr, text, 19f9f205).<a href=\"/fr/blog/accelere-par-lia-pilote-par-lhumain-mon-vrai-flux-de-travail\">Fixture copy (fr, text, 19f9f205).</a>Fixture copy (fr, text, 19f9f205)."
+							"text": "Fixture copy (en, text, 236495ac).<a href=\"https://epoch.ai/data-insights/llm-inference-price-trends\">Fixture copy (en, text, 236495ac).</a>Fixture copy (en, text, 236495ac)."
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d301-25",
+						"type": "header",
+						"data": {
+							"text": "Why Canada",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d301-27",
+						"type": "header",
+						"data": {
+							"text": "Starting with my neighbour",
+							"level": 2
 						}
 					}
 				],
 				"version": "2.31.2"
 			},
-			"thinking-in-matrices": {
-				"time": 1783742400002,
+			"todo-el-mundo-tiene-derecho-a-un-poco-de-computo": {
+				"time": 1794096000000,
 				"blocks": [
 					{
-						"id": "ch3-001",
+						"id": "c0a1e5a0b1c2d303-0",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (en, text, 35bfe0ab).<a href=\"https://transit.yesid.dev\">Fixture copy (en, text, 35bfe0ab).</a>Fixture copy (en, text, 35bfe0ab)."
+							"text": "Tenía 12 años la primera vez que le arreglé un computador a mi familia."
 						}
 					},
 					{
-						"id": "ch3-002",
+						"id": "c0a1e5a0b1c2d303-1",
+						"type": "header",
+						"data": {
+							"text": "El niño del PC lento",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d303-6",
+						"type": "header",
+						"data": {
+							"text": "Mismo resultado, otra abstracción",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d303-9",
+						"type": "header",
+						"data": {
+							"text": "Lo que cambió la IA",
+							"level": 2
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d303-12",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (en, text, e22fd8a6)."
+							"text": "Fixture copy (es, text, f312770c).<a href=\"https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm\">Fixture copy (es, text, f312770c).</a>Fixture copy (es, text, f312770c)."
 						}
 					},
 					{
-						"id": "ch3-004",
+						"id": "c0a1e5a0b1c2d303-13",
 						"type": "header",
 						"data": {
-							"text": "Rows and columns, literally",
+							"text": "Por qué los dueños todavía necesitan a alguien",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch3-008",
+						"id": "c0a1e5a0b1c2d303-16",
 						"type": "header",
 						"data": {
-							"text": "Accounting and SQL rhyme",
+							"text": "Mi preocupación",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch3-010",
+						"id": "c0a1e5a0b1c2d303-19",
+						"type": "nestedlist",
+						"data": {
+							"style": "unordered",
+							"items": [
+								{
+									"content": "<b>5 veces al año:</b> lo rápido que <a href=\"https://epoch.ai/data-trends\">crece</a> la capacidad de cómputo detrás de los mejores modelos de IA.",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (es, content, 5dc9374e).</b>Fixture copy (es, content, 5dc9374e).<a href=\"https://www150.statcan.gc.ca/n1/pub/11-621-m/11-621-m2025008-eng.htm\">Fixture copy (es, content, 5dc9374e).</a>Fixture copy (es, content, 5dc9374e).<a href=\"https://publications.gc.ca/collections/collection_2026/statcan/11-621-m/11-621-m2026010-eng.pdf\">Fixture copy (es, content, 5dc9374e).</a>Fixture copy (es, content, 5dc9374e).",
+									"items": []
+								},
+								{
+									"content": "<b>Fixture copy (es, content, ad9bf816).</b>Fixture copy (es, content, ad9bf816).<a href=\"https://ised-isde.canada.ca/site/sme-research-statistics/en/survey-data-and-analysis/survey-financing-and-growth-small-and-medium-enterprises/summary-survey-financing-and-growth-small-and-medium-enterprises-2023\">Fixture copy (es, content, ad9bf816).</a>Fixture copy (es, content, ad9bf816).",
+									"items": []
+								}
+							]
+						}
+					},
+					{
+						"id": "c0a1e5a0b1c2d303-20",
 						"type": "header",
 						"data": {
-							"text": "You have two hands",
+							"text": "Mi esperanza",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch3-013",
-						"type": "header",
-						"data": {
-							"text": "Where measurement stops",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch3-footer",
+						"id": "c0a1e5a0b1c2d303-22",
 						"type": "paragraph",
 						"data": {
-							"text": "Fixture copy (en, text, 4c6f0881).<a href=\"/blog/how-i-learn-orbiting-a-system-until-it-clicks\">Fixture copy (en, text, 4c6f0881).</a>Fixture copy (en, text, 4c6f0881).<a href=\"/blog/ai-accelerated-human-owned-my-actual-workflow\">Fixture copy (en, text, 4c6f0881).</a>Fixture copy (en, text, 4c6f0881)."
-						}
-					}
-				],
-				"version": "2.31.2"
-			},
-			"comment-japprends-graviter-autour-dun-systeme-jusquau-declic": {
-				"time": 1783742400001,
-				"blocks": [
-					{
-						"id": "ch2-fr-001",
-						"type": "paragraph",
-						"data": {
-							"text": "J’étudiais pour un examen de comptabilité, deux ans après le début de mon diplôme, lorsque j’ai demandé à mon colocataire de m’expliquer pourquoi l’actif est égal au passif plus les capitaux propres."
+							"text": "Fixture copy (es, text, ba77b02a).<a href=\"https://epoch.ai/data-insights/llm-inference-price-trends\">Fixture copy (es, text, ba77b02a).</a>Fixture copy (es, text, ba77b02a)."
 						}
 					},
 					{
-						"id": "ch2-fr-004",
+						"id": "c0a1e5a0b1c2d303-25",
 						"type": "header",
 						"data": {
-							"text": "Le système derrière les règles",
+							"text": "Por qué Canadá",
 							"level": 2
 						}
 					},
 					{
-						"id": "ch2-fr-010",
+						"id": "c0a1e5a0b1c2d303-27",
 						"type": "header",
 						"data": {
-							"text": "Ce qui s’accumulait pendant ces deux années",
+							"text": "Empiezo por mi vecino",
 							"level": 2
-						}
-					},
-					{
-						"id": "ch2-fr-015",
-						"type": "header",
-						"data": {
-							"text": "Le déclic n’arrive pas toujours",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch2-fr-020",
-						"type": "header",
-						"data": {
-							"text": "Ce autour de quoi je gravite maintenant",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch2-fr-footer",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (fr, text, 939b5b22).<a href=\"/fr/blog/le-creneau-internet-de-deux-heures\">Fixture copy (fr, text, 939b5b22).</a>Fixture copy (fr, text, 939b5b22).<a href=\"/fr/blog/penser-en-matrices\">Fixture copy (fr, text, 939b5b22).</a>Fixture copy (fr, text, 939b5b22)."
-						}
-					}
-				],
-				"version": "2.31.2"
-			},
-			"como-aprendo-orbitar-un-sistema-hasta-que-encaja": {
-				"time": 1783742400001,
-				"blocks": [
-					{
-						"id": "ch2-es-001",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (es, text, 49826976)."
-						}
-					},
-					{
-						"id": "ch2-es-004",
-						"type": "header",
-						"data": {
-							"text": "El sistema detrás de las reglas",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch2-es-010",
-						"type": "header",
-						"data": {
-							"text": "Lo que hicieron esos dos años",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch2-es-015",
-						"type": "header",
-						"data": {
-							"text": "No todo encaja de golpe",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch2-es-020",
-						"type": "header",
-						"data": {
-							"text": "Lo que estoy orbitando ahora",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch2-es-footer",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (es, text, baa7f441).<a href=\"/es/blog/el-turno-de-dos-horas-para-usar-internet\">Fixture copy (es, text, baa7f441).</a>Fixture copy (es, text, baa7f441).<a href=\"/es/blog/pensar-en-matrices\">Fixture copy (es, text, baa7f441).</a>Fixture copy (es, text, baa7f441)."
-						}
-					}
-				],
-				"version": "2.31.2"
-			},
-			"how-i-learn-orbiting-a-system-until-it-clicks": {
-				"time": 1783742400001,
-				"blocks": [
-					{
-						"id": "ch2-001",
-						"type": "paragraph",
-						"data": {
-							"text": "I was studying for an accounting exam, two years into my diploma, when I asked my roommate to explain why assets equal liabilities plus equity."
-						}
-					},
-					{
-						"id": "ch2-004",
-						"type": "header",
-						"data": {
-							"text": "The system underneath the rules",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch2-010",
-						"type": "header",
-						"data": {
-							"text": "What the two years were doing",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch2-015",
-						"type": "header",
-						"data": {
-							"text": "Some things do not click",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch2-020",
-						"type": "header",
-						"data": {
-							"text": "What I am orbiting now",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch2-footer",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (en, text, 2d6b4763).<a href=\"/blog/the-two-hour-internet-slot\">Fixture copy (en, text, 2d6b4763).</a>Fixture copy (en, text, 2d6b4763).<a href=\"/blog/thinking-in-matrices\">Fixture copy (en, text, 2d6b4763).</a>Fixture copy (en, text, 2d6b4763)."
-						}
-					}
-				],
-				"version": "2.31.2"
-			},
-			"el-turno-de-dos-horas-para-usar-internet": {
-				"time": 1783742400000,
-				"blocks": [
-					{
-						"id": "ch1-es-001",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (es, text, 19e43349)."
-						}
-					},
-					{
-						"id": "ch1-es-004",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (es, text, ee886d97).<code>Fixture copy (es, text, ee886d97).</code>Fixture copy (es, text, ee886d97)."
-						}
-					},
-					{
-						"id": "ch1-es-005",
-						"type": "header",
-						"data": {
-							"text": "El primer sitio web",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch1-es-011",
-						"type": "header",
-						"data": {
-							"text": "La aplicación que no pude crear",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch1-es-footer",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (es, text, c4067286).<a href=\"/es/blog/como-aprendo-orbitar-un-sistema-hasta-que-encaja\">Fixture copy (es, text, c4067286).</a>Fixture copy (es, text, c4067286)."
-						}
-					}
-				],
-				"version": "2.31.2"
-			},
-			"le-creneau-internet-de-deux-heures": {
-				"time": 1783742400000,
-				"blocks": [
-					{
-						"id": "ch1-fr-001",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (fr, text, 14983e2e)."
-						}
-					},
-					{
-						"id": "ch1-fr-004",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (fr, text, d491e173).<code>Fixture copy (fr, text, d491e173).</code>Fixture copy (fr, text, d491e173)."
-						}
-					},
-					{
-						"id": "ch1-fr-005",
-						"type": "header",
-						"data": {
-							"text": "Le premier site web",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch1-fr-011",
-						"type": "header",
-						"data": {
-							"text": "L’application que je n’ai pas pu créer",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch1-fr-footer",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (fr, text, 2d98cd3a).<a href=\"/fr/blog/comment-japprends-graviter-autour-dun-systeme-jusquau-declic\">Fixture copy (fr, text, 2d98cd3a).</a>Fixture copy (fr, text, 2d98cd3a)."
-						}
-					}
-				],
-				"version": "2.31.2"
-			},
-			"the-two-hour-internet-slot": {
-				"time": 1783742400000,
-				"blocks": [
-					{
-						"id": "ch1-001",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (en, text, ca446127)."
-						}
-					},
-					{
-						"id": "ch1-004",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (en, text, 50d3e750).<code>Fixture copy (en, text, 50d3e750).</code>Fixture copy (en, text, 50d3e750)."
-						}
-					},
-					{
-						"id": "ch1-005",
-						"type": "header",
-						"data": {
-							"text": "The first website",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch1-011",
-						"type": "header",
-						"data": {
-							"text": "The app I could not build",
-							"level": 2
-						}
-					},
-					{
-						"id": "ch1-footer",
-						"type": "paragraph",
-						"data": {
-							"text": "Fixture copy (en, text, 69b4f47f).<a href=\"/blog/how-i-learn-orbiting-a-system-until-it-clicks\">Fixture copy (en, text, 69b4f47f).</a>Fixture copy (en, text, 69b4f47f)."
 						}
 					}
 				],
@@ -5889,8 +7180,8 @@
 		"services": [
 			{
 				"id": "web-development",
-				"title": {"en":"Websites & Online Stores","fr":"Sites web et boutiques en ligne","es":"Sitios web y tiendas en línea"},
-				"description": {"en":"Websites and online stores, designed to look sharp, load fast and get found on Google.","fr":"Des sites web et des boutiques en ligne bien designés, rapides et faciles à trouver sur Google.","es":"Sitios web y tiendas en línea con buen diseño, rápidos y fáciles de encontrar en Google."},
+				"title": {"en":"Websites & E-commerce","fr":"Sites web et commerce en ligne","es":"Sitios web y e-commerce"},
+				"description": {"en":"Websites and e-commerce, designed to look sharp, load fast and get found on Google.","fr":"Des sites web et du commerce en ligne bien designés, rapides et faciles à trouver sur Google.","es":"Sitios web y e-commerce con buen diseño, rápidos y fáciles de encontrar en Google."},
 				"station": 1,
 				"svg": "service-web.svg",
 				"visible": true,
@@ -5900,8 +7191,8 @@
 					"transit-data-pipeline",
 					"yesid-design"
 				],
-				"valueProposition": {"en":"First stop on the line: your business reaches people. I design and build websites and online stores that look sharp on every screen, load fast, and are easy to find on Google. The basics of getting noticed are set up properly: search, analytics, your Google listing, a way to capture leads. And you can update your own content without calling a developer.","fr":"Premier arrêt sur la ligne : ta business rejoint le monde. Je conçois et je bâtis des sites web et des boutiques en ligne qui sont beaux sur tous les écrans, qui chargent vite et qu'on trouve facilement sur Google. Les bases pour te faire remarquer sont bien en place : référencement, statistiques, ta fiche Google, une façon de récolter des contacts. Pis tu peux modifier ton contenu toi-même sans appeler un développeur.","es":"Primera parada de la línea: tu negocio llega a la gente. Diseño y construyo sitios web y tiendas en línea que se ven bien en cualquier pantalla, cargan rápido y se encuentran fácil en Google. Dejo bien montado lo básico para que te noten: posicionamiento, estadísticas, tu ficha de Google y una forma de captar contactos. Y puedes actualizar tu contenido tú mismo sin llamar a un desarrollador."},
-				"seoDescription": {"en":"Sharp, fast websites and Shopify stores that get found on Google. In Montréal. See what’s included.","fr":"Sites web et boutiques Shopify beaux, rapides et trouvables sur Google. À Montréal. Voir ce qui est inclus.","es":"Sitios y tiendas Shopify bonitos, rápidos y visibles en Google. Freelance en Montreal. Ver qué incluye."},
+				"valueProposition": {"en":"First stop on the line: your business reaches people. I design and build websites and e-commerce solutions that look sharp on every screen, load fast, and are easy to find on Google. The basics of getting noticed are set up properly: search, analytics, your Google listing, a way to capture leads. And you can update your own content without calling a developer.","fr":"Premier arrêt sur la ligne : ta business rejoint le monde. Je conçois et je bâtis des sites web et des solutions de commerce en ligne qui sont beaux sur tous les écrans, qui chargent vite et qu'on trouve facilement sur Google. Les bases pour te faire remarquer sont bien en place : référencement, statistiques, ta fiche Google, une façon de récolter des contacts. Pis tu peux modifier ton contenu toi-même sans appeler un développeur.","es":"Primera parada de la línea: tu negocio llega a la gente. Diseño y construyo sitios web y soluciones de e-commerce que se ven bien en cualquier pantalla, cargan rápido y se encuentran fácil en Google. Dejo bien montado lo básico para que te noten: posicionamiento, estadísticas, tu ficha de Google y una forma de captar contactos. Y puedes actualizar tu contenido tú mismo sin llamar a un desarrollador."},
+				"seoDescription": {"en":"Sharp, fast websites and Shopify e-commerce that get found on Google. In Montréal. See what’s included.","fr":"Sites web et commerce en ligne Shopify, beaux, rapides et trouvables sur Google. À Montréal. Voir ce qui est inclus.","es":"Sitios web y e-commerce Shopify, bonitos, rápidos y visibles en Google. Freelance en Montreal. Ver qué incluye."},
 				"deliverables": [
 					{"en":"A custom website built to load fast","fr":"Un site web sur mesure qui charge vite","es":"Un sitio web a la medida que carga rápido"},
 					{"en":"An online store that takes orders and payments (Shopify)","fr":"Une boutique en ligne qui prend les commandes et les paiements (Shopify)","es":"Una tienda en línea que recibe pedidos y pagos (Shopify)"},
@@ -12097,7 +13388,7 @@
 										"id": "3e0b225e4e026f61",
 										"type": "paragraph",
 										"data": {
-											"text": "Fixture copy (en, text, a6f286dc).<code>Fixture copy (en, text, a6f286dc).</code>Fixture copy (en, text, a6f286dc).<code>Fixture copy (en, text, a6f286dc).</code>Fixture copy (en, text, a6f286dc).<code>Fixture copy (en, text, a6f286dc).</code>Fixture copy (en, text, a6f286dc)."
+											"text": "Fixture copy (en, text, f9b0a124).<code>Fixture copy (en, text, f9b0a124).</code>Fixture copy (en, text, f9b0a124).<code>Fixture copy (en, text, f9b0a124).</code>Fixture copy (en, text, f9b0a124).<code>Fixture copy (en, text, f9b0a124).</code>Fixture copy (en, text, f9b0a124)."
 										}
 									},
 									{
@@ -12117,7 +13408,7 @@
 										"id": "a600ffa579f60112",
 										"type": "paragraph",
 										"data": {
-											"text": "Fixture copy (fr, text, c5df14d0).<code>Fixture copy (fr, text, c5df14d0).</code>Fixture copy (fr, text, c5df14d0).<code>Fixture copy (fr, text, c5df14d0).</code>Fixture copy (fr, text, c5df14d0).<code>Fixture copy (fr, text, c5df14d0).</code>Fixture copy (fr, text, c5df14d0)."
+											"text": "Fixture copy (fr, text, 972d2cec).<code>Fixture copy (fr, text, 972d2cec).</code>Fixture copy (fr, text, 972d2cec).<code>Fixture copy (fr, text, 972d2cec).</code>Fixture copy (fr, text, 972d2cec).<code>Fixture copy (fr, text, 972d2cec).</code>Fixture copy (fr, text, 972d2cec)."
 										}
 									},
 									{
@@ -12137,7 +13428,7 @@
 										"id": "c642c395fda6f2c8",
 										"type": "paragraph",
 										"data": {
-											"text": "Fixture copy (es, text, 46ce7dd0).<code>Fixture copy (es, text, 46ce7dd0).</code>Fixture copy (es, text, 46ce7dd0).<code>Fixture copy (es, text, 46ce7dd0).</code>Fixture copy (es, text, 46ce7dd0).<code>Fixture copy (es, text, 46ce7dd0).</code>Fixture copy (es, text, 46ce7dd0)."
+											"text": "Fixture copy (es, text, 98c64b60).<code>Fixture copy (es, text, 98c64b60).</code>Fixture copy (es, text, 98c64b60).<code>Fixture copy (es, text, 98c64b60).</code>Fixture copy (es, text, 98c64b60).<code>Fixture copy (es, text, 98c64b60).</code>Fixture copy (es, text, 98c64b60)."
 										}
 									},
 									{

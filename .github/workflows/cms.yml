@@ -15,8 +15,6 @@ name: cms
 #   cms.yesid.dev. Gated behind production environment for operator review.
 # - permission-control-audit (workflow_dispatch): GET-only semantic comparison
 #   of the repository permission declaration with production.
-# - buildbot-cover-permission (workflow_dispatch): production-only four-cover
-#   preview, approved create, or receipt-bound preview/rollback.
 #
 # slice-17f Phase 7: shared setup extracted to .github/actions/setup
 # (Bun + cache restores + install). concurrency cancel-in-progress on
@@ -40,9 +38,9 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Action: diff preview, push config apply, flows-only push, read-only permission audit, guarded cover permission'
+        description: 'Action: diff preview, push config apply, flows-only push, read-only permission audit'
         type: choice
-        options: [diff, push, flows-push, permission-control-audit, buildbot-cover-permission-preview, buildbot-cover-permission-apply, buildbot-cover-permission-rollback-preview, buildbot-cover-permission-rollback]
+        options: [diff, push, flows-push, permission-control-audit]
         default: diff
         required: true
       include_permissions:
@@ -55,14 +53,6 @@ on:
         type: choice
         options: [full, schema-only]
         default: full
-        required: false
-      cover_permission_approval_sha256:
-        description: 'Cover apply/rollback only: exact reviewed preview plan SHA-256 after direct human approval'
-        type: string
-        required: false
-      cover_permission_apply_run_id:
-        description: 'Cover rollback preview/rollback only: completed main CMS apply run containing apply.json (may have failed verification)'
-        type: string
         required: false
 
 permissions:
@@ -223,104 +213,3 @@ jobs:
       - name: Converge configuration diff
         working-directory: apps/cms
         run: bun run sync:diff
-
-  buildbot-cover-permission:
-    # New access requires direct human approval of the exact preview hash.
-    # Preview cannot write; rollback can delete only its receipt's created row.
-    if: |
-      github.event_name == 'workflow_dispatch' &&
-      (
-        github.event.inputs.action == 'buildbot-cover-permission-preview' ||
-        github.event.inputs.action == 'buildbot-cover-permission-apply' ||
-        github.event.inputs.action == 'buildbot-cover-permission-rollback-preview' ||
-        github.event.inputs.action == 'buildbot-cover-permission-rollback'
-      ) &&
-      github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: test
-    permissions:
-      contents: read
-      actions: read
-    environment:
-      name: production
-      url: https://cms.yesid.dev
-    env:
-      PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - uses: ./.github/actions/setup
-
-      - name: Preview production Build Bot cover permission
-        if: github.event.inputs.action == 'buildbot-cover-permission-preview' || github.event.inputs.action == 'buildbot-cover-permission-apply'
-        working-directory: apps/cms
-        env:
-          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
-        run: >-
-          bun scripts/reconcile-buildbot-cover-permission.ts
-          --target=prod --dry-run --receipt=.permission-receipts/preview.json
-
-      - name: Apply approved production Build Bot cover permission
-        if: github.event.inputs.action == 'buildbot-cover-permission-apply'
-        working-directory: apps/cms
-        env:
-          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
-          APPROVAL_SHA256: ${{ inputs.cover_permission_approval_sha256 }}
-        run: >-
-          bun scripts/reconcile-buildbot-cover-permission.ts
-          --target=prod --apply --confirm=APPLY_PROD_BUILDBOT_COVER_PERMISSION
-          --approval-sha256="$APPROVAL_SHA256" --receipt=.permission-receipts/apply.json
-
-      - name: Validate prior cover permission apply run
-        if: github.event.inputs.action == 'buildbot-cover-permission-rollback-preview' || github.event.inputs.action == 'buildbot-cover-permission-rollback'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PRIOR_APPLY_RUN_ID: ${{ inputs.cover_permission_apply_run_id }}
-        run: |
-          set -euo pipefail
-          [[ "$PRIOR_APPLY_RUN_ID" =~ ^[0-9]+$ ]] || { echo 'A numeric prior apply run ID is required'; exit 1; }
-          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$PRIOR_APPLY_RUN_ID" |
-            jq -e '.event == "workflow_dispatch" and .head_branch == "main" and .path == ".github/workflows/cms.yml" and .status == "completed"' > /dev/null
-
-      - name: Download prior cover permission apply receipt
-        if: github.event.inputs.action == 'buildbot-cover-permission-rollback-preview' || github.event.inputs.action == 'buildbot-cover-permission-rollback'
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
-        with:
-          name: buildbot-cover-permission
-          run-id: ${{ inputs.cover_permission_apply_run_id }}
-          repository: ${{ github.repository }}
-          github-token: ${{ github.token }}
-          path: apps/cms/.permission-prior
-
-      - name: Preview receipt-bound Build Bot cover rollback
-        if: github.event.inputs.action == 'buildbot-cover-permission-rollback-preview' || github.event.inputs.action == 'buildbot-cover-permission-rollback'
-        working-directory: apps/cms
-        env:
-          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
-        run: >-
-          bun scripts/reconcile-buildbot-cover-permission.ts
-          --target=prod --dry-run --rollback=.permission-prior/apply.json
-          --receipt=.permission-receipts/rollback-preview.json
-
-      - name: Roll back approved Build Bot cover permission
-        if: github.event.inputs.action == 'buildbot-cover-permission-rollback'
-        working-directory: apps/cms
-        env:
-          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
-          APPROVAL_SHA256: ${{ inputs.cover_permission_approval_sha256 }}
-        run: >-
-          bun scripts/reconcile-buildbot-cover-permission.ts
-          --target=prod --apply --confirm=ROLLBACK_PROD_BUILDBOT_COVER_PERMISSION
-          --rollback=.permission-prior/apply.json --approval-sha256="$APPROVAL_SHA256"
-          --receipt=.permission-receipts/rollback.json
-
-      - name: Preserve cover permission receipts, including failed verification
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
-        with:
-          name: buildbot-cover-permission
-          path: apps/cms/.permission-receipts/*.json
-          include-hidden-files: true
-          if-no-files-found: warn
-          retention-days: 30
