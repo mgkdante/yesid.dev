@@ -79,7 +79,7 @@ Regenerate both binary icons from `favicon.svg` if the mark changes.
 
 | Location | What | Serving model |
 | --- | --- | --- |
-| `src/lib/assets/blog-fallbacks/*.svg` | 8 blog no-image icons (pro-* / personal-*), slug-hash selected | Vite `?raw` glob (`src/lib/blog/static-helpers.ts`); registered in CMS `illustrations` |
+| `src/lib/assets/blog-icons/*.svg` | 21 topic icons, chosen per post by Directus `svg_illustration`; post-id hash fallback when absent | Vite `?raw` glob (`src/lib/catalog/index.ts`); registered in CMS `illustrations` |
 | `src/lib/assets/project-fallbacks/*.svg` | Digital-infrastructure blueprints: `digital-mobile` below md, `digital-desktop` at md+ | Vite `?raw` imports in `ProjectCard.svelte`; registered in CMS `illustrations` |
 | `@yesid/ui/blueprints` | Blueprint drawings as inline components (`currentColor` for theming); the CTA sheets keep their `cta-sheet--*` classes and motif markers | Composed in ServicesBlueprint, BlogBlueprint, ProjectsBlueprint and CtaBlueprintBackground (12 unique sheets behind the shared `CtaBand`) |
 | `static/svg/services/*.svg` | 6 service line icons; filenames are CMS data (`services.svg`) | Dual: `?raw` glob (`src/lib/utils/service-svg.ts`, SSR) + client fetch/img `/svg/services/...` |
