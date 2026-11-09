@@ -57,5 +57,9 @@ export default defineConfig({
 			}),
 	testDir: 'tests',
 	testMatch: '**/*.spec.ts',
-	projects: yesidProjects(baseURL).sort((a, b) => rank(a) - rank(b))
+	projects: yesidProjects(baseURL).sort((a, b) => rank(a) - rank(b)).map(project =>
+		['phone', 'tablet'].includes(project.name ?? '')
+			? project
+			: { ...project, testIgnore: '**/accessibility-responsive.spec.ts' }
+	)
 });

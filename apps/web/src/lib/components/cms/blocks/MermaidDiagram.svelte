@@ -80,9 +80,12 @@
 
 <figure class="mermaid-diagram" data-testid="mermaid-diagram" data-rendering={Boolean(source) && !svg && !renderError} bind:this={root}>
 	{#if media && svg}
-		<button type="button" class="mermaid-diagram__surface mermaid-diagram__open" aria-label={articleMediaLabels[locale].diagram} onclick={(event) => { event.stopPropagation(); media.openDiagram(svg, architectureDiagramLabel, event.currentTarget); }}>
-			{@html svg}
-		</button>
+		<div class="mermaid-diagram__preview">
+			<div class="mermaid-diagram__drawing" role="img" aria-label={architectureDiagramLabel}>{@html svg}</div>
+			<button type="button" class="mermaid-diagram__surface mermaid-diagram__open" aria-label={articleMediaLabels[locale].diagram} onclick={(event) => { event.stopPropagation(); media.openDiagram(svg, architectureDiagramLabel, event.currentTarget); }}>
+				<span class="mermaid-diagram__label">{articleMediaLabels[locale].diagram}</span>
+			</button>
+		</div>
 	{:else}
 	<div class="mermaid-diagram__surface" aria-label={architectureDiagramLabel}>
 		{#if svg}
@@ -113,10 +116,12 @@
 		overflow-x: auto;
 		min-block-size: var(--size-tap-min);
 	}
-	.mermaid-diagram__open { display: block; width: 100%; border: 0; padding: 0; color: inherit; background: transparent; text-align: inherit; cursor: zoom-in; }
-	.mermaid-diagram__open:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+	.mermaid-diagram__preview { position: relative; padding-block-end: var(--size-tap-min); }
+	.mermaid-diagram__open { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: flex-end; width: 100%; border: 0; padding: 0; color: inherit; background: transparent; text-align: inherit; cursor: zoom-in; }
+	.mermaid-diagram__open:focus-visible { outline: 3px solid var(--ring); outline-offset: -3px; }
+	.mermaid-diagram__label { display: flex; align-items: center; min-block-size: var(--size-tap-min); padding-inline: 0.5rem; font-family: var(--font-mono); font-size: var(--text-caption); }
 
-	.mermaid-diagram__surface :global(svg) {
+	.mermaid-diagram__surface :global(svg), .mermaid-diagram__drawing :global(svg) {
 		display: block;
 		width: 100%;
 		max-width: 100%;

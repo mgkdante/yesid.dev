@@ -95,6 +95,8 @@ describe('BlogDetailPage', () => {
 		render(BlogDetailPage, { props: { post: makePost(), body } });
 		const header = screen.getByRole('button', { name: /Section One/ });
 		const trigger = await screen.findByRole('button', { name: 'Enlarge diagram' });
+		expect(within(trigger).getByText('Enlarge diagram')).toBeVisible();
+		expect(screen.getByRole('img', { name: siteLabels.a11y.architectureDiagram.en })).toBeInTheDocument();
 		await fireEvent.click(trigger);
 		expect(screen.getByTestId('article-media-diagram').querySelector('svg')).toHaveTextContent('Article diagram');
 		expect(header).toHaveAttribute('aria-expanded', 'true');
