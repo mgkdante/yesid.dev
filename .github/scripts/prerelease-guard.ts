@@ -1,36 +1,60 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
-const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies'] as const;
+const fields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies', 'overrides', 'resolutions'];
+const rehearsal = 'The PR may rehearse on a candidate but can merge only after switching to the stable release.';
+const stableTarball = /^https:\/\/github\.com\/mgkdante\/yesid\.design\/releases\/download\/v((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))\/yesid-([a-z0-9._-]+)-\1\.tgz$/;
+const packageNames = (key: string) => [...key.matchAll(/@yesid\/([a-z0-9._-]+)/g)].map(match => match[1]).slice(-1);
+const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
 
-// Scan source manifests, excluding Git metadata and installed dependencies.
 export function guard(root: string): string[] {
 	const errors: string[] = [];
-	function visit(directory: string): void {
-		for (const entry of readdirSync(directory, { withFileTypes: true })) {
-			const path = join(directory, entry.name);
-			if (entry.name === 'package.json') {
-				const file = relative(root, path).replaceAll('\\', '/');
-				try {
-					const manifest = JSON.parse(readFileSync(path, 'utf8'));
-					if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)) throw new Error('Expected manifest object');
-					for (const field of dependencyFields) {
-						const dependencies = manifest[field];
-						if (dependencies === undefined) continue;
-						if (!dependencies || typeof dependencies !== 'object' || Array.isArray(dependencies)) throw new Error(`Invalid ${field}`);
-						for (const [name, candidate] of Object.entries(dependencies)) {
-							if (!name.startsWith('@yesid/')) continue;
-							if (typeof candidate !== 'string') throw new Error(`Invalid dependency ${name}`);
-							// Match prereleases in version ranges, release tags and tarball filenames.
-							if (/\d+\.\d+\.\d+-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*/.test(decodeURIComponent(candidate))) {
-								errors.push(`${file}: ${name} points at ${candidate}. The PR may rehearse on a candidate but can merge only after switching to the stable release.`);
-							}
-						}
-					}
-				} catch (error) {
-					errors.push(`${file}: Cannot read or parse manifest: ${error}`);
+	let release: string | undefined;
+	function entries(file: string, field: string, values: Record<string, unknown>, inherited: string[] = []): void {
+		for (const [key, value] of Object.entries(values)) {
+			const names = key === '.' ? inherited : packageNames(key);
+			if (object(value)) {
+				if (names.length && (!field.startsWith('overrides') || !Object.hasOwn(value, '.'))) {
+					errors.push(`${file}: ${field}, key ${JSON.stringify(key)}, value ${JSON.stringify(value)}: expected an exact stable release tarball URL. ${rehearsal}`);
 				}
-			} else if (entry.isDirectory() && entry.name !== '.git' && entry.name !== 'node_modules') visit(path);
+				entries(file, `${field}[${JSON.stringify(key)}]`, value, names);
+				continue;
+			}
+			const alias = typeof value === 'string' ? value.match(/^npm:@yesid\/([a-z0-9._-]+)/) : null;
+			if (!names.length && !alias && !(typeof value === 'string' && value.includes('yesid.design/releases/download/'))) continue;
+			const diagnostic = `${file}: ${field}, key ${JSON.stringify(key)}, value ${JSON.stringify(value)}`;
+			const match = typeof value === 'string' ? stableTarball.exec(value) : null;
+			const expected = alias ? [alias[1]] : names.length ? names : [key];
+			if (!match || match[0] !== value || expected.some(name => name !== match[2])) {
+				errors.push(`${diagnostic}: expected an exact stable release tarball URL matching the package. ${rehearsal}`);
+			} else if (release && release !== match[1]) {
+				errors.push(`${diagnostic}: expected lockstep release ${release}, received ${match[1]}. ${rehearsal}`);
+			} else release = match[1];
+		}
+	}
+	function manifest(path: string): void {
+		const file = relative(root, path).replaceAll('\\', '/');
+		try {
+			const value: unknown = JSON.parse(readFileSync(path, 'utf8'));
+			if (!object(value)) throw new Error('Expected manifest object');
+			for (const field of fields) {
+				if (value[field] === undefined) continue;
+				if (!object(value[field])) throw new Error(`Invalid ${field}`);
+				entries(file, field, value[field]);
+			}
+		} catch (error) {
+			errors.push(`${file}: Cannot read or parse manifest: ${error}`);
+		}
+	}
+	function visit(directory: string): void {
+		try {
+			for (const entry of readdirSync(directory, { withFileTypes: true })) {
+				const path = join(directory, entry.name);
+				if (entry.name === 'package.json') manifest(path);
+				else if (entry.isDirectory() && entry.name !== '.git' && entry.name !== 'node_modules') visit(path);
+			}
+		} catch (error) {
+			errors.push(`${directory}: Cannot walk repository manifests: ${error}`);
 		}
 	}
 	visit(root);
@@ -38,12 +62,7 @@ export function guard(root: string): string[] {
 }
 
 if (import.meta.main) {
-	try {
-		const errors = guard(process.cwd());
-		process.stdout.write(errors.length ? `${errors.join('\n')}\n` : 'Design dependencies use stable releases\n');
-		process.exitCode = errors.length ? 1 : 0;
-	} catch (error) {
-		process.stderr.write(`Cannot scan repository manifests: ${error}\n`);
-		process.exitCode = 1;
-	}
+	const errors = guard(process.cwd());
+	process.stdout.write(errors.length ? `${errors.join('\n')}\n` : 'Design dependencies use one exact stable release\n');
+	process.exitCode = errors.length ? 1 : 0;
 }
