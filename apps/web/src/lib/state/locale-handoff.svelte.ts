@@ -5,7 +5,7 @@ import { onMount, tick } from 'svelte';
 import { delocalizePath, isLocaleSwitch, pathLocale } from '#lib/utils/locale-routing.ts';
 import { getLenis } from '@yesid/motion/utils/lenis';
 import type { FocusSnapshot } from './handoff-blob';
-import { createReadingSession, type NavigationIntent, type ScrollContext } from './reading-session';
+import { createReadingSession, type NavigationIntent, type ScrollContext, type SessionPorts } from './reading-session';
 export type { ScrollContext } from './reading-session';
 
 let stableIdentity: () => string | undefined = () => undefined;
@@ -97,7 +97,34 @@ function nextFrame(): Promise<void> {
 	return new Promise((resolve) => requestAnimationFrame(() => resolve()));
 }
 
+const history: SessionPorts['history'] = {
+	suppressAnchoring: () => {
+		const root = document.documentElement;
+		const previous = root.style.overflowAnchor;
+		root.style.overflowAnchor = 'none';
+		return () => { root.style.overflowAnchor = previous; };
+	},
+	pendingDiagrams: () => Boolean(document.querySelector('.mermaid-diagram[data-rendering="true"]')),
+	onLayoutChange: (cb) => {
+		const observer = new MutationObserver(cb);
+		observer.observe(document.body, {
+			subtree: true, childList: true, attributes: true, attributeFilter: ['data-rendering'],
+		});
+		return () => observer.disconnect();
+	},
+	onReaderInput: (cb) => {
+		const events = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+		for (const event of events) window.addEventListener(event, cb, { capture: true, passive: true });
+		return () => { for (const event of events) window.removeEventListener(event, cb, true); };
+	},
+	frame: (cb) => {
+		const id = requestAnimationFrame(cb);
+		return () => cancelAnimationFrame(id);
+	},
+};
+
 const session = createReadingSession({
+	history,
 	scrollY: () => window.scrollY,
 	scrollTo: lenisAwareScrollTo,
 	store: {
@@ -135,7 +162,10 @@ export function attachLocaleHandoff(getStableIdentity: () => string | undefined 
 	onMount(() => {
 		const capture = (event: MouseEvent) => session.activate(event);
 		window.addEventListener('click', capture, true);
-		return () => window.removeEventListener('click', capture, true);
+		return () => {
+			window.removeEventListener('click', capture, true);
+			session.dispose();
+		};
 	});
 	beforeNavigate((nav) => session.before(navigationIntent(nav)));
 	afterNavigate((nav) => session.after(navigationIntent(nav)));

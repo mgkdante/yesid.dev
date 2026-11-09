@@ -16,6 +16,10 @@ function setup() {
 	const calls: unknown[] = [];
 	const state = { y: 1400, identity: undefined as string | undefined, mask: false };
 	const ports: SessionPorts = {
+		history: {
+			suppressAnchoring: () => () => {}, pendingDiagrams: () => false,
+			onLayoutChange: () => () => {}, onReaderInput: () => () => {}, frame: () => () => {},
+		},
 		scrollY: () => state.y, scrollTo: (y) => { calls.push(['scroll', y]); },
 		store: { get: (key) => values.get(key) ?? null, set: (key, value) => { values.set(key, value); },
 			remove: (key) => { values.delete(key); } },

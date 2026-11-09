@@ -14,6 +14,13 @@ export interface NavigationIntent {
 	complete?: Promise<unknown>;
 }
 export interface SessionPorts {
+	history: {
+		suppressAnchoring(): () => void;
+		pendingDiagrams(): boolean;
+		onLayoutChange(cb: () => void): () => void;
+		onReaderInput(cb: () => void): () => void;
+		frame(cb: () => void): () => void;
+	};
 	scrollY(): number;
 	scrollTo(y: number): void;
 	store: { get(key: string): string | null; set(key: string, value: string): void; remove(key: string): void };
@@ -31,6 +38,7 @@ export interface SessionPorts {
 }
 
 export interface ReadingSession {
+	dispose(): void;
 	activate(event: object): void;
 	before(nav: NavigationIntent): void;
 	after(nav: NavigationIntent): Promise<void>;
@@ -39,7 +47,46 @@ export interface ReadingSession {
 	readonly restoring: boolean;
 }
 
+/** Keeps Kit's restored offset free of native anchor compensation until SVG layout settles. */
+class HistoryLease {
+	private cancelFrame = () => {};
+	private stopLayout = () => {};
+	private stopInput: () => void;
+	private restore: () => void;
+	private finished = false;
+	constructor(private history: SessionPorts['history'], private released: () => void) {
+		this.restore = history.suppressAnchoring();
+		this.stopInput = history.onReaderInput(() => this.finish());
+	}
+	after(): void {
+		if (this.finished) return;
+		this.stopLayout();
+		this.stopLayout = this.history.onLayoutChange(() => this.settle());
+		this.settle();
+	}
+	private settle(): void {
+		this.cancelFrame();
+		if (this.finished || this.history.pendingDiagrams()) return;
+		// Let the final SVG layout paint with anchoring still suppressed.
+		this.cancelFrame = this.history.frame(() => {
+			this.cancelFrame = this.history.frame(() => {
+				if (!this.history.pendingDiagrams()) this.finish();
+			});
+		});
+	}
+	finish(): void {
+		if (this.finished) return;
+		this.finished = true;
+		this.stopLayout();
+		this.cancelFrame();
+		this.restore();
+		this.stopInput();
+		this.released();
+	}
+}
+
 class Session implements ReadingSession {
+	private historyLease: HistoryLease | undefined;
 	private activationOffsets = new WeakMap<object, number>();
 	private navigationCapture: { y: number } | undefined;
 	private context: ScrollContext | null = null;
@@ -72,6 +119,10 @@ class Session implements ReadingSession {
 	}
 	before(nav: NavigationIntent): void {
 		this.captureDeparture(nav);
+		this.dispose();
+		if (nav.type === 'popstate') {
+			this.historyLease = new HistoryLease(this.ports.history, () => { this.historyLease = undefined; });
+		}
 		if (nav.shallow && nav.type === 'goto') return;
 		if (nav.fromPath === undefined || nav.toPath === undefined) return;
 		if (this.restoringState) return;
@@ -88,6 +139,7 @@ class Session implements ReadingSession {
 		this.setRestoring(true);
 	}
 	async after(nav: NavigationIntent): Promise<void> {
+		this.historyLease?.after();
 		if (nav.shallow && nav.type === 'goto') return;
 		if (nav.type === 'enter') return;
 		if (nav.fromPath === undefined || nav.toPath === undefined) return;
@@ -108,6 +160,10 @@ class Session implements ReadingSession {
 		this.ports.focus.restore(blob.focus);
 		this.clearBlob(scope);
 		this.finish();
+	}
+	dispose(): void {
+		this.historyLease?.finish();
+		this.historyLease = undefined;
 	}
 	private finish(): void {
 		this.activeSwitchKey = null;
