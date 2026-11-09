@@ -1,24 +1,30 @@
 import { test, expect, type Page } from '@playwright/test';
-import { gotoFirstDetail, blogPostLinks } from '../_support/helpers';
+import { fixturePost, fixturePostPath } from '../_support/content-fixtures';
+import { DEFAULT_LOCALE } from '../../src/lib/utils/locale';
+import type { Locale } from '../../src/lib/types';
 
 test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
 
-/**
- * Navigate to the first real blog post detail page and return its href.
- * Wraps the shared gotoFirstDetail helper, which waits on the
- * `blog-detail-page` landmark (no networkidle) after navigating. blogPostLinks
- * scopes to the blog-row anchor, intrinsically excluding the /blog/personal
- * corner link (a sidebar link, not a row).
- */
-async function gotoFirstPost(page: Page): Promise<string> {
-	return gotoFirstDetail(page, '/blog', blogPostLinks, 'blog-detail-page');
+// Keep a listing-to-detail navigation smoke, selecting a fixture capability rather than a row position.
+async function gotoFixturePost(page: Page, locale: Locale = DEFAULT_LOCALE): Promise<string> {
+	const target = fixturePostPath(locale);
+	await page.goto(locale === DEFAULT_LOCALE ? '/blog' : `/${locale}/blog`);
+	const link = page.getByTestId('blog-row')
+		.and(page.getByRole('link', { name: fixturePost(locale).title }))
+		.and(page.locator(`a[href="${target}"]`));
+	await expect(link).toHaveAttribute('href', target);
+	await expect(link).toBeVisible();
+	await link.click();
+	await page.waitForURL(target);
+	await expect(page.getByTestId('blog-detail-page')).toBeVisible();
+	return target;
 }
 
 test.describe('/blog/[slug] detail page content', () => {
 	test('blog detail page renders with header + content', async ({ page }) => {
-		await gotoFirstPost(page);
+		await gotoFixturePost(page);
 
-		// gotoFirstPost already asserts blog-detail-page is visible; assert the
+		// gotoFixturePost already asserts blog-detail-page is visible; assert the
 		// remaining landmarks render too. The consolidation refactor renamed the
 		// article body wrapper from blog-content -> blog-sections (each block in
 		// data-testid="blog-section-body").
@@ -27,18 +33,8 @@ test.describe('/blog/[slug] detail page content', () => {
 		await expect(page.locator('[data-testid="blog-sections"]')).toBeVisible();
 	});
 
-	test('blog detail header renders title + metadata', async ({ page }) => {
-		await gotoFirstPost(page);
-
-		// The header always renders the post title in an <h1>.
-		const headerTitle = page.locator('[data-testid="blog-detail-header"] h1').first();
-		await expect(headerTitle).toBeVisible();
-		const titleText = await headerTitle.textContent();
-		expect(titleText?.trim().length).toBeGreaterThan(0);
-	});
-
 	test('blog detail content zone renders non-empty body', async ({ page }) => {
-		await gotoFirstPost(page);
+		await gotoFixturePost(page);
 
 		// Content area (blog-sections) always renders the sectionized blocks.
 		const contentZone = page.locator('[data-testid="blog-sections"]');
@@ -53,7 +49,7 @@ test.describe('/blog/[slug] detail page content', () => {
 	});
 
 	test('blog detail renders headings for TOC tracking', async ({ page }) => {
-		await gotoFirstPost(page);
+		await gotoFixturePost(page);
 
 		// The seeded posts all carry top-level section headings, each rendered as
 		// a CollapsibleSection card whose anchor is exposed via data-toc inside the
@@ -70,7 +66,7 @@ test.describe('/blog/[slug] detail page content', () => {
 
 	test('blog detail desktop TOC matches authored headings', async ({ page }) => {
 
-		await gotoFirstPost(page);
+		await gotoFixturePost(page);
 
 		// Desktop (>=1024px) shows the .context-column sidebar with a .toc-nav of
 		// .toc-item buttons, one per authored heading. Short prose-only posts
@@ -98,7 +94,7 @@ test.describe('/blog/[slug] detail page content', () => {
 	});
 
 	test('blog detail renders metadata (category, language, reading time)', async ({ page }) => {
-		await gotoFirstPost(page);
+		await gotoFixturePost(page);
 
 		// Metadata panel (blog-meta-card) lives in the desktop TOC column and
 		// always renders category / words / read-time / language items for a post.
@@ -117,12 +113,7 @@ test.describe('/blog/[slug] detail page content', () => {
 
 	for (const locale of ['fr', 'es'] as const) {
 		test(`blog detail page renders its own ${locale.toUpperCase()} slug`, async ({ page }) => {
-			const href = await gotoFirstDetail(
-				page,
-				`/${locale}/blog`,
-				blogPostLinks,
-				'blog-detail-page',
-			);
+			const href = await gotoFixturePost(page, locale);
 
 			expect(href).toMatch(new RegExp(`^/${locale}/blog/`));
 			await expect(page.locator('[data-testid="blog-detail-page"]')).toBeVisible();

@@ -138,10 +138,12 @@ describe('BlogDetailPage', () => {
 	});
 
 	it('renders the blog detail header', () => {
+		const post = makePost();
 		const { getByTestId } = render(BlogDetailPage, {
-			props: { post: makePost(), body: mockBody, headings: mockHeadings }
+			props: { post, body: mockBody, headings: mockHeadings }
 		});
 		expect(getByTestId('blog-detail-header')).toBeTruthy();
+		expect(screen.getByRole('heading', { level: 1, name: post.title })).toBeInTheDocument();
 	});
 
 	it('links back to the listing in the post language', () => {
