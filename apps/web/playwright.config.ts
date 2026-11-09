@@ -23,9 +23,9 @@ const shardOrder = ['phone', 'reduced-motion', 'desktop', 'tablet', 'light', 'da
 const rank = ({ name = '' }: { name?: string }) => shardOrder.indexOf(name) + 1 || shardOrder.length + 1;
 
 export default defineConfig({
-	// A deployed preview scales out; one local preview server only slows down under parallel load.
-	fullyParallel: Boolean(externalBaseURL),
-	workers: externalBaseURL ? Number(process.env.PLAYWRIGHT_WORKERS ?? 8) : process.env.CI ? 1 : undefined,
+	// CI splits individual tests across shards and runs two workers per shard.
+	fullyParallel: true,
+	workers: externalBaseURL ? Number(process.env.PLAYWRIGHT_WORKERS ?? 8) : process.env.CI ? 2 : undefined,
 	retries: 0,
 	timeout: process.env.CI ? 45_000 : 30_000,
 	expect: { timeout: process.env.CI ? 10_000 : 5_000 },
