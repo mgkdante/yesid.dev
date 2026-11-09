@@ -57,6 +57,14 @@ test.describe('responsive axe', () => {
 			});
 		}
 
+		test(`${locale}: light diagram action has no serious or critical axe violations`, async ({ page }) => {
+			await page.addInitScript(() => localStorage.setItem('theme', 'light'));
+			await open(page, localized(`/blog/${fixturePost(locale).slug}`, locale));
+			await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+			await expect(page.getByTestId('mermaid-diagram').getByRole('button').first()).toBeVisible();
+			await expectAccessible(page);
+		});
+
 		test(`${locale}: open menu has no serious or critical axe violations`, async ({ page }) => {
 			await open(page, localized('/', locale));
 			const chrome = localeCopy[locale].navChrome.shared;
