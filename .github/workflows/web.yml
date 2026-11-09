@@ -2,7 +2,11 @@ name: web
 
 # CI runs on every PR and manual dispatch. ci-work keeps all existing checks.
 # classify selects e2e unless a PR changes only audited root documentation;
-# the skip-e2e PR label also permits a visible skip. Manual runs select all.
+# manual runs select all.
+# Deliberately no push trigger (Q28): strict up-to-date branch protection and
+# squash merges mean the last PR run tested exactly what lands on main.
+# Policy CLI/env changes require a two-step migration: this PR runs base policy;
+# later PRs run the policy landed on main through their own workflow.
 # Three Playwright shards wait for ci-work to replay its Turbo build cache.
 # The always-run required ci gate includes classification, prerelease-guard, ci-work and e2e.
 
@@ -37,9 +41,9 @@ jobs:
         with:
           bun-version-file: .bun-version
       - name: Test prerelease guard
-        run: bun test ./.github/scripts/prerelease-guard.test.ts
+        run: bun .github/scripts/design-prerelease-guard.mjs --self-test
       - name: Require stable design dependencies
-        run: bun .github/scripts/prerelease-guard.ts
+        run: bun .github/scripts/design-prerelease-guard.mjs
 
   classify:
     runs-on: ubuntu-latest
@@ -50,17 +54,47 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
+      # Keep policy dependencies and load-time data under .github/scripts. The
+      # current closure uses only node:fs and git; never resolve PR config/modules.
+      - name: Materialize trusted policy
+        id: policy
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+          if [[ "$EVENT_NAME" == pull_request ]]; then
+            [[ "$BASE_SHA" =~ ^[a-f0-9]{40}$ ]] || exit 1
+            git merge-base --is-ancestor "$BASE_SHA" origin/main
+            revision="$BASE_SHA"
+          else
+            revision="$(git rev-parse origin/main)"
+          fi
+          policy_dir="$(mktemp -d "$RUNNER_TEMP/web-ci.XXXXXX")"
+          git ls-tree -r --name-only -z "$revision" -- .github/scripts > "$policy_dir/paths"
+          while IFS= read -r -d '' path; do
+            mkdir -p "$policy_dir/$(dirname "$path")"
+            git show "$revision:$path" > "$policy_dir/$path"
+          done < "$policy_dir/paths"
+          git show "$revision:.bun-version" > "$policy_dir/.bun-version"
+          test -s "$policy_dir/.github/scripts/web-ci.ts"
+          echo "directory=$policy_dir" >> "$GITHUB_OUTPUT"
+          echo "git_dir=$(git rev-parse --absolute-git-dir)" >> "$GITHUB_OUTPUT"
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version-file: .bun-version
-      - name: Test CI decisions
-        run: bun test ./.github/scripts/web-ci.test.ts
+          bun-version-file: ${{ steps.policy.outputs.directory }}/.bun-version
       - name: Select e2e
         id: select
         env:
           EVENT_NAME: ${{ github.event_name }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GIT_DIR: ${{ steps.policy.outputs.git_dir }}
+          GIT_WORK_TREE: ${{ github.workspace }}
+        working-directory: ${{ steps.policy.outputs.directory }}
         run: bun .github/scripts/web-ci.ts classify
 
   ci-work:
@@ -71,6 +105,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - uses: ./.github/actions/setup
+
+      - name: Test CI decisions
+        run: bun test ./.github/scripts/web-ci*.test.ts
 
       # One Turbo run so check, test and build share the runner in parallel. The
       # build env matches the e2e shards' build, so they replay this cache entry
@@ -102,9 +139,7 @@ jobs:
   # Vercel edge requests.
   e2e:
     if: >-
-      ${{ needs.classify.outputs.e2e != 'false'
-          && (github.event_name != 'pull_request'
-              || !contains(github.event.pull_request.labels.*.name, 'skip-e2e')) }}
+      ${{ needs.classify.outputs.e2e != 'false' }}
     # Gate the 3 shards on the ci-work job: its build populates the Turbo remote
     # cache, so shards replay it instead of running 4 identical builds.
     needs: [classify, ci-work]
@@ -162,13 +197,44 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      # Keep policy dependencies and load-time data under .github/scripts. The
+      # current closure uses only node:fs and git; never resolve PR config/modules.
+      - name: Materialize trusted policy
+        id: policy
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+          if [[ "$EVENT_NAME" == pull_request ]]; then
+            [[ "$BASE_SHA" =~ ^[a-f0-9]{40}$ ]] || exit 1
+            git merge-base --is-ancestor "$BASE_SHA" origin/main
+            revision="$BASE_SHA"
+          else
+            revision="$(git rev-parse origin/main)"
+          fi
+          policy_dir="$(mktemp -d "$RUNNER_TEMP/web-ci.XXXXXX")"
+          git ls-tree -r --name-only -z "$revision" -- .github/scripts > "$policy_dir/paths"
+          while IFS= read -r -d '' path; do
+            mkdir -p "$policy_dir/$(dirname "$path")"
+            git show "$revision:$path" > "$policy_dir/$path"
+          done < "$policy_dir/paths"
+          git show "$revision:.bun-version" > "$policy_dir/.bun-version"
+          test -s "$policy_dir/.github/scripts/web-ci.ts"
+          echo "directory=$policy_dir" >> "$GITHUB_OUTPUT"
+          echo "git_dir=$(git rev-parse --absolute-git-dir)" >> "$GITHUB_OUTPUT"
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version-file: .bun-version
+          bun-version-file: ${{ steps.policy.outputs.directory }}/.bun-version
       - name: Required CI decision
         env:
           NEEDS: ${{ toJSON(needs) }}
-          LABEL_SKIP: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'skip-e2e') }}
+        working-directory: ${{ steps.policy.outputs.directory }}
         run: bun .github/scripts/web-ci.ts required
 
   # ── Merge the shard blob reports into one HTML report when a shard fails ────

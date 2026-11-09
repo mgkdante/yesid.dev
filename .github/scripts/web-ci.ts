@@ -25,14 +25,15 @@ export function changedFiles(base: string, head: string): string[] {
 
 type Needs = Record<string, { result?: string; outputs?: Record<string, string> }>;
 
-export function required(needs: Needs, labelSkip: boolean): boolean {
+// Keep the legacy second argument accepted during the trusted-base rollout.
+export function required(needs: Needs, _labelSkip = false): boolean {
 	if (Object.values(needs).some(job => job.result === 'failure' || job.result === 'cancelled')) return false;
 	if (needs['prerelease-guard']?.result !== 'success') return false;
 	if (needs.classify?.result !== 'success' || needs['ci-work']?.result !== 'success') return false;
 	const selected = needs.classify.outputs?.e2e;
 	if (selected !== 'true' && selected !== 'false') return false;
 	return needs.e2e?.result === 'success'
-		|| (needs.e2e?.result === 'skipped' && (selected === 'false' || labelSkip));
+		|| (needs.e2e?.result === 'skipped' && selected === 'false');
 }
 
 if (import.meta.main) {
@@ -43,7 +44,7 @@ if (import.meta.main) {
 		process.stdout.write(output);
 	} else if (process.argv[2] === 'required') {
 		try {
-			const pass = required(JSON.parse(process.env.NEEDS ?? ''), process.env.LABEL_SKIP === 'true');
+			const pass = required(JSON.parse(process.env.NEEDS ?? ''), false);
 			process.stdout.write(pass ? 'Required CI passed\n' : 'Required CI failed\n');
 			process.exitCode = pass ? 0 : 1;
 		} catch {
