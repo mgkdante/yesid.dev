@@ -1,5 +1,6 @@
 import { getNavigationCaptureY, lenisAwareScrollTo, registerScrollContext, type ScrollContext } from './locale-handoff.svelte';
-import { alignTarget, measurePosition, planRestore, type RestorePlan, type SectionBox } from './reading-position-plan';
+import type { SectionBox } from './reading-position-plan';
+import { createDetailReading, type ReadingSection } from './detail-reading';
 import type { SectionJump } from '@yesid/ui/brand';
 import { snapshot } from '$app/navigation';
 import { onMount } from 'svelte';
@@ -35,70 +36,36 @@ function followLayout(elements: HTMLElement[], align: () => void): () => void {
 	return dispose;
 }
 
-interface FollowState {
-	stopFollowing(): void;
-	request: number;
+function revealId(target: HTMLElement): string | undefined {
+	const marked = target.matches('[data-toc]') ? target : target.querySelector<HTMLElement>('[data-toc]');
+	return target.dataset.sectionIndex !== undefined
+		? `section-${target.dataset.sectionIndex}` : marked?.dataset.toc || target.id;
 }
 
-function cancelFollowing(state: FollowState): void {
-	state.request++;
-	state.stopFollowing();
-}
-
-async function apply(
-	plan: RestorePlan, elements: HTMLElement[], navigation: Pick<SectionJump, 'jump'> | undefined,
-	state: FollowState,
-) {
-	if (plan.kind === 'native') return;
-	const current = state.request;
-	if (plan.kind === 'stay') return;
-	if (plan.kind === 'offset') { lenisAwareScrollTo(plan.y); return; }
-	const target = elements[plan.index];
-	if (plan.reveal && navigation) {
-		const marked = target.matches('[data-toc]') ? target : target.querySelector<HTMLElement>('[data-toc]');
-		const id = target.dataset.sectionIndex !== undefined ? `section-${target.dataset.sectionIndex}` : marked?.dataset.toc || target.id;
-		if (id) await navigation.jump(id, { behavior: 'auto' });
-		if (current !== state.request) return;
-	}
-	const align = () => lenisAwareScrollTo(alignTarget(
-		target.getBoundingClientRect(), plan.progress, window.scrollY, window.innerHeight,
-	));
-	align();
-	// Follow late font, image and diagram layout only until the reader acts.
-	state.stopFollowing = followLayout(elements, align);
-}
-
-/** Locale and history restoration reveal the reading target without changing the bulk preference. */
+/** Browser ports retain each selected element while measuring its current layout. */
 export function detailReadingPosition(selector: string, navigation?: Pick<SectionJump, 'jump'>): DetailReadingContext {
-	const state: FollowState = { stopFollowing: () => {}, request: 0 };
-	const sections = () => [...document.querySelectorAll<HTMLElement>(selector)]
-		.filter((el) => {
-			const box = el.getBoundingClientRect();
-			return box.height > 0 && box.width > 0;
-		});
-	const bulkExpanded = () => document.documentElement.dataset.sectionsChoice === 'expanded';
-	const dispose = () => cancelFollowing(state);
-
-	const restore = (saved: unknown, reason: 'history' | 'locale') => {
-		const current = { sectionCount: 0, bulkExpanded: bulkExpanded(), canReveal: !!navigation };
-		if (reason === 'history' && planRestore(saved, current, reason).kind === 'native') return;
-		dispose();
-		const elements = sections();
-		return apply(planRestore(saved, { ...current, sectionCount: elements.length }, reason),
-			elements, navigation, state);
-	};
-	return {
-		dispose,
-		capture: () => {
-			const y = getNavigationCaptureY() ?? window.scrollY;
-			return measurePosition({
-				sections: sections().map(sectionBox), viewportHeight: window.innerHeight,
-				y, bulkExpanded: bulkExpanded(),
-			});
-		},
-		restore: (saved) => restore(saved, 'locale'),
-		restoreHistory: (saved) => restore(saved, 'history'),
-	};
+	const elements = new WeakMap<ReadingSection, HTMLElement>();
+	return createDetailReading({
+		sections: () => [...document.querySelectorAll<HTMLElement>(selector)]
+			.filter((el) => {
+				const box = el.getBoundingClientRect();
+				return box.height > 0 && box.width > 0;
+			}).map((el) => {
+				const section: ReadingSection = {
+					get box() { return sectionBox(el); },
+					get revealId() { return revealId(el); },
+				};
+				elements.set(section, el);
+				return section;
+			}),
+		viewportHeight: () => window.innerHeight,
+		scrollY: () => window.scrollY,
+		scrollTo: lenisAwareScrollTo,
+		departureY: getNavigationCaptureY,
+		bulkExpanded: () => document.documentElement.dataset.sectionsChoice === 'expanded',
+		jump: navigation ? (id) => navigation.jump(id, { behavior: 'auto' }) : undefined,
+		follow: (targets, align) => followLayout(targets.map((target) => elements.get(target)!), align),
+	});
 }
 
 /** Called during initialization. Kit owns the per-history-entry snapshot lifetime. */
