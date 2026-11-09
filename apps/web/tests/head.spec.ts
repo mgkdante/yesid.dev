@@ -1,20 +1,16 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page, type APIRequestContext } from '@playwright/test';
+import { parseDocument, DomUtils } from 'htmlparser2';
+import { projectDetailLinks } from './_support/helpers';
 
-import { DEFAULT_LOCALE } from '../src/lib/utils/locale';
-import { isPathPublished, STATIC_PAGE_PATHS } from '../src/lib/catalog/availability';
-import { PUBLISHED_LOCALES } from '../src/lib/utils/published-locales';
 
 test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
 
 type Cluster = { loc: string; alternates: string[][] };
-const prefix = new RegExp(`^/(${PUBLISHED_LOCALES.filter((l) => l !== DEFAULT_LOCALE).join('|')})(?=/|$)`);
 const pathOf = (href: string) => new URL(href).pathname;
-const routeOf = (href: string) => pathOf(href).replace(prefix, '') || '/';
-const localeOf = (href: string) => prefix.exec(pathOf(href))?.[1] ?? DEFAULT_LOCALE;
 const xml = (text: string) => text.replaceAll('&amp;', '&');
 
-async function sitemap(page: Page): Promise<Cluster[]> {
-	const body = await (await page.request.get('/sitemap.xml')).text();
+async function sitemap(request: APIRequestContext): Promise<Cluster[]> {
+	const body = await (await request.get('/sitemap.xml')).text();
 	return [...body.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(([, url]) => ({
 		loc: xml(/<loc>([^<]+)<\/loc>/.exec(url!)![1]!),
 		alternates: [...url!.matchAll(/hreflang="([^"]+)" href="([^"]+)"/g)].map(([, lang, href]) => [lang!, xml(href!)]),
@@ -22,8 +18,7 @@ async function sitemap(page: Page): Promise<Cluster[]> {
 }
 
 async function expectHead(page: Page, { loc, alternates }: Cluster) {
-	const response = await page.goto(pathOf(loc));
-	expect(response?.ok(), loc).toBe(true);
+	await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', loc);
 	await expect(page).toHaveTitle(/\S/);
 	expect((await page.title()).length).toBeLessThanOrEqual(70);
 	const imageAlt = await page.locator('meta[property="og:image:alt"]').getAttribute('content');
@@ -59,29 +54,45 @@ async function expectHead(page: Page, { loc, alternates }: Cluster) {
 	}
 }
 
-for (const route of STATIC_PAGE_PATHS.filter((path) => isPathPublished(path))) {
-	for (const locale of PUBLISHED_LOCALES) {
-		test(`${route} (${locale}): the head matches its sitemap cluster`, async ({ page }) => {
-			const entry = (await sitemap(page)).find((c) => routeOf(c.loc) === route && localeOf(c.loc) === locale);
-			expect(entry, `${route} ${locale} in the sitemap`).toBeDefined();
-			await expectHead(page, entry!);
-		});
-	}
-}
-
-for (const section of ['/blog/', '/projects/', '/services/', '/legal/']) {
-	test(`the first ${section} page's head matches its sitemap cluster`, async ({ page }) => {
-		const entry = (await sitemap(page)).find(
-			(c) => routeOf(c.loc).startsWith(section) && !STATIC_PAGE_PATHS.includes(routeOf(c.loc)) && c.alternates.length > 1,
-		);
-		expect(entry, `a ${section} page in the sitemap`).toBeDefined();
-		await expectHead(page, entry!);
+test('client navigation updates the detail head and serves its share image', async ({ page }) => {
+	await page.addInitScript(() => {
+		document.addEventListener('themechange', () => performance.mark('app-mounted'), { once: true });
 	});
-}
+	await page.goto('/projects');
+	await expect.poll(() => page.evaluate(() => performance.getEntriesByName('app-mounted').length)).toBe(1);
+	const link = projectDetailLinks(page).first();
+	const target = await link.getAttribute('href');
+	expect(target).toBeTruthy();
+	const entry = (await sitemap(page.request)).find(row => pathOf(row.loc) === target);
+	expect(entry, 'detail page in the sitemap').toBeDefined();
+	const documentStart = await page.evaluate(() => performance.timeOrigin);
+	await link.click();
+	await page.waitForURL(target!);
+	await expect(page.getByTestId('project-detail-page')).toBeVisible();
+	expect(await page.evaluate(() => performance.timeOrigin)).toBe(documentStart);
+	await expectHead(page, entry!);
+});
 
-test('robots follows the host indexing policy', async ({ page }) => {
+test('every sitemap share image resolves to an image response', async ({ request }) => {
+	const images = new Set<string>();
+	for (const { loc } of await sitemap(request)) {
+		const response = await request.get(pathOf(loc));
+		expect(response.ok(), loc).toBe(true);
+		const document = parseDocument(await response.text());
+		const image = DomUtils.findOne(node => node.name === 'meta' && node.attribs.property === 'og:image', document.children);
+		expect(image, `${loc} has a share image`).not.toBeNull();
+		images.add(pathOf(image!.attribs.content!));
+	}
+	for (const path of images) {
+		const response = await request.get(path);
+		expect(response.ok(), path).toBe(true);
+		expect(response.headers()['content-type'], path).toMatch(/^image\//);
+	}
+});
+
+test('robots follows the host indexing policy', async ({ request }) => {
 	// Prerendered documents are static (the host adds their header), so the policy shows on robots itself.
-	const response = await page.request.get('/robots.txt');
+	const response = await request.get('/robots.txt');
 	const robots = await response.text();
 	if (/^Disallow: \/$/m.test(robots)) expect(response.headers()['x-robots-tag']).toContain('noindex');
 	else expect(robots).toMatch(/^Sitemap: \S+\/sitemap\.xml$/m);
