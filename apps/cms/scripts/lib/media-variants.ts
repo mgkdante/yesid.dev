@@ -24,6 +24,7 @@ import { existsSync, statSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import type { MediaVariantEntry, MediaVariantSource } from '@repo/shared';
+import { readVariantReceipt, reuseVariant, type VariantReceipt } from './variant-receipt';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_REPO_ROOT = resolve(SCRIPT_DIR, '../../../..');
@@ -84,12 +85,14 @@ export function variantPathFor(legacyPath: string, width: number): string {
 export async function prepareMediaVariants(
 	manifest: MediaVariantsManifestInput,
 	repoRoot = DEFAULT_REPO_ROOT,
+	options: { reuse?: boolean; receipt?: VariantReceipt } = {},
 ): Promise<PreparedMediaVariants> {
 	// Load sharp only when preparing variants, after source resolution and auth.
 	const { default: sharp } = await import('sharp');
 	const staticRoot = resolve(repoRoot, manifest.sourceRoot);
 	const out: Record<string, MediaVariantEntry> = {};
 	const writes: Array<PreparedMediaVariants['writes'][number]> = [];
+	const receipt = options.reuse === false ? undefined : options.receipt ?? await readVariantReceipt(repoRoot);
 
 	const rasterAssets = manifest.assets
 		.filter((a) => isRasterAsset(a.legacyPath))
@@ -104,6 +107,8 @@ export async function prepareMediaVariants(
 		if (!existsSync(sourcePath)) {
 			throw new Error(`[media-variants] missing mirrored source file: ${legacyPath}`);
 		}
+		const reused = await reuseVariant(receipt, staticRoot, legacyPath);
+		if (reused) return { legacyPath, data: reused, writes: assetWrites };
 
 		const source = sharp(sourcePath);
 		const meta = await source.metadata();

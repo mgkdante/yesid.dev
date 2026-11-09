@@ -191,6 +191,18 @@ and the SHA-256 digest of each committed mirror. Export verifies those bytes
 before emitting; manifest tests check every digest. Web guards reject literal
 Directus asset identities and new raw HTML/SVG injection files outside the
 reviewed allowlist.
+
+`fixtures/media-variants-receipt.json` binds responsive variant metadata to
+the source SHA-256, each output SHA-256, and the encoder recipe. Fixture and
+live exports stream-verify these files with at most two sources in flight,
+then reuse matching variants without decoding or rewriting them. Missing or
+changed outputs, changed sources, and encoder changes use normal generation;
+the original mirror and UUID guards still apply before emission.
+After an intentional source or encoder update, run
+`bun apps/cms/scripts/refresh-media-variants.ts` from the repository root and
+commit the responsive files and receipt together. This offline command checks
+the mirror manifest first and does not contact the CMS.
+
 `fixtures/assets-id-map.json` and its shared-package mirror are a frozen record
 of the 18d migration, consumed by export and tests. They are not a regeneration
 target. File UUIDs are environment-specific and must not be copied into another
