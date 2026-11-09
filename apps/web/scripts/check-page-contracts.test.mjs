@@ -1,7 +1,10 @@
 // Inspect emitted documents and image bytes without starting a browser or server.
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import { test } from 'node:test';
+import { readFile, mkdtemp, writeFile, unlink, rmdir } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { test, after } from 'node:test';
 import { parseDocument } from 'htmlparser2';
 
 const output = new URL('../.svelte-kit/output/', import.meta.url);
@@ -29,6 +32,31 @@ function tags(node, name) {
 
 function text(node) {
 	return node?.type === 'text' ? node.data : (node?.children ?? []).map(text).join('');
+}
+
+function imageBytes(bytes) {
+	if (bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) return true;
+	if (bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255) return true;
+	if (/^GIF8[79]a/.test(bytes.toString('ascii', 0, 6))) return true;
+	if (bytes.toString('ascii', 0, 4) === 'RIFF' && bytes.toString('ascii', 8, 12) === 'WEBP') return true;
+	if (bytes.toString('ascii', 4, 8) === 'ftyp' && /avif|avis/.test(bytes.toString('ascii', 8, 32))) return true;
+	const root = parseDocument(bytes.toString('utf8'), { xmlMode: true }).children.find(node => node.type === 'tag');
+	return root?.name.split(':').at(-1) === 'svg';
+}
+
+async function shareImageBytes(path, roots) {
+	let missing;
+	for (const root of roots) {
+		const asset = new URL(path.slice(1), root);
+		assert.ok(asset.href.startsWith(root.href), 'Share image stays inside the asset root');
+		try {
+			return await readFile(asset);
+		} catch (error) {
+			if (error.code !== 'ENOENT') throw error;
+			missing = error;
+		}
+	}
+	throw missing;
 }
 
 async function documentFor(path) {
@@ -60,17 +88,12 @@ function headContract(document, entry) {
 	assert.equal(content('twitter:image:alt'), alt);
 }
 
-async function imageContract(document) {
+async function imageContract(document, roots = [new URL('prerendered/pages/', output), new URL('../static/', import.meta.url)]) {
 	const content = property => tags(tags(document, 'head')[0], 'meta').find(node => node.attribs.property === property)?.attribs.content;
 	const path = new URL(content('og:image')).pathname;
+	const bytes = await shareImageBytes(path, roots);
+	assert.ok(imageBytes(bytes), `${path}: not image bytes`);
 	if (!path.startsWith('/og/')) return;
-	let bytes;
-	try {
-		bytes = await readFile(new URL(`prerendered/pages${path}`, output));
-	} catch (error) {
-		if (error.code !== 'ENOENT') throw error;
-		bytes = await readFile(new URL(`../static${path}`, import.meta.url));
-	}
 	assert.deepEqual([...bytes.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10], 'OG bytes are PNG');
 	assert.deepEqual([bytes.readUInt32BE(16), bytes.readUInt32BE(20)], [
 		Number(content('og:image:width')), Number(content('og:image:height')),
@@ -92,3 +115,23 @@ for (const entry of entries) {
 	test(`${path}: head matches sitemap`, () => headContract(document, entry));
 	test(`${path}: share image dimensions`, () => imageContract(document));
 }
+
+const fixtureDirectory = await mkdtemp(join(tmpdir(), 'yesid-share-images-'));
+const fixtureRoot = pathToFileURL(`${fixtureDirectory}/`);
+await writeFile(new URL('cover.png', fixtureRoot), Buffer.from(
+	'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==', 'base64',
+));
+await writeFile(new URL('broken.png', fixtureRoot), '<html>Not an image</html>');
+after(async () => {
+	await unlink(new URL('cover.png', fixtureRoot));
+	await unlink(new URL('broken.png', fixtureRoot));
+	await rmdir(fixtureDirectory);
+});
+const imageDocument = path => parseDocument(`<head><meta property="og:image" content="https://yesid.dev${path}"></head>`);
+test('a valid mirrored share image is accepted', () => imageContract(imageDocument('/cover.png'), [fixtureRoot]));
+test('a missing mirrored share image fails', async () => {
+	await assert.rejects(imageContract(imageDocument('/missing-image.png'), [fixtureRoot]), { code: 'ENOENT' });
+});
+test('non-image bytes in a mirrored share image fail', async () => {
+	await assert.rejects(imageContract(imageDocument('/broken.png'), [fixtureRoot]), /not image bytes/);
+});

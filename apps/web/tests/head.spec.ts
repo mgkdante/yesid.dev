@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page, type APIRequestContext } from '@playwright/test';
+import { parseDocument, DomUtils } from 'htmlparser2';
 import { projectDetailLinks } from './_support/helpers';
 
 
@@ -8,8 +9,8 @@ type Cluster = { loc: string; alternates: string[][] };
 const pathOf = (href: string) => new URL(href).pathname;
 const xml = (text: string) => text.replaceAll('&amp;', '&');
 
-async function sitemap(page: Page): Promise<Cluster[]> {
-	const body = await (await page.request.get('/sitemap.xml')).text();
+async function sitemap(request: APIRequestContext): Promise<Cluster[]> {
+	const body = await (await request.get('/sitemap.xml')).text();
 	return [...body.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(([, url]) => ({
 		loc: xml(/<loc>([^<]+)<\/loc>/.exec(url!)![1]!),
 		alternates: [...url!.matchAll(/hreflang="([^"]+)" href="([^"]+)"/g)].map(([, lang, href]) => [lang!, xml(href!)]),
@@ -62,7 +63,7 @@ test('client navigation updates the detail head and serves its share image', asy
 	const link = projectDetailLinks(page).first();
 	const target = await link.getAttribute('href');
 	expect(target).toBeTruthy();
-	const entry = (await sitemap(page)).find(row => pathOf(row.loc) === target);
+	const entry = (await sitemap(page.request)).find(row => pathOf(row.loc) === target);
 	expect(entry, 'detail page in the sitemap').toBeDefined();
 	const documentStart = await page.evaluate(() => performance.timeOrigin);
 	await link.click();
@@ -70,6 +71,23 @@ test('client navigation updates the detail head and serves its share image', asy
 	await expect(page.getByTestId('project-detail-page')).toBeVisible();
 	expect(await page.evaluate(() => performance.timeOrigin)).toBe(documentStart);
 	await expectHead(page, entry!);
+});
+
+test('every sitemap share image resolves to an image response', async ({ request }) => {
+	const images = new Set<string>();
+	for (const { loc } of await sitemap(request)) {
+		const response = await request.get(pathOf(loc));
+		expect(response.ok(), loc).toBe(true);
+		const document = parseDocument(await response.text());
+		const image = DomUtils.findOne(node => node.name === 'meta' && node.attribs.property === 'og:image', document.children);
+		expect(image, `${loc} has a share image`).not.toBeNull();
+		images.add(pathOf(image!.attribs.content!));
+	}
+	for (const path of images) {
+		const response = await request.get(path);
+		expect(response.ok(), path).toBe(true);
+		expect(response.headers()['content-type'], path).toMatch(/^image\//);
+	}
 });
 
 test('robots follows the host indexing policy', async ({ request }) => {
