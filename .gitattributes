@@ -8,6 +8,7 @@
 *.svelte text eol=lf
 *.svg text eol=lf
 *.json text eol=lf
+.github/scripts/design-prerelease-guard.mjs text eol=lf
 
 # Binary assets: never touch
 *.png binary
