@@ -2,9 +2,6 @@ import { localeCopy } from '../src/lib/locales';
 import { expect, test, type Page } from '@playwright/test';
 import { expectAccessible, expectNoHorizontalOverflow, expectTapTargets } from '@yesid/config/playwright';
 
-import { projects } from '../src/lib/content/projects';
-import { blogPosts } from '../src/lib/content/blog';
-import { services } from '../src/lib/content/services';
 import { contactContent } from '../src/lib/content/contact-page';
 import { menuItems } from '../src/lib/content/nav';
 import { siteLabels } from '../src/lib/content/site-labels';
@@ -13,6 +10,7 @@ import type { Locale } from '../src/lib/types';
 import { DEFAULT_LOCALE, resolveLocale } from '../src/lib/utils/locale';
 import { PUBLISHED_LOCALES } from '../src/lib/utils/published-locales';
 import { visibleContactTerminal } from './_support/helpers';
+import { fixturePost, fixtureProject, fixtureService } from './_support/content-fixtures';
 
 const chrome = localeCopy;
 
@@ -20,13 +18,13 @@ const localized = (path: string, locale: Locale) =>
 	locale === DEFAULT_LOCALE ? path : `/${locale}${path === '/' ? '' : path}`;
 // Each locale's own pages: a post exists in one language only.
 const pages = PUBLISHED_LOCALES.flatMap((locale) => {
-	const post = blogPosts.find((entry) => entry.lang === locale);
-	const postPath = post && `/blog/${post.slug}`;
+	const post = fixturePost(locale);
+	const postPath = `/blog/${post.slug}`;
 	return [
 		...sitePages.map(({ path }) => path),
-		`/projects/${projects[0].slug}`,
-		...(postPath ? [postPath] : []),
-		`/services/${services[0].id}`,
+		`/projects/${fixtureProject.slug}`,
+		postPath,
+		`/services/${fixtureService.id}`,
 	].map((path) => ({ locale, url: localized(path, locale), post: path === postPath }));
 });
 
