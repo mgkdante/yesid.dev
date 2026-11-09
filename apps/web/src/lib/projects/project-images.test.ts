@@ -64,3 +64,17 @@ describe('project gallery captures', () => {
   expect(docs).toEqual(before);
  });
 });
+
+ it('deduplicates identical pairs across sections while retaining shared dark assets with distinct light captures', () => {
+  const pair = (light: string): ImageBlock => ({ id: 'local', type: 'image', data: {
+   file: { fileId: 'dark', fileURL: '', url: '/dark.png' },
+   variants: { light: { fileId: light, fileURL: '', url: `/${light}.png` } },
+   caption: light, withBorder: false, withBackground: false, stretched: false,
+  } });
+  const docs: BlockEditorDoc[] = ['l1', 'l1', 'l2', 'l2'].map(light => ({ time: 0, version: '2', blocks: [pair(light)] }));
+  const images = collectProjectGalleryImages(docs);
+  expect(images.map(image => [image.data.file.fileId, image.captureTheme])).toEqual([
+   ['dark', 'dark'], ['l1', 'light'], ['dark', 'dark'], ['l2', 'light'],
+  ]);
+  expect(new Set(images.map(image => image.id)).size).toBe(4);
+ });

@@ -1,7 +1,7 @@
 import { getContext, setContext } from 'svelte';
 import type { ImageBlock } from '@repo/shared';
 import type { YouTubeVideo } from '#lib/utils/youtube.ts';
-import { imageIdentity, type GalleryImage } from '#lib/projects/project-images.ts';
+import { imageIdentity, imagePairIdentity, type GalleryImage } from '#lib/projects/project-images.ts';
 
 export const articleMediaLabels = {
 	en: { dark: 'Dark', light: 'Light', images: 'Images', previous: 'Previous', next: 'Next', position: 'Position', diagram: 'Enlarge diagram' },
@@ -22,9 +22,15 @@ export function setArticleMedia(images: () => readonly GalleryImage[], videos: (
 		get selection() { return selection; },
 		get count() { return selection?.kind === 'image' ? images().length : selection?.kind === 'video' ? videos().length : 1; },
 		get index() { return selection && 'index' in selection ? selection.index : 0; },
-		openImage(data: ImageBlock['data'], trigger: HTMLElement, galleryId?: string) {
+		openImage(data: ImageBlock['data'], trigger: HTMLElement, galleryId?: string, displayedTheme: 'dark' | 'light' = 'dark') {
 			const identity = imageIdentity(data.file);
-			const index = images().findIndex((image) => galleryId ? image.id === galleryId : imageIdentity(image.data.file) === identity);
+			const pairId = imagePairIdentity(data);
+			const captureId = data.variants?.light ? `${pairId}:${displayedTheme}` : pairId;
+			let index = images().findIndex((image) => image.id === (galleryId ?? captureId));
+			if (index < 0 && !galleryId) {
+				// Blog lists retain one theme-selected item per original file.
+				index = images().findIndex((image) => !image.captureTheme && imageIdentity(image.data.file) === identity);
+			}
 			if (index < 0) return;
 			opener = trigger;
 			selection = { kind: 'image', index };

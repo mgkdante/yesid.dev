@@ -47,7 +47,7 @@
 
 <figure class:bordered={data.withBorder} class:bg={data.withBackground} class:stretched={data.stretched}>
 	{#if media}
-		<button type="button" class="article-image-open" aria-label={openTemplate.replace('{caption}', altText)} onclick={(event) => { event.stopPropagation(); media.openImage(data, event.currentTarget); }}>
+		<button type="button" class="article-image-open" aria-label={openTemplate.replace('{caption}', altText)} onclick={(event) => { event.stopPropagation(); media.openImage(data, event.currentTarget, undefined, activeTheme); }}>
 			{@render image()}
 		</button>
 	{:else}

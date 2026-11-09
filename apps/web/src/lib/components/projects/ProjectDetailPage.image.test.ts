@@ -105,6 +105,31 @@ describe('ProjectDetailPage image placement', () => {
 		document.documentElement.dataset.theme = 'dark';
 	});
 
+	it.each(['en', 'fr', 'es'] as const)('opens the displayed inline capture and pair index in %s after theme changes', async (locale) => {
+		document.documentElement.dataset.theme = 'light';
+		const first = storyImage('first', 'shared-dark', 'First pair');
+		const second = storyImage('second', 'shared-dark', 'Second pair');
+		second.data.variants = { light: { fileId: 'second-light', fileURL: '', url: '/second-light.png' } };
+		const project = projectFactory.build({
+			description: { en: storyDoc(first), [locale]: storyDoc(first) },
+			sections: [{ title: { en: 'Story', [locale]: 'Story' }, content: { en: storyDoc(...doc('Story prose').blocks, second), [locale]: storyDoc(...doc('Story prose').blocks, second) } }],
+		});
+		const { container } = render(ProjectDetailPage, {
+			props: { project, services: [], serviceSvgContents: {} },
+			context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
+		});
+		const inline = within(container.querySelector('.sections-column') as HTMLElement).getByRole('img', { name: 'Second pair' });
+		for (const [mode, asset, position] of [['light', 'second-light', '4 / 4'], ['dark', 'shared-dark', '3 / 4'], ['light', 'second-light', '4 / 4']]) {
+			document.documentElement.dataset.theme = mode;
+			await waitFor(() => expect(inline).toHaveAttribute('src', `/test-assets/${asset}?key=card-600`));
+			await fireEvent.click(inline.closest('button')!);
+			expect(screen.getByTestId('project-image-gallery-lightbox-image')).toHaveAttribute('src', `/test-assets/${asset}?key=hero-1200`);
+			expect(within(screen.getByRole('dialog')).getByRole('status')).toHaveTextContent(position!);
+			await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+			await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+		}
+	});
+
 	it('collects actual repeated YouTube links into one video-only gallery preview per layout', () => {
 		const project = projectFactory.build({
 			description: { en: doc('https://youtu.be/M7lc1UVf-VE') },
