@@ -1,5 +1,6 @@
-import { projects } from '../../src/lib/content/projects';
 import { siteLabels } from '../../src/lib/content/site-labels';
+import { projects } from '../../src/lib/content/projects';
+import { PUBLISHED_LOCALES } from '../../src/lib/utils/published-locales';
 import { test, expect } from '@playwright/test';
 import { gotoFirstDetail, projectDetailLinks } from '../_support/helpers';
 
@@ -10,6 +11,26 @@ test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or view
 // networkidle) — replacing the hand-rolled open-first-project boilerplate.
 const gotoFirstProject = (page: import('@playwright/test').Page): Promise<string> =>
 	gotoFirstDetail(page, '/projects', projectDetailLinks, 'project-detail-page');
+
+test('a generated private project keeps its repository non-clickable on the page', async ({ page }) => {
+	const project = projects.find(item => item.repoPrivate && item.liveUrl?.trim());
+	if (!project) throw new Error('Fixture requires a private project with a live link');
+	for (const locale of PUBLISHED_LOCALES) {
+		const prefix = locale === 'en' ? '' : `/${locale}`;
+		const response = await page.goto(`${prefix}/projects/${project.slug}`);
+		expect(response?.status()).toBe(200);
+		await expect(page.getByTestId('project-detail-page')).toBeVisible();
+		const cards = page.getByTestId('project-links-card');
+		const privateState = cards.getByTestId('project-repo-private');
+		await expect(privateState.filter({ visible: true })).toBeVisible();
+		expect(await privateState.evaluateAll(nodes => nodes.some(node => node.closest('a')))).toBe(false);
+		const hrefs = await cards.locator('a').evaluateAll(links => links.map(link => link.getAttribute('href')));
+		expect(hrefs.every(href => href !== null && [project.liveUrl, project.docsUrl].includes(href))).toBe(true);
+		await expect(cards.filter({ visible: true }).getByRole('link', {
+			name: siteLabels.projectsChrome.detail.glance.liveSiteLabel[locale]!, exact: true,
+		})).toHaveAttribute('href', project.liveUrl!);
+	}
+});
 
 test.describe('/projects/[slug] detail page content', () => {
 	test('project detail page renders with header + sections', async ({ page }) => {
@@ -127,47 +148,5 @@ test.describe('/projects/[slug] detail page content', () => {
 		// And a Stack sub-section listing at least one technology badge.
 		const stackTitle = glancePanel.locator('h2.section-title').filter({ hasText: siteLabels.projectsChrome.detail.glance.stack.en });
 		await expect(stackTitle).toBeVisible();
-	});
-});
-
-test.describe('/projects/[slug] repo-private links state (homework #13)', () => {
-	// Select a private repository with real repo/live URLs from the generated fixture.
-	// Its repository link must be suppressed while the live-site link stays visible.
-	const candidate = projects.find((project) =>
-		project.repoPrivate === true && project.repoUrl?.trim() && project.liveUrl?.trim()
-	);
-	test('private repo renders honest non-link state instead of a GitHub link', async ({ page }) => {
-		test.skip(!candidate, 'Fixture has no private-repo project with repoUrl and liveUrl');
-		await page.goto(`/projects/${candidate!.slug}`);
-		await expect(page.locator('[data-testid="project-detail-page"]')).toBeVisible();
-
-		// The links card renders twice (desktop toc rail + hidden mobile glance).
-		// Scope to the visible instance to dodge strict-mode "resolved to 2".
-		const linksCard = page.getByTestId('project-links-card').filter({ visible: true }).first();
-		await expect(linksCard).toBeVisible();
-
-		const privateState = linksCard.getByTestId('project-repo-private');
-		await expect(privateState).toBeVisible();
-		await expect(privateState).toHaveText(siteLabels.projectsChrome.detail.glance.repoPrivateLabel.en);
-
-		// No GitHub anchor ships in ANY links-card instance (visible or hidden):
-		// repoUrl is set on this project, so a zero count proves the suppression.
-		await expect(page.getByTestId('project-links-card').locator('a[href*="github.com"]')).toHaveCount(0);
-		await expect(page.getByTestId('project-links-card').locator(`a[href="${candidate!.repoUrl}"]`)).toHaveCount(0);
-		// The live-site link still renders: the private state coexists with real links.
-		await expect(linksCard.locator(`a[href="${candidate!.liveUrl}"]`)).toBeVisible();
-	});
-
-	test('FR locale renders the translated private-repo label', async ({ page }) => {
-		test.skip(!candidate, 'Fixture has no private-repo project with repoUrl and liveUrl');
-		await page.goto(`/fr/projects/${candidate!.slug}`);
-		await expect(page.locator('[data-testid="project-detail-page"]')).toBeVisible();
-
-		const privateState = page.getByTestId('project-repo-private').filter({ visible: true }).first();
-		await expect(privateState).toBeVisible();
-		await expect(privateState).toHaveText(siteLabels.projectsChrome.detail.glance.repoPrivateLabel.fr!);
-		await expect(page.getByTestId('project-links-card').locator('a[href*="github.com"]')).toHaveCount(0);
-		await expect(page.getByTestId('project-links-card').locator(`a[href="${candidate!.repoUrl}"]`)).toHaveCount(0);
-		await expect(page.getByTestId('project-links-card').filter({ visible: true }).first().locator(`a[href="${candidate!.liveUrl}"]`)).toBeVisible();
 	});
 });
