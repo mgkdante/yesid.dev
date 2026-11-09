@@ -1,16 +1,19 @@
 import { test, expect } from '@playwright/test';
+import { legalPages } from '../../src/lib/content/legal-pages';
 
 test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or viewport-independent.');
 
 for (const locale of ['en', 'fr', 'es'] as const) {
   const prefix = locale === 'en' ? '' : '/' + locale;
-  test(locale + ' legal page renders its body', async ({ page }) => {
-    const response = await page.goto(prefix + '/legal/privacy');
+  for (const { slug } of legalPages) {
+  test(locale + ' /legal/' + slug + ' responds and shows its body', async ({ page }) => {
+    const response = await page.goto(prefix + '/legal/' + slug);
     expect(response?.status()).toBe(200);
     await expect(page.getByTestId('page-legal')).toBeVisible();
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.getByTestId('legal-body')).toBeVisible();
   });
+  }
 
   test(locale + ' notice keeps private location details out of the rendered body', async ({ page }) => {
     await page.goto(prefix + '/legal/notice');

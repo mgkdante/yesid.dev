@@ -21,12 +21,15 @@ it.each(PUBLISHED_LOCALES)('keeps private repositories non-links beside a live l
 		repoUrl: 'https://github.com/example/private', repoPrivate: true,
 		liveUrl: 'https://example.com/live',
 	});
-	render(ProjectProofLinks, {
+	const { container } = render(ProjectProofLinks, {
 		props: { project },
 		context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
 	});
 	expect(screen.queryByRole('link', { name: siteLabels.projectsChrome.detail.glance.githubLabel[locale]! })).not.toBeInTheDocument();
-	expect(screen.getByTestId('project-repo-private')).toHaveTextContent(siteLabels.projectsChrome.detail.glance.repoPrivateLabel[locale]!);
+	const privateState = screen.getByTestId('project-repo-private');
+	expect(privateState).toHaveTextContent(siteLabels.projectsChrome.detail.glance.repoPrivateLabel[locale]!);
+	expect(privateState.closest('a')).toBeNull();
+	expect([...container.querySelectorAll('a')].map(link => link.getAttribute('href'))).not.toContain(project.repoUrl);
 	expect(screen.getByRole('link', { name: siteLabels.projectsChrome.detail.glance.liveSiteLabel[locale]! })).toHaveAttribute('href', project.liveUrl);
 });
 

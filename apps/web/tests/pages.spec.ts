@@ -29,6 +29,17 @@ for (const { path } of sitePages) {
 	}
 }
 
+for (const [path, location] of [
+	['/tech-stack', '/services'],
+	['/fr/tech-stack', '/fr/services'],
+]) {
+	test(`${path} permanently redirects to ${location}`, async ({ request }) => {
+		const response = await request.get(path, { maxRedirects: 0 });
+		expect(response.status()).toBe(301);
+		expect(response.headers()['location']).toBe(location);
+	});
+}
+
 test('never-published locale prefix /de/* returns 404', async ({ page }) => {
   const response = await page.goto('/de/about');
   expect(response?.status()).toBe(404);

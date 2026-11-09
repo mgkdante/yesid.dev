@@ -1,4 +1,6 @@
 import { siteLabels } from '../../src/lib/content/site-labels';
+import { projects } from '../../src/lib/content/projects';
+import { PUBLISHED_LOCALES } from '../../src/lib/utils/published-locales';
 import { test, expect } from '@playwright/test';
 import { gotoFirstDetail, projectDetailLinks } from '../_support/helpers';
 
@@ -9,6 +11,26 @@ test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or view
 // networkidle) — replacing the hand-rolled open-first-project boilerplate.
 const gotoFirstProject = (page: import('@playwright/test').Page): Promise<string> =>
 	gotoFirstDetail(page, '/projects', projectDetailLinks, 'project-detail-page');
+
+test('a generated private project keeps its repository non-clickable on the page', async ({ page }) => {
+	const project = projects.find(item => item.repoPrivate && item.liveUrl?.trim());
+	if (!project) throw new Error('Fixture requires a private project with a live link');
+	for (const locale of PUBLISHED_LOCALES) {
+		const prefix = locale === 'en' ? '' : `/${locale}`;
+		const response = await page.goto(`${prefix}/projects/${project.slug}`);
+		expect(response?.status()).toBe(200);
+		await expect(page.getByTestId('project-detail-page')).toBeVisible();
+		const cards = page.getByTestId('project-links-card');
+		const privateState = cards.getByTestId('project-repo-private');
+		await expect(privateState.filter({ visible: true })).toBeVisible();
+		expect(await privateState.evaluateAll(nodes => nodes.some(node => node.closest('a')))).toBe(false);
+		const hrefs = await cards.locator('a').evaluateAll(links => links.map(link => link.getAttribute('href')));
+		expect(hrefs.every(href => href !== null && [project.liveUrl, project.docsUrl].includes(href))).toBe(true);
+		await expect(cards.filter({ visible: true }).getByRole('link', {
+			name: siteLabels.projectsChrome.detail.glance.liveSiteLabel[locale]!, exact: true,
+		})).toHaveAttribute('href', project.liveUrl!);
+	}
+});
 
 test.describe('/projects/[slug] detail page content', () => {
 	test('project detail page renders with header + sections', async ({ page }) => {
