@@ -24,7 +24,7 @@ const rank = ({ name = '' }: { name?: string }) => shardOrder.indexOf(name) + 1 
 
 export default defineConfig({
 	// A deployed preview scales out; one local preview server only slows down under parallel load.
-	fullyParallel: Boolean(externalBaseURL),
+	fullyParallel: Boolean(externalBaseURL) || Boolean(process.env.CI),
 	workers: externalBaseURL ? Number(process.env.PLAYWRIGHT_WORKERS ?? 8) : process.env.CI ? 1 : undefined,
 	retries: 0,
 	timeout: process.env.CI ? 45_000 : 30_000,
