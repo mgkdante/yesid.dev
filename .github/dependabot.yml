@@ -1,6 +1,6 @@
 # Homework #16 (operator decision 2026-07-01): monthly grouped dependabot,
-# GitHub Actions only. Package updates stay manual: every PR bills e2e shards
-# unless labeled, so npm/bun ecosystems are deliberately NOT enrolled.
+# GitHub Actions only. Actions updates touch CI config and run every check.
+# Package updates stay manual; npm/bun ecosystems are deliberately NOT enrolled.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -11,5 +11,3 @@ updates:
       actions:
         patterns:
           - "*"
-    labels:
-      - skip-e2e
