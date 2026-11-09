@@ -4,7 +4,7 @@ name: web
 # classify selects e2e unless a PR changes only audited root documentation;
 # the skip-e2e PR label also permits a visible skip. Manual runs select all.
 # Three Playwright shards wait for ci-work to replay its Turbo build cache.
-# The always-run required ci gate includes classification, ci-work and e2e.
+# The always-run required ci gate includes classification, prerelease-guard, ci-work and e2e.
 
 on:
   pull_request:
@@ -28,6 +28,19 @@ concurrency:
 # then add the TURBO_TOKEN secret + TURBO_TEAM variable.
 
 jobs:
+  prerelease-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version-file: .bun-version
+      - name: Test prerelease guard
+        run: bun test ./.github/scripts/prerelease-guard.test.ts
+      - name: Require stable design dependencies
+        run: bun .github/scripts/prerelease-guard.ts
+
   classify:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -144,7 +157,7 @@ jobs:
 
   ci:
     if: always()
-    needs: [classify, ci-work, e2e]
+    needs: [classify, ci-work, e2e, prerelease-guard]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
