@@ -34,6 +34,16 @@ function text(node) {
 	return node?.type === 'text' ? node.data : (node?.children ?? []).map(text).join('');
 }
 
+function oneTag(document, name, predicate, label) {
+	const matches = tags(document, name).filter(predicate);
+	assert.equal(matches.length, 1, `${label}: expected exactly one matching element`);
+	return matches[0];
+}
+
+function metaContent(document, name, kind = 'name') {
+	return oneTag(document, 'meta', node => node.attribs[kind] === name, name).attribs.content;
+}
+
 function imageBytes(bytes) {
 	if (bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) return true;
 	if (bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255) return true;
@@ -67,18 +77,18 @@ async function documentFor(path) {
 
 function headContract(document, entry) {
 	const head = tags(document, 'head')[0];
-	const content = (name, kind = 'name') => tags(head, 'meta').find(node => node.attribs[kind] === name)?.attribs.content;
+	const content = (name, kind = 'name') => metaContent(document, name, kind);
 	const title = text(tags(head, 'title')[0]);
 	assert.match(title, /\S/);
 	assert.ok(title.length <= 70, 'Title fits the share/search limit');
 	assert.match(content('description') ?? '', /\S/);
 	assert.equal(content('robots'), 'max-image-preview:large');
-	assert.equal(tags(head, 'link').find(link => link.attribs.rel === 'canonical')?.attribs.href, entry.loc);
-	const actual = tags(head, 'link').filter(link => link.attribs.rel === 'alternate' && link.attribs.hreflang)
+	assert.equal(oneTag(document, 'link', link => link.attribs.rel === 'canonical', 'canonical').attribs.href, entry.loc);
+	const actual = tags(document, 'link').filter(link => link.attribs.rel === 'alternate' && link.attribs.hreflang)
 		.map(link => [link.attribs.hreflang, link.attribs.href]);
 	if (entry.alternates.length > 1) assert.deepEqual(actual, entry.alternates);
 	else assert.ok(actual.every(([, href]) => href === entry.loc));
-	const graph = JSON.parse(text(tags(head, 'script').find(node => node.attribs.type === 'application/ld+json')))['@graph'];
+	const graph = JSON.parse(text(oneTag(document, 'script', node => node.attribs.type === 'application/ld+json', 'JSON-LD')))['@graph'];
 	assert.ok(graph.length > 0);
 	for (const node of graph) assert.equal(typeof node['@type'], 'string');
 	const alt = content('og:image:alt', 'property') ?? '';
@@ -89,7 +99,7 @@ function headContract(document, entry) {
 }
 
 async function imageContract(document, roots = [new URL('prerendered/pages/', output), new URL('../static/', import.meta.url)]) {
-	const content = property => tags(tags(document, 'head')[0], 'meta').find(node => node.attribs.property === property)?.attribs.content;
+	const content = property => metaContent(document, property, 'property');
 	const path = new URL(content('og:image')).pathname;
 	const bytes = await shareImageBytes(path, roots);
 	assert.ok(imageBytes(bytes), `${path}: not image bytes`);
@@ -134,4 +144,35 @@ test('a missing mirrored share image fails', async () => {
 });
 test('non-image bytes in a mirrored share image fail', async () => {
 	await assert.rejects(imageContract(imageDocument('/broken.png'), [fixtureRoot]), /not image bytes/);
+});
+
+const duplicateHeadValues = [
+	['canonical', '<link rel="canonical" href="https://yesid.dev/conflicting">'],
+	['description', '<meta name="description" content="Conflicting description">'],
+	['robots', '<meta name="robots" content="noindex">'],
+	['OG image alt', '<meta property="og:image:alt" content="Conflicting image">'],
+	['Twitter image alt', '<meta name="twitter:image:alt" content="Conflicting image">'],
+	['JSON-LD', '<script type="application/ld+json">{"@graph":[]}</script>'],
+	['OG image', '<meta property="og:image" content="https://yesid.dev/missing-image.png">'],
+	['OG width', '<meta property="og:image:width" content="13">'],
+	['OG height', '<meta property="og:image:height" content="13">'],
+];
+for (const [name, markup] of duplicateHeadValues) {
+	test(`a duplicate ${name} fails the document contract`, async () => {
+		const entry = entries.find(row => new URL(row.loc).pathname === '/');
+		assert.ok(entry, 'The root fixture document exists');
+		const document = await documentFor('/');
+		tags(document, 'head')[0].children.push(...parseDocument(markup).children);
+		await assert.rejects(async () => {
+			headContract(document, entry);
+			await imageContract(document);
+		}, /exactly one/);
+	});
+}
+test('a conflicting canonical in the body also fails the document contract', async () => {
+	const entry = entries.find(row => new URL(row.loc).pathname === '/');
+	assert.ok(entry, 'The root fixture document exists');
+	const document = await documentFor('/');
+	tags(document, 'body')[0].children.push(...parseDocument('<link rel="canonical" href="https://yesid.dev/conflicting">').children);
+	assert.throws(() => headContract(document, entry), /exactly one/);
 });
