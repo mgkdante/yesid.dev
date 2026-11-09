@@ -737,6 +737,797 @@
 			"title": "Café Arona: cafe-arona-live-team-desktop (2026-11-05)",
 			"description": "Team page in French with the group photo at the top. Browser capture, 5 November 2026.",
 			"sha256": "ee9239bd109939431fe99674e2fa5dbfe3a03f26cab35a88ec2bd39ddac3919a"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-home-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-home-desktop-en-dark (2026-11-09)",
+			"description": "Home: \"How Montréal's transit holds up.\" Capture: 2026-11-09T23:04:08.481Z.",
+			"sha256": "bb7b2ab947fbcbefcba78108d06ccfb590e21170657e2d2f1e67ea3f7e013869"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-home-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-home-desktop-en-light (2026-11-09)",
+			"description": "Home: \"How Montréal's transit holds up.\" Capture: 2026-11-09T23:04:08.481Z.",
+			"sha256": "3111ca4eac4e54f798f7f3849fde8967ccbb0b8380297becc2ca2bc3e64c15e7"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-lines-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-lines-desktop-en-dark (2026-11-09)",
+			"description": "Lines: 210 lines, with reliability next to each Capture: 2026-11-09T23:04:15.322Z.",
+			"sha256": "c87733c18dfa737a312087ca411e7b0728fdd9f1bbd368819c942d1fc618844d"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-lines-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-lines-desktop-en-light (2026-11-09)",
+			"description": "Lines: 210 lines, with reliability next to each Capture: 2026-11-09T23:04:15.322Z.",
+			"sha256": "79a9538860e0d56a19ac54efd7a7991f6de5bee6ff5632ac63b8c8f44da76a8d"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-network-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-network-desktop-en-dark (2026-11-09)",
+			"description": "Network health: 79% on time, 86% coverage, 972 vehicle positions, 91 trips without a signal Capture: 2026-11-09T23:04:23.808Z.",
+			"sha256": "7899b85c29f22214d4459ed5690f4d4999b6aae4afbd773a3d29540633cc9230"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-network-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-network-desktop-en-light (2026-11-09)",
+			"description": "Network health: 79% on time, 86% coverage, 972 vehicle positions, 91 trips without a signal Capture: 2026-11-09T23:04:23.808Z.",
+			"sha256": "567bdb2e2601413df6d5b826897e58d20f8890e70e35355d49f41563e2a8f949"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-search-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-search-desktop-en-dark (2026-11-09)",
+			"description": "Search for \"saint-laurent\": 3 lines, 102 stops Capture: 2026-11-09T23:04:32.836Z.",
+			"sha256": "46374b60410b18eea3d76ec92e6fec0bc97c4ff40055101863ff54ee5d8a55bb"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-search-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-search-desktop-en-light (2026-11-09)",
+			"description": "Search for \"saint-laurent\": 3 lines, 102 stops Capture: 2026-11-09T23:04:32.836Z.",
+			"sha256": "3ae9153a3438c746a26cf15bdf773a86779aa572ac4ad07f5639be331d8c4d4a"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-stop-departures-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-stop-departures-desktop-en-dark (2026-11-09)",
+			"description": "Station Henri-Bourassa: 18 departures, one \"Unknown · not reported in the live feed\" Capture: 2026-11-09T23:04:40.822Z.",
+			"sha256": "857ef7c0fd24cb5af3b96179ad501b9b45017097a50c0e6276cb44b4027e6d06"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-stop-departures-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-stop-departures-desktop-en-light (2026-11-09)",
+			"description": "Station Henri-Bourassa: 18 departures, one \"Unknown · not reported in the live feed\" Capture: 2026-11-09T23:04:40.822Z.",
+			"sha256": "c0f656339743c971dc13461a88acb09e64d1afe91ced6c05e10be46cdc0dfbd2"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-trip-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-trip-desktop-en-dark (2026-11-09)",
+			"description": "A line 51 trip: late by 2 minutes, 14 predictions reported Capture: 2026-11-09T23:07:52.117Z.",
+			"sha256": "f2e9f30ad972003f3f7324c1c6148f39f8ac8e00637502f2fe3b3cf6b919be83"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-trip-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-trip-desktop-en-light (2026-11-09)",
+			"description": "A line 51 trip: late by 2 minutes, 14 predictions reported Capture: 2026-11-09T23:07:52.117Z.",
+			"sha256": "05b6544bc7c078d9233e383a4f6e35c91360461d5c58c7488a358acef38a2236"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-hotspots-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-hotspots-desktop-en-dark (2026-11-09)",
+			"description": "Hotspots for Nov 3: Henri-Bourassa, 20.2% severe-delay predictions Capture: 2026-11-09T23:04:55.082Z.",
+			"sha256": "8d964b8c27bec2ca24d8bcfe5182d44d3db20b8004be48517345e8fed0495f87"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-hotspots-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-hotspots-desktop-en-light (2026-11-09)",
+			"description": "Hotspots for Nov 3: Henri-Bourassa, 20.2% severe-delay predictions Capture: 2026-11-09T23:04:55.082Z.",
+			"sha256": "7fae256b56bbb73d67bcbdf04536613849d7cd098030e862809ec15d3473a579"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-repeat-offenders-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-repeat-offenders-desktop-en-dark (2026-11-09)",
+			"description": "Repeat offenders, week ending Nov 3: the top trip with its 95% Wilson interval Capture: 2026-11-09T23:05:01.654Z.",
+			"sha256": "59cf58ade17f1c5114a3b08da3c095eb0386e7c50b4064c8ebd7749f843e6a0e"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-repeat-offenders-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-repeat-offenders-desktop-en-light (2026-11-09)",
+			"description": "Repeat offenders, week ending Nov 3: the top trip with its 95% Wilson interval Capture: 2026-11-09T23:05:01.654Z.",
+			"sha256": "1f7602d7c71fc13195a2cae87436616a3eb4615a33c554451e4193b86f73d966"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-alerts-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-alerts-desktop-en-dark (2026-11-09)",
+			"description": "Alerts: 13,509 from Aug 6 to Nov 4, 2026, median duration 914 minutes Capture: 2026-11-09T23:05:10.592Z.",
+			"sha256": "b548052a65f8e189d221af3928f3e43316b0be1def9f4c706291d4ca31b5700c"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-alerts-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-alerts-desktop-en-light (2026-11-09)",
+			"description": "Alerts: 13,509 from Aug 6 to Nov 4, 2026, median duration 914 minutes Capture: 2026-11-09T23:05:10.592Z.",
+			"sha256": "8cd662a2844d1cc97ec6974a1626a50a967ff8e18f19741cc94a9e5889781683"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-line55-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-line55-desktop-en-dark (2026-11-09)",
+			"description": "Line 55 Saint-Laurent on Nov 9, 2026: 87% of delay observations in the on-time band, with a 95% confidence range of 83 to 90%. Capture: 2026-11-09T23:05:18.173Z.",
+			"sha256": "1a1147258887d03ac77456a88db8504aeab57909efb816b3e4f29bee265ebc38"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-line55-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-line55-desktop-en-light (2026-11-09)",
+			"description": "Line 55 Saint-Laurent on Nov 9, 2026: 87% of delay observations in the on-time band, with a 95% confidence range of 83 to 90%. Capture: 2026-11-09T23:05:18.173Z.",
+			"sha256": "95fa3d4ec530d2c47aebf7d0883604b3b42b10ca59dcccb41b19005e3b04ad19"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-receipt-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-receipt-desktop-en-dark (2026-11-09)",
+			"description": "The accountability receipt for Nov 3, 2026 in Montréal: 90% of known-delay predictions in the on-time band, 0.7 minutes average delay, 4.5% severe delays. Capture: 2026-11-09T23:05:24.579Z.",
+			"sha256": "b61a032926c7c7ffac35a9b43419fbf99a0b69b14c60c66d23655a2ec3cd976c"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-receipt-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-receipt-desktop-en-light (2026-11-09)",
+			"description": "The accountability receipt for Nov 3, 2026 in Montréal: 90% of known-delay predictions in the on-time band, 0.7 minutes average delay, 4.5% severe delays. Capture: 2026-11-09T23:05:24.579Z.",
+			"sha256": "354bd667a8ae7e0ab2e32fe00a55e084a9d5073b8761152a54bdd21001e6bc79"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-status-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-status-desktop-en-dark (2026-11-09)",
+			"description": "The Data health page on Nov 9, 2026: \"2 of 3 lanes passing, worst: Rollups\". A missing signal shows as \"no data\", never a made-up value. Capture: 2026-11-09T23:05:31.734Z.",
+			"sha256": "1c7005c6be7015f40c54274daa9fd37d2e5bb5441e99896d96707a346c073444"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-status-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-status-desktop-en-light (2026-11-09)",
+			"description": "The Data health page on Nov 9, 2026: \"2 of 3 lanes passing, worst: Rollups\". A missing signal shows as \"no data\", never a made-up value. Capture: 2026-11-09T23:05:31.734Z.",
+			"sha256": "042c128d847da0d64de4996017d07336582dce8c43f9b004d0adbf4159f402a0"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-accessibility-phone-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-accessibility-phone-en-dark (2026-11-09)",
+			"description": "The accessibility statement on a phone Capture: 2026-11-09T23:05:54.356Z.",
+			"sha256": "55be3f35a6447bf6fe5b229fce6c9bad5dfa5d551609698dcc17061d4c51fd30"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-accessibility-phone-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-accessibility-phone-en-light (2026-11-09)",
+			"description": "The accessibility statement on a phone Capture: 2026-11-09T23:05:54.356Z.",
+			"sha256": "bcde5c1f4b0c4c6042b83539f7afe235637d0f062a224bbde097297a7b6e40b4"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-og-network-card-en-single.png",
+			"folder": "projects",
+			"title": "transit: transit-og-network-card-en-single (2026-11-09)",
+			"description": "English · The Network health share card Capture: 2026-11-09T22:41:08Z.",
+			"sha256": "005cbe112a10565cb0d9d1cf0a98e5ae3d90f3abce62fae27e7914d2428eeda0"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-og-network-card-fr-single.png",
+			"folder": "projects",
+			"title": "transit: transit-og-network-card-fr-single (2026-11-09)",
+			"description": "French · The same card on the French page Capture: 2026-11-09T22:41:16Z.",
+			"sha256": "9151eb42b838de84adbafa8441e6c9f09062dd0eeeb016145a6f1228ee63597b"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-metrics-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "transit: transit-metrics-desktop-en-dark (2026-11-09)",
+			"description": "The \"How we measure\" page: 14 metrics in 5 families, each with what it measures, the exact math, the SQL and what it is not. Capture: 2026-11-09T23:06:01.523Z.",
+			"sha256": "386a66e694f89586b2c1b5647c98d8a7cb8ba6102cfea40510e8f01c134e788a"
+		},
+		{
+			"legacyPath": "images/work/transit-20261109/transit-metrics-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "transit: transit-metrics-desktop-en-light (2026-11-09)",
+			"description": "The \"How we measure\" page: 14 metrics in 5 families, each with what it measures, the exact math, the SQL and what it is not. Capture: 2026-11-09T23:06:01.523Z.",
+			"sha256": "055f90f139b3d05a2b55f08baa69ac2ff5b616c709822c879a913559af0999b2"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-home-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-home-desktop-en-dark (2026-11-09)",
+			"description": "The home page on a computer, dark theme. The SQL panel and its numbers are labelled demo data. Capture: 2026-11-09T23:08:43.318Z.",
+			"sha256": "a16302e27856ea590997e6b6201247d4a4ad2e40c4f2febf0d4066bd35fb3900"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-home-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-home-desktop-en-light (2026-11-09)",
+			"description": "The home page on a computer, dark theme. The SQL panel and its numbers are labelled demo data. Capture: 2026-11-09T23:08:43.318Z.",
+			"sha256": "f603e9330300776fc7ce34e2d65c04c0d5ac0536fdbf69ab93661eac82ecb5d1"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-home-phone-fr-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-home-phone-fr-dark (2026-11-09)",
+			"description": "French on a phone. Capture: 2026-11-09T23:08:50.857Z.",
+			"sha256": "65f1c9b3d2db31c22292a10c3031511970ba525d7cdaad5a33fb594900cd0162"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-home-phone-fr-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-home-phone-fr-light (2026-11-09)",
+			"description": "French on a phone. Capture: 2026-11-09T23:08:50.857Z.",
+			"sha256": "c1330a2ee07078279da0a87218b2b4817b36e896455d92875eaeba0faf23530a"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-home-phone-es-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-home-phone-es-dark (2026-11-09)",
+			"description": "Spanish on a phone. Capture: 2026-11-09T23:08:56.877Z.",
+			"sha256": "4090378100d6259f0fd92fbb9250b673cb12307dfbb357a08647a2497ae74ac3"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-home-phone-es-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-home-phone-es-light (2026-11-09)",
+			"description": "Spanish on a phone. Capture: 2026-11-09T23:08:56.877Z.",
+			"sha256": "8f38ef10d9ca6ff1c0f1510f094a350efa1018ceabd5209767e1069db03f8228"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-contact-typed-phone-fr-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-contact-typed-phone-fr-dark (2026-11-09)",
+			"description": "A fictional message typed on the French contact page. Capture: 2026-11-09T23:13:12.527Z.",
+			"sha256": "1fa8b9919234a0087c197f4f8d954043b6531b0b4199f0a174bbcc78cd89cab1"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-contact-typed-phone-fr-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-contact-typed-phone-fr-light (2026-11-09)",
+			"description": "A fictional message typed on the French contact page. Capture: 2026-11-09T23:13:12.527Z.",
+			"sha256": "5dc70a9a7c3508808270842beefd91f051ddf1108b937508ae4f01aeddbb3b5b"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-contact-after-switch-phone-es-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-contact-after-switch-phone-es-dark (2026-11-09)",
+			"description": "One tap on the language sign: Spanish labels, same words. Capture: 2026-11-09T23:13:20.998Z.",
+			"sha256": "81e39507b1ecc613dcfee0f74d0e3c8511671b6347e5826fc41bb45cdaa7d8a4"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-contact-after-switch-phone-es-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-contact-after-switch-phone-es-light (2026-11-09)",
+			"description": "One tap on the language sign: Spanish labels, same words. Capture: 2026-11-09T23:13:20.998Z.",
+			"sha256": "d23c0bec8f4f5a101674cdabbcf7d95534887712c4e0380114a63f01e6534b26"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-cookies-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-cookies-desktop-en-dark (2026-11-09)",
+			"description": "The cookie policy: no tracking cookies, and every measuring tool named. Capture: 2026-11-09T23:13:25.930Z.",
+			"sha256": "13165e93ad2934b7d8d3e785c9ff726c00cd3db1bfb0adb8496d31ea5ea6faa3"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-cookies-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-cookies-desktop-en-light (2026-11-09)",
+			"description": "The cookie policy: no tracking cookies, and every measuring tool named. Capture: 2026-11-09T23:13:25.930Z.",
+			"sha256": "8c6731e4815c28d595edee3452132dc545cfd0d2958c70971c44215804a335c0"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-projects-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-projects-desktop-en-dark (2026-11-09)",
+			"description": "The projects list. Cards, filters and header come from my design system, yesid.design. Capture: 2026-11-09T23:09:57.017Z.",
+			"sha256": "c3677f3f5ea4e3895d2fe7b6ea969753b09e8fcc9cbe5b79a331a276290ff16d"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-projects-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-projects-desktop-en-light (2026-11-09)",
+			"description": "The projects list. Cards, filters and header come from my design system, yesid.design. Capture: 2026-11-09T23:09:57.017Z.",
+			"sha256": "6321cc48241facdf19c1339cc04838f2cc7e38d810c5d4fbbadcfdd713a7e2bc"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-project-page-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-project-page-desktop-en-dark (2026-11-09)",
+			"description": "This case study on the live site, light theme: table of contents, numbered section cards and the overview. Capture: 2026-11-09T23:10:03.959Z.",
+			"sha256": "e685d2d036bef862a5f1ad48148c7be5a5fb2b4c32f1961bd1847f2c849ef0a7"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-project-page-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-project-page-desktop-en-light (2026-11-09)",
+			"description": "This case study on the live site, light theme: table of contents, numbered section cards and the overview. Capture: 2026-11-09T23:10:03.959Z.",
+			"sha256": "29aecbfdfbdba63e7193fdb0901d110a019eb21a73ffbce3240025472b670416"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-home-transit-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-home-transit-desktop-en-dark (2026-11-09)",
+			"description": "Home: the SQL panel and three Transit numbers. Automated browsers always get the labelled demo data. Capture: 2026-11-09T23:10:10.099Z.",
+			"sha256": "c7030ed41f1118fe18ff64a0fca1470acb01d48f952076596197e0459a6a54b5"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-home-transit-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-home-transit-desktop-en-light (2026-11-09)",
+			"description": "Home: the SQL panel and three Transit numbers. Automated browsers always get the labelled demo data. Capture: 2026-11-09T23:10:10.099Z.",
+			"sha256": "2f18c6224ed07984fbf1605ef3359978d4703b3bf39cebd1fc1b604c9ca524a1"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-service-detail-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-service-detail-desktop-en-dark (2026-11-09)",
+			"description": "A service page: station tabs, how it helps and related projects. Capture: 2026-11-09T23:10:15.769Z.",
+			"sha256": "7879acfddfdc4e02ffcf637523810bf91a02d6ce07b59a0f7c7139551ddf5ebb"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-service-detail-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-service-detail-desktop-en-light (2026-11-09)",
+			"description": "A service page: station tabs, how it helps and related projects. Capture: 2026-11-09T23:10:15.769Z.",
+			"sha256": "e61ce881ee73592efb1e6ccd750da68b7846544b06f20a82b2b9da9df5054a27"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-projects-filters-phone-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-projects-filters-phone-en-dark (2026-11-09)",
+			"description": "Projects on a phone: search, then Services and Tech Stack filters. Capture: 2026-11-09T23:13:34.037Z.",
+			"sha256": "3c2673b0d2584cb4876b2fa68dddaee1f203a9829717a7c4a9e46ad83ae59762"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-projects-filters-phone-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-projects-filters-phone-en-light (2026-11-09)",
+			"description": "Projects on a phone: search, then Services and Tech Stack filters. Capture: 2026-11-09T23:13:34.037Z.",
+			"sha256": "6c2828c948a71a69e31e07e67855579af2ba6faadf58eb70f79a937a1842a2f0"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-blog-filters-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-blog-filters-desktop-en-dark (2026-11-09)",
+			"description": "The blog: search, language, date range and tags. Capture: 2026-11-09T23:10:30.095Z.",
+			"sha256": "6e7f485b79b4c4b1c5ebbe50f53a73d7186d3e0ce3e44dff67a6339d8a5ee13d"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-blog-filters-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-blog-filters-desktop-en-light (2026-11-09)",
+			"description": "The blog: search, language, date range and tags. Capture: 2026-11-09T23:10:30.095Z.",
+			"sha256": "b008f4208c26239b83101ad51ea8d41d79128b2b8ba8c1c43c407cce3293a9c4"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-blog-post-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-blog-post-desktop-en-dark (2026-11-09)",
+			"description": "A post: table of contents, read time, language and a side panel to get in touch. Capture: 2026-11-09T23:10:35.835Z.",
+			"sha256": "31daae6b8f5701910d94ecac598e798d11829ee55ab391055ddaed2e954f427f"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-blog-post-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-blog-post-desktop-en-light (2026-11-09)",
+			"description": "A post: table of contents, read time, language and a side panel to get in touch. Capture: 2026-11-09T23:10:35.835Z.",
+			"sha256": "d20189c054043c0c266a1e4f34c5a25ab8406127bfed814878ed90222ef57bee"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-about-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-about-desktop-en-dark (2026-11-09)",
+			"description": "About: fun facts, beliefs, education, languages and interests. Capture: 2026-11-09T23:10:41.721Z.",
+			"sha256": "c1ee9e06982bdd7c41b2da326966fbddf72fcf7aa4ff48588a54034a2bd4d6d1"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-about-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-about-desktop-en-light (2026-11-09)",
+			"description": "About: fun facts, beliefs, education, languages and interests. Capture: 2026-11-09T23:10:41.721Z.",
+			"sha256": "f2ebcf0d64f819c806cdf03eca55faabe0ffbc09155d2e85e14500adca3d6e34"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-contact-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-contact-desktop-en-dark (2026-11-09)",
+			"description": "Contact: Montréal time and weather next to the form. Capture: 2026-11-09T23:10:49.523Z.",
+			"sha256": "db671ae19bb237933e3b13f3da898642a3865926fa19ee6866a55b878fb15011"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-contact-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-contact-desktop-en-light (2026-11-09)",
+			"description": "Contact: Montréal time and weather next to the form. Capture: 2026-11-09T23:10:49.523Z.",
+			"sha256": "3c6f78a8af14865ba174e5b5c2d25ccafbb3ebf17603470378a12556e3c9a40b"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-404-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-404-desktop-en-dark (2026-11-09)",
+			"description": "A missing page, in the site's own transit language. Capture: 2026-11-09T23:10:55.094Z.",
+			"sha256": "3c63216b6fa3698ba140bee74c31fe7e5503bad00320da207d2d49b623d11de7"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-404-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-404-desktop-en-light (2026-11-09)",
+			"description": "A missing page, in the site's own transit language. Capture: 2026-11-09T23:10:55.094Z.",
+			"sha256": "d6497d393bc69e73347f612c2029e2c5169a0724232f19667eefe138f95d1278"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-og-project-card-en-single.png",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-og-project-card-en-single (2026-11-09)",
+			"description": "A project card. Capture: 2026-11-09T22:28:49Z.",
+			"sha256": "de344dc448b5f748e6d8d77021b03ef0840ff6c14b8e31e626a729bfca667025"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-og-blog-card-en-single.png",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-og-blog-card-en-single (2026-11-09)",
+			"description": "A blog card. Capture: 2026-11-09T22:28:51Z.",
+			"sha256": "cc0175fecd1f767817f048f15c15799b257eb6305fbfdf185ac22273910fc801"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-og-service-card-en-single.png",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-og-service-card-en-single (2026-11-09)",
+			"description": "A service card. Capture: 2026-11-09T22:28:54Z.",
+			"sha256": "99db6ec8f25e4e3894aadee230ee6af0d39b679db52b52e17c3d647ceb8d8e28"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-github-actions-run-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-github-actions-run-desktop-en-dark (2026-11-09)",
+			"description": "A real check run on GitHub Actions: the quick job first, then three browser-test runners, then the final ci gate. Capture: 2026-11-09T23:11:01.210Z.",
+			"sha256": "5659cb0db8fd7b9e88060f391541cb918dbf32a33b97ede58479c031e3dc0a45"
+		},
+		{
+			"legacyPath": "images/work/yesid-dev-20261109/yesid-dev-github-actions-run-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-dev: yesid-dev-github-actions-run-desktop-en-light (2026-11-09)",
+			"description": "A real check run on GitHub Actions: the quick job first, then three browser-test runners, then the final ci gate. Capture: 2026-11-09T23:11:01.210Z.",
+			"sha256": "c3bf28ce1fb5e3fb0995c24ea1c61a9e32d974d3e22a9707f453ecc15048ab93"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-three-sites-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-three-sites-desktop-en-dark (2026-11-09)",
+			"description": "The same release on three sites: yesid.dev, Transit and the login page share the header, colours, type, buttons and grid background. Each one says something different. Capture: 2026-11-09T23:15:03.094Z.",
+			"sha256": "2d38deb38f129fb91de3f1aabb1a32a583b51bdd5550c5e84750c981674b331b"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-three-sites-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-three-sites-desktop-en-light (2026-11-09)",
+			"description": "The same release on three sites: yesid.dev, Transit and the login page share the header, colours, type, buttons and grid background. Each one says something different. Capture: 2026-11-09T23:15:03.094Z.",
+			"sha256": "bc0b80013956931d38718a56e8a4ea65c2592bfcef264e159cb9a1200a7ca60a"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-headers-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-headers-desktop-en-dark (2026-11-09)",
+			"description": "One header, three sites. The pill, the wordmark with its orange dot, the traffic-light theme switch and the language signpost come from yesid.design. Each site fills it with its own links. Capture: 2026-11-09T23:15:10.703Z.",
+			"sha256": "e162dac2fc96d07d2d33430bfb1138d41bfa158a8bc3729f597019f07f75eb1c"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-headers-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-headers-desktop-en-light (2026-11-09)",
+			"description": "One header, three sites. The pill, the wordmark with its orange dot, the traffic-light theme switch and the language signpost come from yesid.design. Each site fills it with its own links. Capture: 2026-11-09T23:15:10.703Z.",
+			"sha256": "c8a83b472eafe14d309e0d3a1dad88542c355b3d431fe249a65bf8199b54c788"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-detail-phone-yesid-dev-phone-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-detail-phone-yesid-dev-phone-en-dark (2026-11-09)",
+			"description": "yesid.dev on a phone: the Transit case study. Capture: 2026-11-09T23:15:16.443Z.",
+			"sha256": "f5e4f083a8b038e41a6182987c921aadc0e3f0e5a83d751da2a8052c31eb67b0"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-detail-phone-yesid-dev-phone-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-detail-phone-yesid-dev-phone-en-light (2026-11-09)",
+			"description": "yesid.dev on a phone: the Transit case study. Capture: 2026-11-09T23:15:16.443Z.",
+			"sha256": "8e1dfa92e568746e248e479193ab691f64945517fc537be124e08f958f05f1a7"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-detail-phone-transit-phone-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-detail-phone-transit-phone-en-dark (2026-11-09)",
+			"description": "Transit on a phone: \"How we measure\". Same frame, Transit's own words. Capture: 2026-11-09T23:15:22.672Z.",
+			"sha256": "7823d024973db4f5e76dc7c6c1b696c6caf9b7a88b7cce12ab80293e6c704eee"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-detail-phone-transit-phone-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-detail-phone-transit-phone-en-light (2026-11-09)",
+			"description": "Transit on a phone: \"How we measure\". Same frame, Transit's own words. Capture: 2026-11-09T23:15:22.672Z.",
+			"sha256": "e5b0d1d90558dc3dee6b4a3f8d48421b72f70bba9fe72ec219d2e1b3e461e335"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-listing-yesid-dev-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-listing-yesid-dev-desktop-en-dark (2026-11-09)",
+			"description": "yesid.dev: Projects. Capture: 2026-11-09T23:15:27.920Z.",
+			"sha256": "c3677f3f5ea4e3895d2fe7b6ea969753b09e8fcc9cbe5b79a331a276290ff16d"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-listing-yesid-dev-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-listing-yesid-dev-desktop-en-light (2026-11-09)",
+			"description": "yesid.dev: Projects. Capture: 2026-11-09T23:15:27.920Z.",
+			"sha256": "ec520e7f34e9a16a02acaa9229a83dc06edb654888825b77914c3893351d9df4"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-listing-transit-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-listing-transit-desktop-en-dark (2026-11-09)",
+			"description": "Transit: Lines. Capture: 2026-11-09T23:15:35.088Z.",
+			"sha256": "e58a167a2f1c6a0469250e30f7fca8f1d1de157e425086e096a15fd5130b412e"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-listing-transit-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-listing-transit-desktop-en-light (2026-11-09)",
+			"description": "Transit: Lines. Capture: 2026-11-09T23:15:35.088Z.",
+			"sha256": "79a9538860e0d56a19ac54efd7a7991f6de5bee6ff5632ac63b8c8f44da76a8d"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-sizes-multi-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-sizes-multi-en-dark (2026-11-09)",
+			"description": "Transit's Lines page at the three standard test sizes: phone 390, tablet 768 and desktop 1440 pixels wide. Capture: 2026-11-09T23:15:54.374Z.",
+			"sha256": "f617f640eb568bdbf14ed9798edfe2a1c476f9277ac5aae838caea383a29e2aa"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-sizes-multi-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-sizes-multi-en-light (2026-11-09)",
+			"description": "Transit's Lines page at the three standard test sizes: phone 390, tablet 768 and desktop 1440 pixels wide. Capture: 2026-11-09T23:15:54.374Z.",
+			"sha256": "7f3d62ff3f2e432a9294efe9592ac764800a877247d210acda7b05c075ddda45"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-og-project-card-en-single.png",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-og-project-card-en-single (2026-11-09)",
+			"description": "yesid.dev: this case study's share card. Capture: 2026-11-09T22:08:17Z.",
+			"sha256": "d32a4f9ed194d6313dce0c64de3469046e43e417be7f853aee084a4096b1ea30"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-og-transit-card-en-single.png",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-og-transit-card-en-single (2026-11-09)",
+			"description": "Transit: its own layout, on the shared colours and fonts. Capture: 2026-11-09T22:08:18Z.",
+			"sha256": "4f4b6c43f6ca16f303d315689df8bab5b4792d9c48aa58073c509ce2510f4b98"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-og-login-card-multi-single.png",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-og-login-card-multi-single (2026-11-09)",
+			"description": "Login: the shared card. A link preview can't know the reader's language, so one card carries all three. Capture: 2026-11-09T22:08:18Z.",
+			"sha256": "0c19c43692f03a358648ba745501e104e73ed527cc678e33ee5cf67bb69c4695"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-404-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-404-desktop-en-dark (2026-11-09)",
+			"description": "One shared error illustration on yesid.dev and Transit. Each site picks its own suggested links, and the page asks search engines not to index it. Capture: 2026-11-09T23:16:07.512Z.",
+			"sha256": "b8e334ed707776bf2bd277c1fc83f522319087028c2ccd54b122171cd4c7f88c"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-404-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-404-desktop-en-light (2026-11-09)",
+			"description": "One shared error illustration on yesid.dev and Transit. Each site picks its own suggested links, and the page asks search engines not to index it. Capture: 2026-11-09T23:16:07.512Z.",
+			"sha256": "7c00cdbc5aef2e765030b7a42204afb0ad5232a967b66298349db354b74ab72f"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-code-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-code-desktop-en-dark (2026-11-09)",
+			"description": "SQL and Python coloured on the server by the shared highlighter, on Transit's metrics page. Capture: 2026-11-09T23:16:16.068Z.",
+			"sha256": "23d61e4cc511398b7f28ed0f8bb4633febd71f1a091ed3e7e7aa0b22b7577e09"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-code-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-code-desktop-en-light (2026-11-09)",
+			"description": "SQL and Python coloured on the server by the shared highlighter, on Transit's metrics page. Capture: 2026-11-09T23:16:16.068Z.",
+			"sha256": "6b959ca123bb6290c08d8914db4aa5e3d3000fb5091871a5e3ae44d6eb082e11"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-languages-phone-multi-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-languages-phone-multi-dark (2026-11-09)",
+			"description": "The yesid.dev home page in English, French and Spanish on a phone. Each language has its own address, and the counter follows each language's number format: 1,247, 1 247 and 1247. Capture: 2026-11-09T23:16:39.203Z.",
+			"sha256": "38300e5145efcfd3236891d1795e21feefef264163f1642f61b989291d0c3e45"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-languages-phone-multi-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-languages-phone-multi-light (2026-11-09)",
+			"description": "The yesid.dev home page in English, French and Spanish on a phone. Each language has its own address, and the counter follows each language's number format: 1,247, 1 247 and 1247. Capture: 2026-11-09T23:16:39.203Z.",
+			"sha256": "f30295a6d9e97f1921a7a3b0e9c8c943341e5fae0c99bef74f2318d7eb40a529"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-release-v0391-desktop-en-dark.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-release-v0391-desktop-en-dark (2026-11-09)",
+			"description": "The v0.39.1 release on GitHub: marked Immutable, one tarball per package with its sha256 fingerprint, and a release attestation that ties the files to the workflow that built them. Capture: 2026-11-09T23:17:50.057Z.",
+			"sha256": "557f0c5ed60f622996b0d6472f42e8396207ba98426cbe44ea242622a388a9b1"
+		},
+		{
+			"legacyPath": "images/work/yesid-design-20261109/yesid-design-release-v0391-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "yesid-design: yesid-design-release-v0391-desktop-en-light (2026-11-09)",
+			"description": "The v0.39.1 release on GitHub: marked Immutable, one tarball per package with its sha256 fingerprint, and a release attestation that ties the files to the workflow that built them. Capture: 2026-11-09T23:17:50.057Z.",
+			"sha256": "8df774a9eb62fc78721979cb42317a35e56011ee8ec54390944a668139c4c68e"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-home-desktop-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-home-desktop-fr-light (2026-11-09)",
+			"description": "The French home page on a computer: the brand's own video, \"Une culture, une histoire, plusieurs goûts\", and one button to the coffees. Capture: 2026-11-09T21:08:12Z.",
+			"sha256": "bb7344136f6a560960251ae40d1c06eb29c8102fe423ea7a28bdac86bf04b9a4"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-team-desktop-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-team-desktop-fr-light (2026-11-09)",
+			"description": "The team page: a group photo first, then each person's portrait and introduction. Capture: 2026-11-09T21:08:34Z.",
+			"sha256": "72ec2d27cfda7b738767940a12a8b86393cb3d7961637761b4abc1dcec9f3385"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-blog-desktop-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-blog-desktop-fr-light (2026-11-09)",
+			"description": "The journal in French: topic chips at the top, then each article as a numbered chapter, the newest one featured. Capture: 2026-11-09T22:21:37Z.",
+			"sha256": "e6c87d1dc271efabd2b88e46ec51da2669e0ae829c4ab3b34f85c411a35e26aa"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-article-desktop-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-article-desktop-fr-light (2026-11-09)",
+			"description": "An article page: its chapter stamp, title and photo, then the byline with the reading time. Capture: 2026-11-09T22:18:32Z.",
+			"sha256": "5f552d89954d12b5bdd1316787393e457a924506be9440c7ffbd3737c666a579"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-contact-phone-en-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-contact-phone-en-light (2026-11-09)",
+			"description": "The English contact page on a phone: four fields, one of them optional. Capture: 2026-11-09T22:18:42Z.",
+			"sha256": "07b45374fd3e9f0e88c3a338d7adadd78aecb841028a59d6a580d033efaaa7c5"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-fiche-phone-en-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-fiche-phone-en-light (2026-11-09)",
+			"description": "Le Carburant's coffee sheet on a phone, in English: each filled field is one row, and lists show as tags. Capture: 2026-11-09T22:19:30Z.",
+			"sha256": "e62498c6677491536fa2f17a095df871aa9579fec3045658e6e17b2fd378b886"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-search-phone-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-search-phone-fr-light (2026-11-09)",
+			"description": "Search on a phone: typing \"carbu\" already suggests Le Carburant, with its stickers. Capture: 2026-11-09T22:18:58Z.",
+			"sha256": "bd86a6dedf409ade4bfd9ee2a0f1db6de5d992367f232b818fc311b060c7177b"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-product-phone-en-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-product-phone-en-light (2026-11-09)",
+			"description": "Feu Doux on a phone, in English: a Coming soon stamp and no purchase button. Capture: 2026-11-09T21:10:27Z.",
+			"sha256": "40731cd1218e2eb845fa84de7d12e4337a026a146e70787725d05629b2e402ca"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-collection-desktop-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-collection-desktop-fr-light (2026-11-09)",
+			"description": "The roasted coffee collection: every coffee wears its Bientôt disponible stamp. Capture: 2026-11-09T21:09:16Z.",
+			"sha256": "64540f84aac0d998b7106e9d890a383081a6da003d0f997320079963709ce8d7"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-product-desktop-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-product-desktop-fr-light (2026-11-09)",
+			"description": "A product page in French: the stamp on the photo, the family's description, and the coffee's details below. Capture: 2026-11-09T21:08:55Z.",
+			"sha256": "245a0231da63ca67542e9e9472db19e87de11198892b03430b8f483d1db679e1"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-cart-phone-en-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-cart-phone-en-light (2026-11-09)",
+			"description": "The cart on a phone, in English: a sheet from the bottom, empty for now, with a way back to the coffees. Capture: 2026-11-09T22:19:11Z.",
+			"sha256": "1097982fbfc4ed67faf4766e16a26cf6d07531285f6f92b9ae16faf4c659c932"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-home-phone-en-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-home-phone-en-light (2026-11-09)",
+			"description": "English home page on a phone. Capture: 2026-11-09T21:10:17Z.",
+			"sha256": "1d6262df47a0cb0dd457d56df84c2507ec0ad6b69249412f66cfb75775d87bba"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-menu-phone-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-menu-phone-fr-light (2026-11-09)",
+			"description": "The phone menu with the FR \\| EN switch: \"Le café est meilleur dans votre langue\". Capture: 2026-11-09T21:11:03Z.",
+			"sha256": "95309acfa08dbabcfefc2fba51bfd1c39503c611056d11638cb49c706acee64d"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-home-desktop-en-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-home-desktop-en-light (2026-11-09)",
+			"description": "The same home page in English on a computer. Capture: 2026-11-09T21:08:23Z.",
+			"sha256": "ba231949399bdcd51a79b80ed0806ffa1ca47325c490c9d4604bf0ed909a2729"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-values-keyboard-desktop-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-values-keyboard-desktop-fr-light (2026-11-09)",
+			"description": "The French values page after one press of the right arrow key: the second value is selected and its panel follows. Capture: 2026-11-09T22:21:48Z.",
+			"sha256": "f427f556c55703730212504dd701d8477b556ebd3294f30ce5f482208a8eb182"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-consent-phone-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-consent-phone-fr-light (2026-11-09)",
+			"description": "First visit on a phone: \"Vos témoins, votre choix\", with Accepter and Refuser. Capture: 2026-11-09T21:09:38Z.",
+			"sha256": "d4ceb7e3e7646fd1dfe32f4d583ab573560d93d967cd0f43e32973c729667141"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-report-sample-desktop-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-report-sample-desktop-fr-light (2026-11-09)",
+			"description": "A sample report with invented numbers, marked Exemple at the top: takeaways in plain words, the three goals, the audience, daily visitors, top products and articles, sources, languages and four journeys. Capture: 2026-11-09T22:20:09Z.",
+			"sha256": "7c1e9b4c6fb19673bdef3f8ad7d433c1e09c486fe9b2e6205c5b237a79783e50"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-og-share-card-en-single.png",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-og-share-card-en-single (2026-11-09)",
+			"description": "The English preview card that shows when someone pastes cafearona.com/en in a chat. The French pages get their own card. Capture: 2026-11-09T21:12:17Z.",
+			"sha256": "f7b89a956bce8575b8064130d81efea9ee2b7f44fa67c73350ad01374e0a1b17"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-og-share-card-fr-single.png",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-og-share-card-fr-single (2026-11-09)",
+			"description": "The French card, for any French page without a photo of its own. Capture: 2026-11-09T22:21:49Z.",
+			"sha256": "d2d310dbbdf1f50253f58b2e143a1640aa105d493cd993986121e237866afb14"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-404-phone-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-404-phone-fr-light (2026-11-09)",
+			"description": "The French 404 page on a phone: a cup with a question mark and one way back. Capture: 2026-11-09T22:19:20Z.",
+			"sha256": "53dbe903ae216f1c2e03b1c409e75bea57c1bd875b28e4ae733eef557589be4f"
+		},
+		{
+			"legacyPath": "images/work/cafe-arona-20261109/cafe-arona-footer-desktop-fr-light.jpg",
+			"folder": "projects",
+			"title": "cafe-arona: cafe-arona-footer-desktop-fr-light (2026-11-09)",
+			"description": "The French footer: the latest chapters above it, then the shop links, the newsletter and every policy, with Gérer mes témoins last. Capture: 2026-11-09T22:19:56Z.",
+			"sha256": "69d2b2830c3a231bb63c4b71e36d2db5b7edad1bfa8e07f9e108e109090e88a5"
 		}
 	]
 }
