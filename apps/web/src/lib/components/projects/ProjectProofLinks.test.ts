@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/svelte';
 import { projectFactory } from '../../../tests/factories';
+import { siteLabels } from '#lib/content/site-labels.ts';
+import { PUBLISHED_LOCALES } from '#lib/utils/published-locales.ts';
 
 const analyticsMocks = vi.hoisted(() => ({
 	trackAnalyticsEvent: vi.fn(),
@@ -12,6 +14,20 @@ import ProjectProofLinks from './ProjectProofLinks.svelte';
 
 beforeEach(() => {
 	analyticsMocks.trackAnalyticsEvent.mockClear();
+});
+
+it.each(PUBLISHED_LOCALES)('keeps private repositories non-links beside a live link in %s', (locale) => {
+	const project = projectFactory.build({
+		repoUrl: 'https://github.com/example/private', repoPrivate: true,
+		liveUrl: 'https://example.com/live',
+	});
+	render(ProjectProofLinks, {
+		props: { project },
+		context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
+	});
+	expect(screen.queryByRole('link', { name: siteLabels.projectsChrome.detail.glance.githubLabel[locale]! })).not.toBeInTheDocument();
+	expect(screen.getByTestId('project-repo-private')).toHaveTextContent(siteLabels.projectsChrome.detail.glance.repoPrivateLabel[locale]!);
+	expect(screen.getByRole('link', { name: siteLabels.projectsChrome.detail.glance.liveSiteLabel[locale]! })).toHaveAttribute('href', project.liveUrl);
 });
 
 async function clickWithoutNavigating(link: Element): Promise<void> {

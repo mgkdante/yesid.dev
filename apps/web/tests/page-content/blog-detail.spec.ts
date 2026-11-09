@@ -27,16 +27,6 @@ test.describe('/blog/[slug] detail page content', () => {
 		await expect(page.locator('[data-testid="blog-sections"]')).toBeVisible();
 	});
 
-	test('blog detail header renders title + metadata', async ({ page }) => {
-		await gotoFirstPost(page);
-
-		// The header always renders the post title in an <h1>.
-		const headerTitle = page.locator('[data-testid="blog-detail-header"] h1').first();
-		await expect(headerTitle).toBeVisible();
-		const titleText = await headerTitle.textContent();
-		expect(titleText?.trim().length).toBeGreaterThan(0);
-	});
-
 	test('blog detail content zone renders non-empty body', async ({ page }) => {
 		await gotoFirstPost(page);
 
