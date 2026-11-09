@@ -28,6 +28,7 @@
 	} = $props();
 
 	let sorted = $derived(orderServices(services));
+	let ready = $state(false);
 
 	let activeIndex = $derived(sorted.findIndex((s) => s.id === activeId));
 
@@ -91,6 +92,7 @@
 	});
 
 	onMount(() => {
+		ready = true;
 		if (tabsListRef) {
 			tabsListScrollChain = scrollChain(tabsListRef);
 		}
@@ -160,7 +162,7 @@
 				{@const isActive = service.id === activeId}
 				{@const opacity = isActive ? 1 : getOpacity(i)}
 
-				<Tabs.Trigger value={service.id}>
+				<Tabs.Trigger value={service.id} disabled={!ready}>
 					{#snippet child({ props })}
 						<button
 							{...props}

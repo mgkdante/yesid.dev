@@ -32,7 +32,12 @@ test.describe('Project listing filters', () => {
     page.locator('.listing-filter-column [data-testid="project-filter-sidebar"]');
 
   test.beforeEach(async ({ page }) => {
+		// SiteRoot initializes theme on mount; SSR visibility alone is earlier.
+		await page.addInitScript(() => {
+			document.addEventListener('themechange', () => performance.mark('app-mounted'), { once: true });
+		});
     await page.goto('/projects');
+		await expect.poll(() => page.evaluate(() => performance.getEntriesByName('app-mounted').length)).toBe(1);
     // Wait on the filter-sidebar landmark (web-first, auto-retrying) — the element
     // every test in this block depends on — instead of the banned networkidle.
     await expect(desktopSidebar(page)).toBeVisible();
@@ -53,7 +58,9 @@ test.describe('Project listing filters', () => {
   test('clicking a stack filter button updates URL param', async ({ page }) => {
     // The Tech Stack group is collapsed by default — expand it before its items are clickable.
     const sidebar = desktopSidebar(page);
-    await sidebar.locator('button.label-section', { hasText: siteLabels.projectsChrome.listing.filters.techStack.en }).click();
+    const stackGroup = sidebar.getByRole('button', { name: siteLabels.projectsChrome.listing.filters.techStack.en, exact: true });
+    await stackGroup.click();
+    await expect(stackGroup).toHaveAttribute('aria-expanded', 'true');
 
     const filterBtn = sidebar.locator('[data-testid^="stack-filter-"]').first();
     await expect(filterBtn).toBeVisible();
