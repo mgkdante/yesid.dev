@@ -23,8 +23,8 @@ const shardOrder = ['phone', 'reduced-motion', 'desktop', 'tablet', 'light', 'da
 const rank = ({ name = '' }: { name?: string }) => shardOrder.indexOf(name) + 1 || shardOrder.length + 1;
 
 export default defineConfig({
-	// CI splits individual tests across shards and runs two workers per shard.
-	fullyParallel: true,
+	// CI splits tests across shards with two workers; local previews keep file-level parallelism.
+	fullyParallel: Boolean(externalBaseURL) || Boolean(process.env.CI),
 	workers: externalBaseURL ? Number(process.env.PLAYWRIGHT_WORKERS ?? 8) : process.env.CI ? 2 : undefined,
 	retries: 0,
 	timeout: process.env.CI ? 45_000 : 30_000,
