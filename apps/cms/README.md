@@ -98,6 +98,20 @@ mirrors change only through a reviewed source release, using
 `scripts/mirror-asset.ts`. Step-by-step operator procedures are maintained
 outside the repository by the maintainer.
 
+## Project page drafts: verification pending
+
+Do not rewrite a published project's sections as a draft: those rows are read
+by the next **Publish site** export. Project content versions are enabled, but
+the full-schema local 12.5.1 rehearsal was blocked by the fresh instance's
+collection entitlement limit. Nested save, comparison, promotion and export
+isolation remain unverified. See the [rehearsal evidence](ops/project-drafts-rehearsal.md).
+
+The proposed operator sequence is **stage a named version → review all EN/FR/ES
+project and section translations in Directus → Promote → manually Publish site**.
+This is not yet an available staging procedure: no staging script or new
+version permissions have been added. Complete the local rehearsal with a
+dedicated local entitlement before implementing or using this path.
+
 ## Locale contract
 
 The public locale interface is exactly `en`, `fr`, and `es`.
