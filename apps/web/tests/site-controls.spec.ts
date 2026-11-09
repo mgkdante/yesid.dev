@@ -15,10 +15,16 @@ test('touch buttons shrink once across hero, CTA band and contact form', async (
 			await expect(button).toBeEnabled();
 			await page.evaluate(() => document.fonts.ready);
 			const width = (await button.boundingBox())!.width;
-			await button.dispatchEvent('pointerdown', { pointerType: 'touch', bubbles: true });
-			await expect.poll(async () => (await button.boundingBox())!.width / width).toBeCloseTo(0.94, 2);
+			const scale = async () => (await button.boundingBox())!.width / width;
+			// SSR shows the button before hydration wires its press handler, and a link is enabled
+			// either way. Press again only while unpressed: 0.94 still fails a double shrink.
+			await expect(async () => {
+				if (Math.abs((await scale()) - 0.94) >= 0.005)
+					await button.dispatchEvent('pointerdown', { pointerType: 'touch', bubbles: true });
+				await expect.poll(scale, { timeout: 1000 }).toBeCloseTo(0.94, 2);
+			}).toPass({ timeout: 15_000 });
 			await button.dispatchEvent('pointercancel', { pointerType: 'touch', bubbles: true });
-			await expect.poll(async () => (await button.boundingBox())!.width / width).toBeCloseTo(1, 2);
+			await expect.poll(scale).toBeCloseTo(1, 2);
 		}
 	}
 });
