@@ -111,6 +111,7 @@
 
 	.mermaid-diagram__surface {
 		overflow-x: auto;
+		min-block-size: var(--size-tap-min);
 	}
 	.mermaid-diagram__open { display: block; width: 100%; border: 0; padding: 0; color: inherit; background: transparent; text-align: inherit; cursor: zoom-in; }
 	.mermaid-diagram__open:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }

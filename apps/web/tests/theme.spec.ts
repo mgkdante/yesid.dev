@@ -5,8 +5,15 @@ test.skip(({ viewport }) => viewport!.width < 1024, 'Desktop composition or view
 // localStorage key: 'theme', values 'dark' | 'light'
 
 test.describe('Theme toggle persistence', () => {
+	test.beforeEach(async ({ page }) => {
+		// SiteRoot emits themechange from theme.init() on mount, after hydration.
+		await page.addInitScript(() => {
+			document.addEventListener('themechange', () => performance.mark('theme-initialized'), { once: true });
+		});
+	});
 	test('page loads in dark theme by default', async ({ page }) => {
 		await page.goto('/');
+		await expect.poll(() => page.evaluate(() => performance.getEntriesByName('theme-initialized').length)).toBe(1);
 
 		// The pre-paint inline script in app.html resolves data-theme synchronously
 		// to 'light'/'dark' (never null). With no stored preference it must be dark.
@@ -18,6 +25,7 @@ test.describe('Theme toggle persistence', () => {
 
 	test('theme toggle button changes theme to light', async ({ page }) => {
 		await page.goto('/');
+		await expect.poll(() => page.evaluate(() => performance.getEntriesByName('theme-initialized').length)).toBe(1);
 
 		const htmlElement = page.locator('html');
 		await expect(htmlElement).toHaveAttribute('data-theme', 'dark');
@@ -36,8 +44,9 @@ test.describe('Theme toggle persistence', () => {
 
 	test('theme preference persists after page reload', async ({ page }) => {
 		await page.goto('/');
+		await expect.poll(() => page.evaluate(() => performance.getEntriesByName('theme-initialized').length)).toBe(1);
 
-		// Toggle visible == page hydrated; deterministic gate before reading localStorage.
+		// Mount readiness above establishes hydration before reading or changing theme.
 		const toggle = page.getByTestId('theme-toggle');
 		await expect(toggle).toBeVisible();
 
@@ -63,6 +72,7 @@ test.describe('Theme toggle persistence', () => {
 
 	test('the theme-color meta follows the painted page background', async ({ page }) => {
 		await page.goto('/');
+		await expect.poll(() => page.evaluate(() => performance.getEntriesByName('theme-initialized').length)).toBe(1);
 		const meta = page.locator('meta[name="theme-color"]');
 		const painted = () =>
 			page.evaluate(() => {
