@@ -6,7 +6,7 @@
 	import type { Theme } from '@yesid/ui/state';
 	import { resolveThemeValue, watchTheme } from '#lib/utils/theme-media.ts';
 	import { onMount } from 'svelte';
-	import type { ImageBlock } from '@repo/shared';
+	import type { GalleryImage } from '#lib/projects/project-images.ts';
 	import { youtubeLabels } from '#lib/utils/youtube.ts';
 
 	import { articleMediaLabels, type ArticleMedia } from '#lib/media/article-media.svelte.ts';
@@ -23,14 +23,14 @@
 	const activeImage = $derived(media.selection?.kind === 'image' ? media.images[media.index] : null);
 	const activeVideo = $derived(media.selection?.kind === 'video' ? media.videos[media.index] : null);
 	const activeDiagram = $derived(media.selection?.kind === 'diagram' ? media.selection : null);
-	const activeCaption = $derived(activeImage ? stripHtml(activeImage.data.caption) : activeDiagram?.label || activeVideo?.caption || videoLabels.title);
+	const activeCaption = $derived(activeImage ? `${stripHtml(activeImage.data.caption)}${activeImage.captureTheme ? ` (${labels[activeImage.captureTheme]})` : ''}` : activeDiagram?.label || activeVideo?.caption || videoLabels.title);
 	const closeLabel = $derived(activeVideo ? videoLabels.close : resolveLocale(siteLabels.a11y.projectImageClose, locale));
 	const activeSource = $derived(activeImage ? imageSource(activeImage, 'hero-1200') : undefined);
 	const LIGHTBOX_SIZES = 'min(96vw, 1440px)';
 	onMount(() => watchTheme((theme) => { activeTheme = theme; }));
 
-	function imageSource(image: ImageBlock, preset: string): AssetImageSource {
-		const file = resolveThemeValue(activeTheme, image.data.file, image.data.variants?.light);
+	function imageSource(image: GalleryImage, preset: string): AssetImageSource {
+		const file = image.captureTheme ? image.data.file : resolveThemeValue(activeTheme, image.data.file, image.data.variants?.light);
 		return file.fileId ? assetImage(file.fileId, preset) : { src: file.url };
 	}
 	function stripHtml(value: string): string { return value.replace(/<[^>]*>/g, ''); }
@@ -117,8 +117,8 @@
 							data-testid="project-image-gallery-lightbox-image"
 						/>
 						</div>
-						{#if activeImage.data.caption}
-							<p class="project-image-gallery__lightbox-caption">{@html activeImage.data.caption}</p>
+						{#if activeImage.data.caption || activeImage.captureTheme}
+							<p class="project-image-gallery__lightbox-caption">{#if activeImage.captureTheme}<span>{labels[activeImage.captureTheme]}:</span>{' '}{/if}{@html activeImage.data.caption}</p>
 						{/if}
 						{:else if activeVideo}
 							<div class="article-media-stage">{#key activeVideo.id}<YouTubeVideoPlayer video={activeVideo} active />{/key}</div>

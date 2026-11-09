@@ -13,6 +13,8 @@ vi.mock('#lib/directus/assets.ts', () => ({
 	buildSrcSet: () => '',
 	assetImage: (id: string, preset?: string) => ({
 		src: `/test-assets/${id}${preset ? `?key=${preset}` : ''}`,
+		srcset: `/test-assets/${id}-600 600w, /test-assets/${id}-1200 1200w`,
+		width: 1200, height: id.endsWith('-light') ? 800 : 750,
 	}),
 }));
 
@@ -103,6 +105,31 @@ describe('ProjectDetailPage image placement', () => {
 		document.documentElement.dataset.theme = 'dark';
 	});
 
+	it.each(['en', 'fr', 'es'] as const)('opens the displayed inline capture and pair index in %s after theme changes', async (locale) => {
+		document.documentElement.dataset.theme = 'light';
+		const first = storyImage('first', 'shared-dark', 'First pair');
+		const second = storyImage('second', 'shared-dark', 'Second pair');
+		second.data.variants = { light: { fileId: 'second-light', fileURL: '', url: '/second-light.png' } };
+		const project = projectFactory.build({
+			description: { en: storyDoc(first), [locale]: storyDoc(first) },
+			sections: [{ title: { en: 'Story', [locale]: 'Story' }, content: { en: storyDoc(...doc('Story prose').blocks, second), [locale]: storyDoc(...doc('Story prose').blocks, second) } }],
+		});
+		const { container } = render(ProjectDetailPage, {
+			props: { project, services: [], serviceSvgContents: {} },
+			context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
+		});
+		const inline = within(container.querySelector('.sections-column') as HTMLElement).getByRole('img', { name: 'Second pair' });
+		for (const [mode, asset, position] of [['light', 'second-light', '4 / 4'], ['dark', 'shared-dark', '3 / 4'], ['light', 'second-light', '4 / 4']]) {
+			document.documentElement.dataset.theme = mode;
+			await waitFor(() => expect(inline).toHaveAttribute('src', `/test-assets/${asset}?key=card-600`));
+			await fireEvent.click(inline.closest('button')!);
+			expect(screen.getByTestId('project-image-gallery-lightbox-image')).toHaveAttribute('src', `/test-assets/${asset}?key=hero-1200`);
+			expect(within(screen.getByRole('dialog')).getByRole('status')).toHaveTextContent(position!);
+			await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+			await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+		}
+	});
+
 	it('collects actual repeated YouTube links into one video-only gallery preview per layout', () => {
 		const project = projectFactory.build({
 			description: { en: doc('https://youtu.be/M7lc1UVf-VE') },
@@ -133,13 +160,13 @@ describe('ProjectDetailPage image placement', () => {
 		const article = container.querySelector('.sections-column')!;
 		expect(within(article as HTMLElement).getByRole('img', { name: 'Story state' })).toBeInTheDocument();
 		const gallery = screen.getByTestId('project-image-gallery-mobile');
-		expect(within(gallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(2);
-		expect(within(gallery).getByRole('img', { name: 'Overview state' })).toBeInTheDocument();
-		expect(within(gallery).getByRole('img', { name: 'Story state' })).toBeInTheDocument();
+		expect(within(gallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(4);
+		expect(within(gallery).getByRole('img', { name: 'Overview state (Dark)' })).toBeInTheDocument();
+		expect(within(gallery).getByRole('img', { name: 'Story state (Dark)' })).toBeInTheDocument();
 		const header = within(article as HTMLElement).getByRole('button', { name: 'Story' });
 		const inline = within(article as HTMLElement).getByRole('img', { name: 'Story state' }).closest('button')!;
 		await fireEvent.click(inline);
-		expect(screen.getByRole('status')).toHaveTextContent('2 / 2');
+		expect(screen.getByRole('status')).toHaveTextContent('3 / 4');
 		expect(screen.getByTestId('project-image-gallery-lightbox-image')).toHaveAttribute('src', '/test-assets/story-state?key=hero-1200');
 		expect(header).toHaveAttribute('aria-expanded', 'true');
 		await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
@@ -155,7 +182,7 @@ describe('ProjectDetailPage image placement', () => {
 		for (const testId of ['project-image-gallery-mobile', 'project-image-gallery-rail']) {
 			const gallery = screen.getByTestId(testId);
 			expect([...gallery.querySelectorAll('h2')].map((heading) => heading.textContent?.trim())).toEqual(['Images', 'Videos']);
-			expect(within(gallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(1);
+			expect(within(gallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(2);
 			expect(within(gallery).getAllByTestId('project-video-gallery-trigger')).toHaveLength(1);
 		}
 		expect(container.querySelector('.sections-column')).not.toHaveTextContent('Old media title');
@@ -190,14 +217,31 @@ describe('ProjectDetailPage image placement', () => {
 		expect(container.querySelector('[data-story-highlight]')).toHaveTextContent('const source = "fixture";');
 		const mobileGallery = screen.getByTestId('project-image-gallery-mobile');
 		expect(within(mobileGallery).getAllByTestId('project-image-gallery')).toHaveLength(1);
-		expect(within(mobileGallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(2);
-		expect(within(mobileGallery).getByRole('img', { name: caption })).toHaveAttribute('src', '/test-assets/overview-state-light?key=hero-1200');
+		expect(within(mobileGallery).getAllByTestId('project-image-gallery-trigger')).toHaveLength(4);
+		const dark = locale === 'fr' ? 'Sombre' : 'Oscuro';
+		const light = locale === 'fr' ? 'Clair' : 'Claro';
+		expect(within(mobileGallery).getByRole('img', { name: `${caption} (${dark})` })).toHaveAttribute('src', '/test-assets/overview-state?key=hero-1200');
+		expect(within(mobileGallery).getByRole('img', { name: `${caption} (${light})` })).toHaveAttribute('src', '/test-assets/overview-state-light?key=hero-1200');
+
+		for (const [index, image] of within(mobileGallery).getAllByRole('img').entries()) {
+			expect(image).toHaveAttribute('srcset', expect.stringContaining('600w'));
+			expect(image).toHaveAttribute('width', '1200');
+			expect(image).toHaveAttribute('height', index % 2 ? '800' : '750');
+		}
 		expect(within(mobileGallery).queryByText('English story')).not.toBeInTheDocument();
 		const glance = screen.getByTestId('project-glance-panel-mobile');
 		expect(Boolean(glance.compareDocumentPosition(mobileGallery) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true);
 		const trigger = within(mobileGallery).getAllByTestId('project-image-gallery-trigger')[0]!;
 		await fireEvent.click(trigger);
+		expect(screen.getByTestId('project-image-gallery-lightbox-image')).toHaveAttribute('src', '/test-assets/overview-state?key=hero-1200');
+		expect(screen.getByTestId('project-image-gallery-lightbox-image')).toHaveAttribute('alt', `${caption} (${dark})`);
+		await fireEvent.keyDown(window, { key: 'ArrowRight' });
+		expect(within(screen.getByRole('dialog')).getByRole('status')).toHaveTextContent('2 / 4');
 		expect(screen.getByTestId('project-image-gallery-lightbox-image')).toHaveAttribute('src', '/test-assets/overview-state-light?key=hero-1200');
+		expect(screen.getByTestId('project-image-gallery-lightbox-image')).toHaveAttribute('alt', `${caption} (${light})`);
+		expect(screen.getByRole('dialog')).toHaveTextContent(`${light}: ${caption}`);
+		await fireEvent.keyDown(window, { key: 'ArrowRight' });
+		expect(screen.getByTestId('project-image-gallery-lightbox-image')).toHaveAttribute('src', '/test-assets/article-state?key=hero-1200');
 		await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
 	});
 
@@ -403,7 +447,7 @@ describe('ProjectDetailPage image placement', () => {
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 	});
 
-	it('uses CMS light image variants for thumbnails and expanded images from the document theme', async () => {
+	it('opens the explicitly selected light capture regardless of the document theme', async () => {
 		theme.set('dark');
 		document.documentElement.dataset.theme = 'light';
 		const project = projectFactory.build({
@@ -446,8 +490,8 @@ describe('ProjectDetailPage image placement', () => {
 		});
 
 		const gallery = screen.getAllByTestId('project-image-gallery')[0]!;
-		const trigger = within(gallery).getByTestId('project-image-gallery-trigger');
-		expect(within(gallery).getByRole('img')).toHaveAttribute(
+		const trigger = within(gallery).getAllByTestId('project-image-gallery-trigger')[1]!;
+		expect(within(gallery).getByRole('img', { name: 'Desktop showcase (Light)' })).toHaveAttribute(
 			'src',
 			'/test-assets/desktop-light-uuid?key=hero-1200',
 		);
