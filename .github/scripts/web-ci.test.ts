@@ -28,6 +28,7 @@ describe('e2e selection', () => {
 const needs = (selected = 'true', e2e = 'success') => ({
 	classify: { result: 'success', outputs: { e2e: selected } },
 	'ci-work': { result: 'success' },
+	'prerelease-guard': { result: 'success' },
 	e2e: { result: e2e },
 });
 
@@ -36,20 +37,22 @@ describe('required CI', () => {
 	test('unexpected skip fails', () => expect(required(needs('true', 'skipped'), false)).toBe(false));
 	test('label permits skip', () => expect(required(needs('true', 'skipped'), true)).toBe(true));
 	test('docs permit skip', () => expect(required(needs('false', 'skipped'), false)).toBe(true));
-	for (const job of ['classify', 'ci-work', 'e2e'] as const) {
+	for (const job of ['classify', 'ci-work', 'e2e', 'prerelease-guard'] as const) {
 		test.each(['failure', 'cancelled'])(`${job} %s fails even with label`, result => {
 			const input = needs('false');
 			input[job].result = result;
 			expect(required(input, true)).toBe(false);
 		});
 	}
-	test.each(['classify', 'ci-work'] as const)('%s must succeed', job => {
+	test.each(['classify', 'ci-work', 'prerelease-guard'] as const)('%s must succeed', job => {
 		const input = needs();
 		input[job].result = 'skipped';
 		expect(required(input, true)).toBe(false);
 	});
 	test('missing inputs fail', () => {
 		expect(required({}, true)).toBe(false);
+		const { ['prerelease-guard']: guard, ...withoutGuard } = needs();
+		expect(required(withoutGuard, true)).toBe(false);
 		expect(required(needs('', 'skipped'), true)).toBe(false);
 	});
 });

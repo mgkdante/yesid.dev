@@ -27,6 +27,7 @@ type Needs = Record<string, { result?: string; outputs?: Record<string, string> 
 
 export function required(needs: Needs, labelSkip: boolean): boolean {
 	if (Object.values(needs).some(job => job.result === 'failure' || job.result === 'cancelled')) return false;
+	if (needs['prerelease-guard']?.result !== 'success') return false;
 	if (needs.classify?.result !== 'success' || needs['ci-work']?.result !== 'success') return false;
 	const selected = needs.classify.outputs?.e2e;
 	if (selected !== 'true' && selected !== 'false') return false;
