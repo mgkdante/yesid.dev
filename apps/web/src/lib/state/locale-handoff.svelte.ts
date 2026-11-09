@@ -4,30 +4,14 @@ import { beforeNavigate, afterNavigate } from '$app/navigation';
 import { onMount, tick } from 'svelte';
 import { delocalizePath, isLocaleSwitch, pathLocale } from '#lib/utils/locale-routing.ts';
 import { getLenis } from '@yesid/motion/utils/lenis';
-import {
-	makeBlob,
-	serializeBlob,
-	parseBlob,
-	type HandoffBlob,
-	type FocusSnapshot,
-} from './handoff-blob';
+import type { FocusSnapshot } from './handoff-blob';
+import { createReadingSession, type NavigationIntent, type ScrollContext } from './reading-session';
+export type { ScrollContext } from './reading-session';
 
-const STORAGE_PREFIX = 'yesid:lstate:';
-const activationOffsets = new WeakMap<Event, number>();
-let navigationCapture: { y: number } | undefined;
+let stableIdentity: () => string | undefined = () => undefined;
 
-/** Preserve activation before Kit's repaint and asynchronous intent resolution. */
-export function getNavigationCaptureY(): number | undefined { return navigationCapture?.y; }
-
-/** A page registers ONE scroll strategy; the orchestrator delegates capture/restore. */
-export interface ScrollContext {
-	capture: () => unknown;
-	restore: (snapshot: unknown) => void | Promise<void>;
-}
-
-let scrollContext: ScrollContext | null = null;
-let activeSwitchKey: string | null = null;
-let activeStableIdentity: string | null = null;
+/** Preserve activation before Kit repaints and resolves navigation intent. */
+export function getNavigationCaptureY(): number | undefined { return session.departureY(); }
 
 // Mask flag — surfaces that flash on restore (scroll) hold their
 // region while this is true. Mutated client-side only; SSR always reads false.
@@ -61,10 +45,7 @@ export function isLocaleHandoffNavigation(
 }
 
 export function registerScrollContext(ctx: ScrollContext): () => void {
-	scrollContext = ctx;
-	return () => {
-		if (scrollContext === ctx) scrollContext = null;
-	};
+	return session.register(ctx);
 }
 
 // --- focus (the element dies on remount → re-derive by stable data-handoff-focus) ---
@@ -94,19 +75,6 @@ function restoreFocus(focus: FocusSnapshot | null): void {
 	}
 }
 
-// --- scroll (generic window offset by default; pages override via ScrollContext) ---
-// Lenis is the site-wide scroll engine (apps/web/+layout.svelte initLenis), so
-// EVERY default restore must be Lenis-aware. window.scrollTo() fights an active
-// Lenis: Lenis keeps its own animated position and snaps the page back. When a
-// Lenis instance is live we use its jumpTo recipe (HeroBanner's): resize() to
-// sync the cached scroll limits to the freshly-remounted page height, then an
-// immediate forced scrollTo. On touch / reduced-motion (no Lenis) we fall back
-// to the native window.scrollTo.
-function captureScroll(): unknown {
-	if (scrollContext) return scrollContext.capture();
-	return { kind: 'offset', y: window.scrollY };
-}
-
 /**
  * Lenis-aware instant scroll to `y`. Mirrors HeroBanner.jumpTo — resize() first
  * so Lenis's debounced dimension cache matches the just-remounted page before we
@@ -125,137 +93,50 @@ export function lenisAwareScrollTo(y: number): void {
 	}
 }
 
-async function restoreScroll(snapshot: unknown): Promise<void> {
-	if (scrollContext) {
-		await scrollContext.restore(snapshot);
-		return;
-	}
-	const y = (snapshot as { y?: number } | null)?.y ?? 0;
-	lenisAwareScrollTo(y);
-}
-
-// --- storage (always guarded: private mode / quota must never crash a nav) ---
-function storageKey(scope: string): string {
-	return STORAGE_PREFIX + scope;
-}
-
-function writeBlob(blob: HandoffBlob): void {
-	try {
-		sessionStorage.setItem(storageKey(blob.path), serializeBlob(blob));
-	} catch {
-		/* private mode / quota — degrade to no-handoff */
-	}
-}
-
-function readBlob(scope: string): HandoffBlob | null {
-	try {
-		return parseBlob(sessionStorage.getItem(storageKey(scope)), scope);
-	} catch {
-		return null;
-	}
-}
-
-function clearBlob(scope: string): void {
-	try {
-		sessionStorage.removeItem(storageKey(scope));
-	} catch {
-		/* ignore */
-	}
-}
-
 function nextFrame(): Promise<void> {
 	return new Promise((resolve) => requestAnimationFrame(() => resolve()));
 }
 
-function snapshot(scope: string, nowMs: number): void {
-	writeBlob(
-		makeBlob({
-			path: scope,
-			scroll: captureScroll(),
-			focus: captureFocus(),
-			ts: nowMs,
-		}),
-	);
+const session = createReadingSession({
+	scrollY: () => window.scrollY,
+	scrollTo: lenisAwareScrollTo,
+	store: {
+		get: (key) => sessionStorage.getItem(key),
+		set: (key, value) => sessionStorage.setItem(key, value),
+		remove: (key) => sessionStorage.removeItem(key),
+	},
+	focus: { capture: captureFocus, restore: restoreFocus },
+	afterPaint: async () => { await tick(); await nextFrame(); await nextFrame(); },
+	now: () => Date.now(),
+	stableIdentity: () => stableIdentity(),
+	setRestoring: (value) => { restoringState = value; },
+	routing: { key: localeHandoffKey, isHandoff: isLocaleHandoffNavigation, isSwitch: isLocaleSwitch },
+});
+
+type KitIntent = {
+	type: string;
+	from: { url: URL } | null;
+	to: { url: URL } | null;
+	shallow: boolean;
+	willUnload?: boolean;
+	complete?: Promise<unknown>;
+};
+function navigationIntent(nav: KitIntent): NavigationIntent {
+	return { type: nav.type, fromPath: nav.from?.url.pathname, toPath: nav.to?.url.pathname,
+		shallow: nav.shallow, willUnload: nav.willUnload ?? false,
+		event: 'event' in nav && nav.event instanceof Event ? nav.event : undefined,
+		complete: nav.complete };
 }
 
-// --- attach: wire the nav hooks (call at +layout INIT) ---
+// Register during layout initialization; hooks cannot register inside onMount.
 export function attachLocaleHandoff(getStableIdentity: () => string | undefined = () => undefined): void {
 	if (!browser) return;
+	stableIdentity = getStableIdentity;
 	onMount(() => {
-		const capture = (event: MouseEvent) => activationOffsets.set(event, window.scrollY);
+		const capture = (event: MouseEvent) => session.activate(event);
 		window.addEventListener('click', capture, true);
 		return () => window.removeEventListener('click', capture, true);
 	});
-
-	beforeNavigate((nav) => {
-		navigationCapture = undefined;
-		if (!nav.shallow && !nav.willUnload) {
-			const event = 'event' in nav ? nav.event : undefined;
-			const y = event instanceof Event ? activationOffsets.get(event) : undefined;
-			const captured = { y: y ?? window.scrollY };
-			navigationCapture = captured;
-			const clear = () => { if (navigationCapture === captured) navigationCapture = undefined; };
-			void nav.complete.then(clear, clear);
-		}
-		if (nav.shallow && nav.type === 'goto') return;
-
-		if (!nav.from || !nav.to) return;
-		// Idempotency: a rapid second switch fired mid-restore must NOT overwrite the
-		// good blob with half-restored / default state — keep the in-flight one.
-		if (restoringState) return;
-		activeSwitchKey = null;
-		activeStableIdentity = null;
-		const stableIdentity = normalizedIdentity(getStableIdentity());
-		if (
-			!isLocaleHandoffNavigation(
-				nav.from.url.pathname,
-				nav.to.url.pathname,
-				stableIdentity,
-			)
-		) return;
-		activeSwitchKey = localeHandoffKey(nav.from.url.pathname, stableIdentity);
-		activeStableIdentity = stableIdentity ?? null;
-		snapshot(activeSwitchKey, Date.now());
-		restoringState = true;
-	});
-
-	afterNavigate(async (nav) => {
-		if (nav.shallow && nav.type === 'goto') return;
-		if (nav.type === 'enter') return; // initial hydration — nothing to restore
-		if (!nav.from || !nav.to) return;
-		if (!activeSwitchKey && !isLocaleSwitch(nav.from.url.pathname, nav.to.url.pathname)) {
-			// A non-switch navigation cleared the in-flight restore — drop the flag so
-			// the mask can never get stuck up after an aborted/redirected switch.
-			if (restoringState) restoringState = false;
-			return;
-		}
-		const scope = activeSwitchKey ?? localeHandoffKey(nav.to.url.pathname);
-		if (
-			activeStableIdentity &&
-			normalizedIdentity(getStableIdentity()) !== activeStableIdentity
-		) {
-			clearBlob(scope);
-			activeSwitchKey = null;
-			activeStableIdentity = null;
-			restoringState = false;
-			return;
-		}
-		const blob = readBlob(scope);
-		if (!blob) {
-			activeSwitchKey = null;
-			activeStableIdentity = null;
-			restoringState = false;
-			return;
-		}
-		// The {#key} subtree just remounted — wait for it to paint before we touch it.
-		await tick();
-		await nextFrame();
-		await nextFrame();
-		await restoreScroll(blob.scroll);
-		restoreFocus(blob.focus);
-		clearBlob(scope);
-		activeSwitchKey = null;
-		activeStableIdentity = null;
-		restoringState = false;
-	});
+	beforeNavigate((nav) => session.before(navigationIntent(nav)));
+	afterNavigate((nav) => session.after(navigationIntent(nav)));
 }
