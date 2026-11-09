@@ -1,3 +1,4 @@
+import { fixtureProject, longTitlePostPath } from './_support/content-fixtures';
 import { localeCopy } from '../src/lib/locales';
 // go2 integration regression locks — two operator-reported deploy bugs.
 //
@@ -104,8 +105,8 @@ test.describe('responsive shell and interrupted menu', () => {
 			await expect(page.getByTestId('hero-subtitle')).toBeInViewport();
 			await expect(page.getByTestId('hero-cta-projects')).toBeInViewport();
 			for (const route of [
-				'/projects/transit-data-pipeline',
-				'/blog/four-projects-four-stacks',
+				`/projects/${fixtureProject.slug}`,
+				longTitlePostPath,
 			]) {
 				await page.goto(route);
 				await page.evaluate(() => document.fonts.ready);
