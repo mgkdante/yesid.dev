@@ -1,5 +1,19 @@
 import type { BlockEditorDoc, ImageBlock, ImageBlockFile } from '@repo/shared';
 
+export type GalleryImage = ImageBlock & { captureTheme?: 'dark' | 'light' };
+
+/** Expand after deduplication so repeated inline images do not repeat captures. */
+export function collectProjectGalleryImages(docs: readonly BlockEditorDoc[]): GalleryImage[] {
+	return collectProjectImages(docs).flatMap((image): GalleryImage[] => {
+		const light = image.data.variants?.light;
+		if (!light) return [image];
+		return [
+			{ ...image, id: `${image.id}:dark`, captureTheme: 'dark' },
+			{ ...image, id: `${image.id}:light`, captureTheme: 'light', data: { ...image.data, file: light } },
+		];
+	});
+}
+
 export function imageIdentity(file: ImageBlockFile): string | undefined {
 	if (file.fileId.trim()) return `file:${file.fileId.trim().toLowerCase()}`;
 	for (const url of [file.fileURL, file.url]) {

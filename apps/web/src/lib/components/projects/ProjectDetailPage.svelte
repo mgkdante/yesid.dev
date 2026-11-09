@@ -29,7 +29,7 @@
 	} from '@yesid/ui/brand';
 	import { ArticleHeader, DetailFrame } from '@yesid/ui/layout';
 
-	import { collectProjectImages } from '#lib/projects/project-images.ts';
+	import { collectProjectGalleryImages } from '#lib/projects/project-images.ts';
 	import { collectProjectVideos, youtubeLabels } from '#lib/utils/youtube.ts';
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectHeaderTelemetry from './ProjectHeaderTelemetry.svelte';
@@ -148,7 +148,7 @@
 	const galleryAnchor = $derived(gallerySource ? `project-gallery-${gallerySource.originalIndex}` : 'project-gallery');
 	const galleryDoc = $derived({
 		...resolveLocale(project.description, locale),
-		blocks: collectProjectImages([
+		blocks: collectProjectGalleryImages([
 			resolveLocale(project.description, locale),
 			...sectionViews.map((section) => section.doc),
 		]),

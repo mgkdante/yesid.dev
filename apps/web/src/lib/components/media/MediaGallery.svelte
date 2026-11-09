@@ -6,10 +6,10 @@
 	import type { Theme } from '@yesid/ui/state';
 	import { resolveThemeValue, watchTheme } from '#lib/utils/theme-media.ts';
 	import { onMount } from 'svelte';
-	import type { ImageBlock } from '@repo/shared';
+	import type { GalleryImage } from '#lib/projects/project-images.ts';
 	import { youtubeLabels } from '#lib/utils/youtube.ts';
 
-	import { getArticleMedia } from '#lib/media/article-media.svelte.ts';
+	import { articleMediaLabels, getArticleMedia } from '#lib/media/article-media.svelte.ts';
 	let { kind }: { kind: 'image' | 'video' } = $props();
 	const media = getArticleMedia()!;
 	const locale = getLocale();
@@ -17,6 +17,7 @@
 	let hydrated = $state(false);
 	const images = $derived(kind === 'image' ? media.images : []);
 	const videos = $derived(kind === 'video' ? media.videos : []);
+	const labels = articleMediaLabels[locale];
 	const videoLabels = youtubeLabels[locale];
 	const projectImageOpenTemplate = resolveLocale(siteLabels.a11y.projectImageOpen, locale);
 	const THUMB_SIZES = '(min-width: 1024px) 28vw, (min-width: 768px) 45vw, 92vw';
@@ -25,14 +26,19 @@
 		return watchTheme((theme) => { activeTheme = theme; });
 	});
 
-	function imageSource(image: ImageBlock, preset: string): AssetImageSource {
-		const file = resolveThemeValue(activeTheme, image.data.file, image.data.variants?.light);
+	function imageSource(image: GalleryImage, preset: string): AssetImageSource {
+		const file = image.captureTheme ? image.data.file : resolveThemeValue(activeTheme, image.data.file, image.data.variants?.light);
 		return file.fileId ? assetImage(file.fileId, preset) : { src: file.url };
 	}
 	function stripHtml(value: string): string { return value.replace(/<[^>]*>/g, ''); }
 
-	function openImageLabel(image: ImageBlock): string {
-		return projectImageOpenTemplate.replace('{caption}', stripHtml(image.data.caption));
+	function imageCaption(image: GalleryImage): string {
+		const caption = stripHtml(image.data.caption);
+		return image.captureTheme ? `${caption} (${labels[image.captureTheme]})` : caption;
+	}
+
+	function openImageLabel(image: GalleryImage): string {
+		return projectImageOpenTemplate.replace('{caption}', imageCaption(image));
 	}
 </script>
 <div class="project-image-gallery" class:project-image-gallery--videos={kind === 'video'} data-testid={kind === 'image' ? 'project-image-gallery' : 'article-video-gallery'} data-lenis-prevent>
@@ -46,7 +52,7 @@
 				aria-label={openImageLabel(image)}
 				data-testid="project-image-gallery-trigger"
 				onfocus={(event) => event.currentTarget.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'instant' })}
-				onclick={(event) => { event.stopPropagation(); media.openImage(image.data, event.currentTarget); }}
+				onclick={(event) => { event.stopPropagation(); media.openImage(image.data, event.currentTarget, image.id); }}
 			>
 				<img
 					src={source.src}
@@ -54,10 +60,11 @@
 					sizes={THUMB_SIZES}
 					width={source.width}
 					height={source.height}
-					alt={stripHtml(image.data.caption)}
+					alt={imageCaption(image)}
 					loading="lazy"
 					decoding="async"
 				/>
+				{#if image.captureTheme}<span class="capture-label" aria-hidden="true">{labels[image.captureTheme]}</span>{/if}
 			</button>
 		</figure>
 	{/each}
@@ -117,7 +124,10 @@
 		scroll-snap-align: center;
 	}
 
+	.capture-label { position: absolute; bottom: 0.5rem; left: 0.5rem; padding: 0.15rem 0.5rem; border-radius: var(--radius-md); background: var(--surface-2); color: var(--foreground); font-size: 0.75rem; }
+
 	.project-image-gallery__trigger {
+		position: relative;
 		display: block;
 		width: 100%;
 		overflow: hidden;
