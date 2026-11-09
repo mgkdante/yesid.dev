@@ -41,9 +41,9 @@ jobs:
         with:
           bun-version-file: .bun-version
       - name: Test prerelease guard
-        run: bun test ./.github/scripts/prerelease-guard.test.ts
+        run: bun .github/scripts/design-prerelease-guard.mjs --self-test
       - name: Require stable design dependencies
-        run: bun .github/scripts/prerelease-guard.ts
+        run: bun .github/scripts/design-prerelease-guard.mjs
 
   classify:
     runs-on: ubuntu-latest
