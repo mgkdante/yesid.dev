@@ -1,8 +1,9 @@
 // CMS media URL helper. Generated content keeps Directus file UUIDs as the
-// editing identity, while media-assets.ts maps known UUIDs to committed static
-// files for production rendering. In dev, unknown IDs may still fall back to
-// PUBLIC_DIRECTUS_URL so new CMS uploads can be previewed before they are
-// added to the mirror manifest. In production, unknown IDs fail loud.
+// editing identity, while media-assets.ts maps known UUIDs to static files for
+// production rendering: committed mirrors, plus raster images the live export
+// fetches from the CMS and publishes under /images/cms/. In dev, unknown IDs
+// may still fall back to PUBLIC_DIRECTUS_URL so new CMS uploads can be
+// previewed. In production, unknown IDs fail loud.
 //
 // ---------------------------------------------------------------------------
 //

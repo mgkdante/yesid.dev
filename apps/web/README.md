@@ -12,7 +12,7 @@ schema, editorial rows, or the design-system packages.
 | [`src/lib/catalog/`](src/lib/catalog/) | Synchronous generated-content catalog and shared availability rules used by routes and server helpers. |
 | [`src/lib/adapters/`](src/lib/adapters/) | Page SEO composition and route-specific SEO factories, using the catalog. |
 | [`src/lib/content/`](src/lib/content/) | Build-time content. The CMS exporter produces 21 ignored modules, including one server-only module; never edit those outputs by hand. |
-| [`src/lib/directus/assets.ts`](src/lib/directus/assets.ts) | The sanctioned media seam. Known file identities resolve to committed mirrors; unknown media may use Directus only in development and fails loudly in production. |
+| [`src/lib/directus/assets.ts`](src/lib/directus/assets.ts) | The sanctioned media seam. File identities resolve through the generated `media-assets.ts` map: committed mirrors, plus images the live build publishes under `/images/cms/`. An identity in neither may use Directus only in development and fails loudly in production. |
 | [`../../packages/shared/`](../../packages/shared/) | Product types, validation schemas, asset contracts, and dependency-free stack-layer constants. |
 
 Page content moves in one direction:
@@ -22,8 +22,9 @@ Directus -> CMS exporter -> generated modules -> catalog -> routes/components
 ```
 
 The public application never queries Directus for page content at request time.
-The media helper is intentionally separate: committed mirrors are the production
-path, while a Directus `/assets/*` URL supports newly uploaded media during local
+The media helper is intentionally separate: production serves committed mirrors
+and the raster images a live build fetches from the CMS and publishes as static
+files, while a Directus `/assets/*` URL supports newly uploaded media during local
 editing. See the [CMS owner guide](../cms/README.md) for the export, schema and recovery
 contracts, and the [asset serving map](#asset-serving-map) for the serving model
 of each image and SVG family.
@@ -51,8 +52,10 @@ sends its fields to Web3Forms. Plausible runs only when `PUBLIC_PLAUSIBLE_DOMAIN
 
 - A trusted live content export must validate the whole registry of 21 outputs
   and pass legal-truth and SEO validators before emission.
-- Production rendering fails for an unmirrored media identity; development may
-  use the explicit Directus fallback to preview new editorial media.
+- The live export fails closed when it cannot fetch, validate or encode a
+  referenced CMS image, and production rendering fails for an identity missing
+  from `media-assets.ts`; development may use the explicit Directus fallback to
+  preview new editorial media.
 - The sitemap, client-payload, token, locale, and browser gates are
   release contracts, not optional reports.
 
@@ -83,7 +86,7 @@ Regenerate both binary icons from `favicon.svg` if the mark changes.
 | `src/lib/assets/project-fallbacks/*.svg` | Digital-infrastructure blueprints: `digital-mobile` below md, `digital-desktop` at md+ | Vite `?raw` imports in `ProjectCard.svelte`; registered in CMS `illustrations` |
 | `@yesid/ui/blueprints` | Blueprint drawings as inline components (`currentColor` for theming); the CTA sheets keep their `cta-sheet--*` classes and motif markers | Composed in ServicesBlueprint, BlogBlueprint, ProjectsBlueprint and CtaBlueprintBackground (12 unique sheets behind the shared `CtaBand`) |
 | `static/svg/services/*.svg` | 6 service line icons; filenames are CMS data (`services.svg`) | Dual: `?raw` glob (`src/lib/utils/service-svg.ts`, SSR) + client fetch/img `/svg/services/...` |
-| `static/images/**` | Raster + CMS-mirrored assets (metro map, about art, work shots) | Static; CMS mirror via `media-assets.ts` (GENERATED) + `assets-id-map.json` |
+| `static/images/**` | Raster + CMS-mirrored assets (metro map, about art, work shots); `images/cms/` holds images published by the live build and is regenerated on every export, never committed | Static; resolved via `media-assets.ts` (GENERATED) + `assets-id-map.json` |
 | `static/og/**.png` | 27 committed OG share cards, 1200x630 <150KB, minted by `scripts/generate-og-cards.ts`: `default.{en,fr,es}` (home + locale fallback), localized `routes/{services,contact,about,projects}`, localized `services/<id>` | Static; blog/project cards share the layout in `src/lib/og/card.ts` and prerender at build into deployment-static `/og/{blog,project}/` files |
 
 Project share copy comes from `projects_translations.one_liner` through the exported
