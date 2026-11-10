@@ -273,7 +273,7 @@ describe('ProjectDetailPage image placement', () => {
 			},
 			image: 'hero-image-uuid',
 			liveUrl: 'https://yesid.dev',
-			repoUrl: 'https://github.com/mgkdante/yesid.dev',
+			repoUrl: 'https://github.com/yesid-dev/yesid.dev',
 			impactMetrics: [{ value: { en: '30s' }, label: { en: 'Publish time' } }],
 			stack: ['SvelteKit'],
 			description: { en: doc('Overview text') },

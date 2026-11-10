@@ -65,14 +65,14 @@ describe('ProjectLinksCard high-intent analytics', () => {
 
 	it('tracks one project proof event for a public repository link', async () => {
 		const project = projectFactory.build({
-			repoUrl: 'https://github.com/mgkdante/public-project',
+			repoUrl: 'https://github.com/yesid-dev/public-project',
 			repoPrivate: false,
 		});
 		const { container } = render(ProjectProofLinks, {
 			props: { project },
 		});
 		const link = container.querySelector(
-			'a[href="https://github.com/mgkdante/public-project"]',
+			'a[href="https://github.com/yesid-dev/public-project"]',
 		);
 		expect(link).not.toBeNull();
 
@@ -85,7 +85,7 @@ describe('ProjectLinksCard high-intent analytics', () => {
 
 	it('keeps a private repository non-clickable and untracked', async () => {
 		const project = projectFactory.build({
-			repoUrl: 'https://github.com/mgkdante/private-project',
+			repoUrl: 'https://github.com/yesid-dev/private-project',
 			repoPrivate: true,
 		});
 		const { container } = render(ProjectProofLinks, {
@@ -94,7 +94,7 @@ describe('ProjectLinksCard high-intent analytics', () => {
 
 		expect(
 			container.querySelector(
-				'a[href="https://github.com/mgkdante/private-project"]',
+				'a[href="https://github.com/yesid-dev/private-project"]',
 			),
 		).toBeNull();
 		await fireEvent.click(screen.getByTestId('project-repo-private'));
@@ -142,7 +142,7 @@ describe('ProjectLinksCard documentation link', () => {
 
 	it('renders and tracks the published Documentation link beside the other links', async () => {
 		const project = projectFactory.build({
-			repoUrl: 'https://github.com/mgkdante/public-project',
+			repoUrl: 'https://github.com/yesid-dev/public-project',
 			docsUrl: 'https://yesid-dev.notion.site/wiki',
 		});
 		render(ProjectProofLinks, { props: { project } });

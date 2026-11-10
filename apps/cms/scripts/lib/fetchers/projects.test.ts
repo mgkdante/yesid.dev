@@ -19,7 +19,7 @@ const FIXTURE: DirectusProject = {
 	hero_image_light: null,
 	hero_image_secondary: null,
 	hero_image_secondary_light: null,
-	repo_url: 'https://github.com/mgkdante/transit',
+	repo_url: 'https://github.com/yesid-dev/transit',
 	repo_private: null,
 	docs_url: null,
 	live_url: null,

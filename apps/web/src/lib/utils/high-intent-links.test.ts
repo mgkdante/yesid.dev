@@ -46,7 +46,7 @@ describe('isDirectContactHref', () => {
 describe('isProjectProofHref', () => {
 	it.each([
 		'https://yesid.dev',
-		'https://github.com/mgkdante/yesid.dev',
+		'https://github.com/yesid-dev/yesid.dev',
 		'http://localhost:4173/demo',
 	])('accepts the absolute web proof URL %s', (href) => {
 		expect(isProjectProofHref(href)).toBe(true);
