@@ -7,7 +7,7 @@ name: web
 # squash merges mean the last PR run tested exactly what lands on main.
 # Policy CLI/env changes require a two-step migration: this PR runs base policy;
 # later PRs run the policy landed on main through their own workflow.
-# Playwright shards run alongside ci-work; the aggregate gate requires both.
+# A shared build artifact serves E2E; the aggregate gate requires both lanes.
 # The always-run required ci gate includes classification, prerelease-guard, ci-work and e2e.
 
 on:
@@ -118,6 +118,36 @@ jobs:
             bun .github/scripts/web-ci.ts classify
           fi
 
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: ./.github/actions/setup
+      - name: Build site and run build contracts
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+          EXPORT_FALLBACKS_SOURCE: "fixture"
+          PUBLIC_PLAUSIBLE_DOMAIN: "yesid.dev"
+        run: bun x turbo run build --filter=@repo/web
+      - name: Client payload budgets
+        working-directory: apps/web
+        run: bun run check:client-payload
+      - name: Content-Security-Policy check
+        working-directory: apps/web
+        run: bun run check:csp
+      - name: Package preview output
+        run: tar -czf "$RUNNER_TEMP/web-build.tar.gz" -C apps/web .svelte-kit/output
+      - name: Upload prebuilt site
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: web-build-${{ github.sha }}
+          path: ${{ runner.temp }}/web-build.tar.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 1
+
   ci-work:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -130,16 +160,13 @@ jobs:
       - name: Test CI decisions
         run: bun test ./.github/scripts/web-ci*.test.ts ./.github/scripts/e2e-shards.test.ts
 
-      # One Turbo run so check, test and build share the runner in parallel. The
-      # build env matches the e2e shards' build, so they replay this cache entry
-      # instead of rebuilding (Turbo hashes PUBLIC_* for SvelteKit).
-      - name: Type check, unit tests and build
+      - name: Type check and unit tests
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ vars.TURBO_TEAM }}
           EXPORT_FALLBACKS_SOURCE: "fixture"
           PUBLIC_PLAUSIBLE_DOMAIN: "yesid.dev"
-        run: bun x turbo run check test build --filter=@repo/web
+        run: bun x turbo run check test --filter=@repo/web
 
       - name: Brand gates
         run: bun run --cwd apps/web lint:design
@@ -147,27 +174,20 @@ jobs:
       - name: Product shared-package tests
         run: bun run --cwd packages/shared test
 
-      - name: Client payload budgets
-        working-directory: apps/web
-        run: bun run check:client-payload
-
-      - name: Content-Security-Policy check
-        working-directory: apps/web
-        run: bun run check:csp
-
   # ── E2E (Playwright) against a local hermetic preview ──────────────────────
   # The webServer previews the fixture build on :4173: no CMS calls and no
   # Vercel edge requests.
   e2e:
     if: >-
       ${{ needs.classify.outputs.e2e != 'false' }}
-    # Only classification gates scheduling. ci-work remains required by ci.
-    needs: [classify]
+    # Wait for the site artifact, independently of ci-work checks.
+    needs: [classify, build]
     # Pinned: ubuntu-latest moved to 26.04, where Playwright 1.59 refuses to install Chromium.
     runs-on: ubuntu-24.04
     # Four duration-balanced file groups retain the configured two workers per runner.
     timeout-minutes: 30
     # The assignment includes every discovered spec, including files without timing history.
+    # Each shard previews the same site built in the build job.
     strategy:
       fail-fast: false
       matrix:
@@ -184,15 +204,13 @@ jobs:
         working-directory: apps/web
         run: bun x playwright install chromium
 
-      # Reuse an available Turbo build, or build while ci-work runs in parallel.
-      # Keep this env identical to the ci-work build step.
-      - name: Build (turbo, cache-eligible)
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-          EXPORT_FALLBACKS_SOURCE: "fixture"
-          PUBLIC_PLAUSIBLE_DOMAIN: "yesid.dev"
-        run: bun x turbo run build --filter=@repo/web
+      - name: Download prebuilt site
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: web-build-${{ github.sha }}
+          path: ${{ runner.temp }}/web-build
+      - name: Restore prebuilt site
+        run: tar -xzf "$RUNNER_TEMP/web-build/web-build.tar.gz" -C apps/web
 
       - name: Playwright e2e (shard ${{ matrix.shard }}/4, local hermetic preview)
         working-directory: apps/web
@@ -212,7 +230,7 @@ jobs:
 
   ci:
     if: always()
-    needs: [classify, ci-work, e2e, prerelease-guard]
+    needs: [classify, build, ci-work, e2e, prerelease-guard]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -267,8 +285,15 @@ jobs:
       - name: Required CI decision
         env:
           NEEDS: ${{ toJSON(needs) }}
+          BUILD_RESULT: ${{ needs.build.result }}
         working-directory: ${{ steps.policy.outputs.directory }}
-        run: bun .github/scripts/web-ci.ts required
+        run: |
+          # Enforce the new dependency even while main still has the old policy.
+          if [ "$BUILD_RESULT" != success ]; then
+            echo 'Required artifact build did not succeed'
+            exit 1
+          fi
+          bun .github/scripts/web-ci.ts required
 
   # ── Merge the shard blob reports into one HTML report when a shard fails ────
   e2e-merge-reports:
