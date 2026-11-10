@@ -106,9 +106,9 @@ describe('CMS project share copy', () => {
 	it.each([
 		['fr', 'Ce projet accompagne les équipes et les clients de la Dre. Tremblay'],
 		['es', 'Este proyecto acompaña a los equipos y a los pacientes en la consulta de la Dra. García'],
-		['en', 'This project lets every team share useful reports and dashboards, e.g.'],
-		['fr', 'Ce projet permet à toutes les équipes de partager des données utiles, p. ex.'],
-		['es', 'Este proyecto permite a todos los equipos compartir datos importantes, p. ej.'],
+		['en', 'This project lets every team share useful reports and dashboards, e.g. examples'],
+		['fr', 'Ce projet permet à toutes les équipes de partager des données utiles, p. ex. les horaires'],
+		['es', 'Este proyecto permite a todos los equipos compartir datos importantes, p. ej. los horarios'],
 		['fr', 'Ce projet permet à toutes les équipes de partager des données avec Mme.'],
 		['es', 'Este proyecto permite a todos los equipos compartir datos con el Sr.'],
 	] as const)('rejects %s abbreviation fragments before over-budget continuations', (locale, prefix) => {
@@ -117,7 +117,7 @@ describe('CMS project share copy', () => {
 		expect(projectCopy(project, locale, { en: 'Site default' }).description).toBe('Site default');
 	});
 
-	it.each(['e.g.', 'i.e.', 'p. ex.', 'p. ej.', 'Dr.', 'M.', 'Mme.', 'Sr.', 'Sra.', 'núm.', 'env.', 'Dre.', 'Dra.', 'Inc.', 'Ltd.', 'Co.', 'Corp.', 'Mmes.', 'Mlle.', 'Sres.', 'Lic.', 'Ing.', 'av.', 'p.'])(
+	it.each(['e.g. examples', 'i.e. examples', 'p. ex. les horaires', 'p. ej. los horarios', 'Dr.', 'M.', 'Mme.', 'Sr.', 'Sra.', 'núm.', 'env. examples', 'Dre.', 'Dra.', 'Inc. offices', 'Ltd. offices', 'Co. offices', 'Corp. offices', 'Mmes.', 'Mlle.', 'Sres.', 'Lic.', 'Ing.', 'av.', 'p.'])(
 		'keeps %s attached to an over-budget continuation after a complete sentence', (abbreviation) => {
 			const first = 'This project gives every website a consistent visual language.';
 			const text = `${first} Teams share useful reports and dashboards with ${abbreviation} ${'Continuation '.repeat(30)}.`;
@@ -144,6 +144,49 @@ describe('CMS project share copy', () => {
 		const project = { ...projectFactory.build(), oneLiner: { en: line } };
 		expect(projectCopy(project, 'en', { en: 'Fallback' })).toEqual({ line, description: line });
 	});
+	it.each([
+		['en', 'This project provides timely service updates for route No. 24, helping commuters'],
+		['fr', 'Ce projet fournit des informations utiles aux voyageurs sur le boul. Saint-Laurent'],
+		['es', 'Este proyecto ofrece información útil para todos los viajeros en la pág. 24'],
+		['en', 'This project records useful service updates at 9.30 a.m. with observations'],
+		['en', 'This project shares useful updates for commuters via example.com and version 2.4'],
+		['en', 'This project catalogues books written by J\u030c.R.R. Tolkien'],
+	] as const)('rejects %s false boundaries with a long one-liner', (locale, prefix) => {
+		for (const first of ['', 'This project gives every website a consistent visual language. ']) {
+			const text = first + prefix + ' ' + 'continued observations '.repeat(20) + '.';
+			const project: Project = { ...projectFactory.build(), oneLiner: { en: 'Long project summary '.repeat(11).trim() }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text } }] } } };
+			expect(project.oneLiner.en).toHaveLength(230);
+			expect(projectCopy(project, locale, { en: 'Site default' }).description).toBe(first ? withShareCta(first.trim(), SHARE_CTA.project.label[locale]) : 'Site default');
+		}
+	});
+	it.each(['Dr', 'Dre', 'Dra', 'Pr', 'Prof', 'M', 'Mme', 'Mmes', 'Mlle', 'Mr', 'Mrs', 'Ms', 'Sr', 'Sra', 'Sres', 'Srta', 'St', 'Ste', 'No', 'Nº', 'núm', 'boul', 'av', 'ave', 'blvd', 'ch', 'pág', 'p', 'vol', 'fig', 'Lic', 'Ing', 'J.R.R', 'J\u030c', 'U.S'])(
+		'protects %s before uppercase continuations but accepts it at end of text', (prefix) => {
+			const sentence = `This project shares useful service observations with ${prefix}.`;
+			const project = projectFactory.build({ oneLiner: { en: 'Tiny.' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text: sentence } }] } } });
+			expect(projectCopy(project, 'en', { en: 'Site default' }).description).toBe(withShareCta(sentence, SHARE_CTA.project.label.en));
+			const continued = { ...project, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph' as const, data: { text: sentence + ' Continuation '.repeat(30) + '.' } }] } } };
+			expect(projectCopy(continued, 'en', { en: 'Site default' }).description).toBe('Site default');
+		},
+	);
+	it.each(['Inc.', 'Ltd.', 'Co.', 'Corp.', 'etc.', 'a.m.', 'p.m.', 'e.g.', 'i.e.'])(
+		'accepts %s before a new uppercase sentence', (suffix) => {
+			const first = `This project gives local teams reliable and timely service updates from Acme ${suffix}`;
+			if (suffix === 'Inc.') expect(first).toHaveLength(81);
+			const text = first + ' It helps commuters ' + 'plan their daily journeys '.repeat(20) + '.';
+			const project = projectFactory.build({ oneLiner: { en: 'Tiny.' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text } }] } } });
+			expect(projectCopy(project, 'en', { en: 'Site default' }).description).toBe(withShareCta(first, SHARE_CTA.project.label.en));
+		},
+	);
+	it.each(['.', '!', '?', '…', '...', '. »', '!"', '?]', '…)', '...’', '.}'])(
+		'uses the same continuation rule after %s', (ending) => {
+			const first = `This project provides useful service updates for local commuters${ending}`;
+			for (const next of ['lowercase', '24', 'Uppercase', '¿Question', '¡Exclamation', '«Quote', '"Quote', '“Quote', '‘Quote', '(Aside', '[Aside']) {
+				const text = first + ' ' + next + ' continued observations'.repeat(30) + '.';
+				const project = projectFactory.build({ oneLiner: { en: 'Tiny.' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text } }] } } });
+				expect(projectCopy(project, 'en', { en: 'Site default' }).description).toBe(['lowercase', '24'].includes(next) ? 'Site default' : withShareCta(first, SHARE_CTA.project.label.en));
+			}
+		},
+	);
 	it('uses the site default when all project copy is empty or unfinished', () => {
 		const project: Project = { ...projectFactory.build(), oneLiner: { en: '' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text: 'An unfinished overview' } }] } } };
 		expect(projectCopy(project, 'en', { en: 'Site default' })).toEqual({ line: 'Site default', description: 'Site default' });

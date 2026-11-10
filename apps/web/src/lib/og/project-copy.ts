@@ -6,29 +6,23 @@ import { SHARE_CTA, withShareCta } from './share-copy';
 const normalize = (text: string) => text.normalize('NFC').replace(/\s+/gu, ' ').trim();
 const inBounds = (text: string) => text.length >= 50 && text.length <= 200;
 
-/** Abbreviations and initials can close only at the end of the text. */
-function insideAbbreviation(text: string, period: number, end: number): boolean {
-	const abbreviations = /\b(?:p\.\s*(?:ex|ej)|e\.g|i\.e|(?:[A-Z]\.)+[A-Z]|Mr|Mrs|Ms|Dr|Dre|Dra|Inc|Ltd|Co|Corp|Mmes|Sres|Lic|Ing|av|p|Prof|Sr|Sra|Srta|Mme|Mlle|M|St|vs|etc|núm|env|[A-Z])\./gu;
-	for (const match of text.matchAll(abbreviations)) {
-		const lastPeriod = match.index + match[0].length - 1;
-		if (period < match.index || period > lastPeriod) continue;
-		if (period < lastPeriod) return true;
-		if (end === text.length) return false;
-		return true;
-	}
-	return false;
-}
+// Only name/title/address prefixes and initials require a following word.
+// Keep U.S. protected too, so U.S. Department cannot produce a misleading tail.
+const prefix = /(?:^|[^\p{L}\p{M}])(?:Dr|Dre|Dra|Pr|Prof|M|Mme|Mmes|Mlle|Mr|Mrs|Ms|Sr|Sra|Sres|Srta|St|Ste|No|Nº|núm|boul|av|ave|blvd|ch|pág|p|vol|fig|Lic|Ing|U\.S|\p{Lu}\p{M}*)$/u;
 
 /** Leading complete sentences only; unfinished and over-budget tails are ignored. */
 function leadingSentences(text: string): string {
-	const endings = text.matchAll(/[.!?…]+(?:\s*[»”"’')\]])*(?=\s|$)/gu);
+	// Punctuation + closers closes only at EOF or before whitespace and an
+	// uppercase letter/opening mark. Lowercase words and digits always continue.
+	const endings = text.matchAll(/[.!?…]+(?:\s*[»”"’')\]}])*(?=$|\s+[\p{Lu}¿¡«"“‘(\[])/gu);
 	let result = '';
 	let start = 0;
 	for (const ending of endings) {
 		const end = ending.index + ending[0].length;
 		const sentence = text.slice(start, end).trim();
-		if (/^(?:\.{3,}|…)/u.test(ending[0]) && end < text.length && !/^\s+[\p{Lu}«“"'¿¡(]/u.test(text.slice(end))) continue;
-		if (ending[0].startsWith('.') && insideAbbreviation(text, ending.index, end)) continue;
+		if (ending[0].startsWith('.') && end < text.length && prefix.test(text.slice(0, ending.index))) continue;
+		// Other suffixes follow the same rule: "Acme Inc. Montréal office..."
+		// may split at Inc.; this accepted ambiguity keeps a complete-looking sentence.
 		const candidate = normalize(`${result} ${sentence}`);
 		if (candidate.length > 200) break;
 		result = candidate;
