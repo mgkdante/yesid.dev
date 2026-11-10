@@ -3,6 +3,11 @@
 		data.file.fileId is the Directus file UUID; data.file.url is the asset URL.
 		AM2: caption is HTML, rendered via {@html}.
 -->
+<script lang="ts" module>
+	/** Article column width on desktop (px). */
+	export const ARTICLE_COLUMN = 680;
+</script>
+
 <script lang="ts">
 	import type { ImageBlock, ImageBlockFile } from '@repo/shared';
 	import { assetImage } from '#lib/directus/assets.ts';
@@ -14,7 +19,11 @@
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 
-	let { data }: { data: ImageBlock['data'] } = $props();
+	let { data, slot = ARTICLE_COLUMN }: {
+		data: ImageBlock['data'];
+		/** Desktop width (px) of the column this image sits in; rows and beside layouts pass less. */
+		slot?: number;
+	} = $props();
 	const media = getArticleMedia();
 	const labels = articleMediaLabels[getLocale()];
 	const openTemplate = resolveLocale(siteLabels.a11y.projectImageOpen, getLocale());
@@ -24,21 +33,30 @@
 
 	const altText = $derived(data.caption ? data.caption.replace(/<[^>]*>/g, '') : '');
 
-	// Article column width is capped below the full viewport on desktop.
-	const SIZES = '(min-width: 768px) 680px, 94vw';
+	const PORTRAIT_CAP = 400;
+	const PAIR_GAP = 24;
+	const isPortrait = (f: ImageBlockFile) => (f.height ?? 0) > (f.width ?? Infinity);
+	const pair = $derived(Boolean(data.showBothThemes && data.variants?.light));
+	/** The rendered width: the column (halved for a theme pair on desktop), never above the portrait cap. */
+	function sizesFor(f: ImageBlockFile): string {
+		const desktop = Math.round(pair ? (slot - PAIR_GAP) / 2 : slot);
+		if (!isPortrait(f)) return `(min-width: 768px) ${desktop}px, 94vw`;
+		const cap = Math.min(PORTRAIT_CAP, f.width!);
+		return `(min-width: 768px) ${Math.min(desktop, cap)}px, (max-width: ${Math.ceil(cap / 0.94)}px) 94vw, ${cap}px`;
+	}
 </script>
 
 {#snippet image(file: ImageBlockFile)}
 	{@const source = file.fileId ? assetImage(file.fileId, 'card-600') : { src: file.url, srcset: undefined, width: undefined, height: undefined }}
-	<img src={source.src} srcset={source.srcset} sizes={SIZES}
+	<img src={source.src} srcset={source.srcset} sizes={sizesFor(file)}
 		width={file.width ?? source.width} height={file.height ?? source.height}
 		alt={altText} loading="lazy" decoding="async" />
 {/snippet}
 
 {#snippet capture(file: ImageBlockFile, theme: Theme, label?: string)}
-	{@const portrait = (file.height ?? 0) > (file.width ?? Infinity)}
+	{@const portrait = isPortrait(file)}
 	<figure class:bordered={data.withBorder} class:bg={data.withBackground} class:stretched={data.stretched}
-		class:portrait style={portrait ? `--portrait-width: ${Math.min(file.width!, data.layout ? file.width! : 400)}px` : undefined}>
+		class:portrait style={portrait ? `--portrait-width: ${Math.min(file.width!, PORTRAIT_CAP)}px` : undefined}>
 		{#if media}
 			<button type="button" class="article-image-open" aria-label={openTemplate.replace('{caption}', label ? `${altText} · ${label}` : altText)} onclick={(event) => { event.stopPropagation(); media.openImage(data, event.currentTarget, undefined, theme); }}>
 				{@render image(file)}
@@ -52,7 +70,7 @@
 	</figure>
 {/snippet}
 
-{#if data.showBothThemes && data.variants?.light}
+{#if pair && data.variants?.light}
 	<div class="theme-pair">
 		{@render capture(data.file, 'dark', labels.dark)}
 		{@render capture(data.variants.light, 'light', labels.light)}

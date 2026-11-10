@@ -442,6 +442,40 @@ describe('image article layouts', () => {
 		expect([...container.querySelectorAll('img')].map(n => n.getAttribute('src'))).toEqual(['/test-assets/dark', '/test-assets/light']);
 		expect([...container.querySelectorAll('figcaption')].map(n => n.textContent)).toEqual(['dark · Dark', 'dark · Light']);
 	});
+	it('caps every portrait at 400px, including orphaned beside and single-image rows', () => {
+		const big = (id: string, layout?: 'row' | 'beside'): BlockEditorDoc['blocks'][number] => ({
+			id, type: 'image', data: { file: { fileId: id, fileURL: '', url: '', width: 780, height: 1688 },
+				caption: id, withBorder: false, withBackground: false, stretched: false, ...(layout ? { layout } : {}) },
+		});
+		const { container } = render(BlockRenderer, { doc: doc([big('orphan', 'beside'), { id: 'h', type: 'header', data: { text: 'Next', level: 2 } }, big('solo', 'row'), { id: 'p', type: 'paragraph', data: { text: 'After' } }, big('plain')]) });
+		const widths = [...container.querySelectorAll('figure.portrait')].map((f) => (f as HTMLElement).style.getPropertyValue('--portrait-width'));
+		expect(widths).toEqual(['400px', '400px', '400px']);
+	});
+	it('advertises the real column width in sizes for rows, beside images and theme pairs', () => {
+		const wide = (id: string, layout?: 'row' | 'beside', both = false): BlockEditorDoc['blocks'][number] => ({
+			id, type: 'image', data: { file: { fileId: id, fileURL: '', url: '', width: 1600, height: 1000 },
+				caption: id, withBorder: false, withBackground: false, stretched: false, ...(layout ? { layout } : {}),
+				...(both ? { showBothThemes: true, variants: { light: { fileId: `${id}-l`, fileURL: '', url: '', width: 1600, height: 1000 } } } : {}) },
+		});
+		const { container } = render(BlockRenderer, { doc: doc([
+			wide('r1', 'row'), wide('r2', 'row'), wide('r3', 'row'),
+			{ id: 'p0', type: 'paragraph', data: { text: 'Break' } },
+			wide('side', 'beside'), { id: 'p1', type: 'paragraph', data: { text: 'Beside text' } },
+			wide('pair', undefined, true),
+			wide('plain'),
+		]) });
+		const sizes = [...container.querySelectorAll('img')].map((n) => n.getAttribute('sizes'));
+		expect(sizes).toEqual([
+			'(min-width: 768px) 211px, 94vw', '(min-width: 768px) 211px, 94vw', '(min-width: 768px) 211px, 94vw',
+			'(min-width: 768px) 328px, 94vw',
+			'(min-width: 768px) 328px, 94vw', '(min-width: 768px) 328px, 94vw',
+			'(min-width: 768px) 680px, 94vw',
+		]);
+	});
+	it('sizes a portrait to its capped width on every viewport', () => {
+		const { container } = render(BlockRenderer, { doc: doc([image('phone')]) });
+		expect(container.querySelector('img')?.getAttribute('sizes')).toBe('(min-width: 768px) 390px, (max-width: 415px) 94vw, 390px');
+	});
 	it('reserves the stored aspect ratio when responsive metadata is unavailable', () => {
 		const { container } = render(BlockRenderer, { doc: doc([image('phone')]) });
 		expect(container.querySelector('img')).toHaveAttribute('width', '390');

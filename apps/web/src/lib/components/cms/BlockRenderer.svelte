@@ -8,7 +8,7 @@
 	import CodeBlock from './blocks/CodeBlock.svelte';
 	import Quote from './blocks/Quote.svelte';
 	import Delimiter from './blocks/Delimiter.svelte';
-	import ImageBlock from './blocks/ImageBlock.svelte';
+	import ImageBlock, { ARTICLE_COLUMN } from './blocks/ImageBlock.svelte';
 
 	let {
 		doc,
@@ -20,9 +20,16 @@
 		codeHighlights?: Readonly<Record<string, string>>;
 	} = $props();
 	const groups = $derived(groupImageLayouts(doc.blocks));
+	const GRID_GAP = 24;
+	const isPortrait = (block: BlockEditorBlock) =>
+		block.type === 'image' && (block.data.file.height ?? 0) > (block.data.file.width ?? Infinity);
+	/** Desktop column width for a row of n columns, or a beside layout's image column. */
+	const rowSlot = (n: number) => Math.round((ARTICLE_COLUMN - GRID_GAP * (n - 1)) / n);
+	const besideSlot = (block: BlockEditorBlock) =>
+		Math.round((ARTICLE_COLUMN - GRID_GAP) * (isPortrait(block) ? 1 / 3 : 1 / 2));
 </script>
 
-{#snippet renderBlock(block: BlockEditorBlock)}
+{#snippet renderBlock(block: BlockEditorBlock, slot: number = ARTICLE_COLUMN)}
 	{#if block.type === 'header'}
 		<Heading data={block.data} />
 	{:else if block.type === 'paragraph'}
@@ -38,7 +45,7 @@
 	{:else if block.type === 'delimiter'}
 		<Delimiter />
 	{:else if block.type === 'image'}
-		<ImageBlock data={block.data} />
+		<ImageBlock data={block.data} {slot} />
 	{/if}
 {/snippet}
 
@@ -46,14 +53,14 @@
 	{#if group.kind === 'row'}
 		<div role="list" data-image-layout="row" class="image-row" style={`--columns: ${Math.min(group.blocks.length, 3)}`}>
 			{#each group.blocks as block (block.id)}
-				<div role="listitem">{@render renderBlock(block)}</div>
+				<div role="listitem">{@render renderBlock(block, rowSlot(Math.min(group.blocks.length, 3)))}</div>
 			{/each}
 		</div>
 	{:else if group.kind === 'beside'}
 		{@const image = group.blocks[0]}
-		<div data-image-layout="beside" class="image-beside" class:portrait={image.type === 'image' && (image.data.file.height ?? 0) > (image.data.file.width ?? Infinity)}>
+		<div data-image-layout="beside" class="image-beside" class:portrait={isPortrait(image)}>
 			{#each group.blocks as block (block.id)}
-				<div>{@render renderBlock(block)}</div>
+				<div>{@render renderBlock(block, block === image ? besideSlot(image) : ARTICLE_COLUMN)}</div>
 			{/each}
 		</div>
 	{:else}

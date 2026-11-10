@@ -188,6 +188,19 @@ describe('ProjectDetailPage image placement', () => {
 		expect(container.querySelector('.sections-column')).not.toHaveTextContent('Old media title');
 	});
 
+	it('keeps an image-only section in the article when its images ask for a layout, and still feeds the gallery', () => {
+		const row = (id: string): ImageBlock => { const b = storyImage(id, id, id); b.data.layout = 'row'; return b; };
+		const project = projectFactory.build({
+			description: { en: doc('Overview') },
+			sections: [{ title: { en: 'Side by side' }, content: { en: storyDoc(row('a'), row('b'), row('c')) } }],
+		});
+		const { container } = render(ProjectDetailPage, { props: { project, services: [], serviceSvgContents: {} } });
+		const article = container.querySelector('.sections-column')!;
+		expect(article).toHaveTextContent('Side by side');
+		expect(article.querySelectorAll('[data-image-layout="row"] [role="listitem"]')).toHaveLength(3);
+		expect(within(screen.getByTestId('project-image-gallery-rail')).getAllByTestId('project-image-gallery-trigger').length).toBeGreaterThan(0);
+	});
+
 	it.each(['fr', 'es'] as const)('reuses one image set in inline %s prose and the final gallery, retaining Shiki and theme variants', async (locale) => {
 		document.documentElement.dataset.theme = 'light';
 		const caption = locale === 'fr' ? 'État du produit' : 'Estado del producto';
