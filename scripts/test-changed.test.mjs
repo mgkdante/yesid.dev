@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { changedFiles, selectSpecs, selectUnits } from './test-changed.mjs';
+import { changedFiles, selectSpecs, selectUnits, changedUnitArgs } from './test-changed.mjs';
 import config from './test-changed.config.json' with { type: 'json' };
 
 const available = ['tests/a.spec.ts', 'tests/b.spec.ts'];
@@ -109,4 +109,10 @@ test('exporter and fixture inputs select full web units across the generated mod
 		assert.equal(selected.find(pkg => pkg.name === '@repo/web')?.fullTest, true, path);
 	}
 	assert.equal(selectUnits(['apps/web/src/local.ts'], packages, false, config.generatedInputs)[0].fullTest, undefined);
+});
+
+test('changed Vitest arguments preserve existing worker limits without duplicate flags', () => {
+    assert.deepEqual(changedUnitArgs('node prepare.mjs && vitest run --maxWorkers=4', 'abc'),
+        ['run', 'test', '--changed', 'abc', '--passWithNoTests']);
+    assert.equal(changedUnitArgs('vitest run', 'abc').filter(arg => arg.startsWith('--maxWorkers')).length, 1);
 });
