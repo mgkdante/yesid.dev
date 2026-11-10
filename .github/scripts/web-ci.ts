@@ -4,7 +4,7 @@ import { appendFileSync } from 'node:fs';
 export const documentationPaths = new Set(['README.md', 'AGENTS.md', 'GLOSSARY.md']);
 
 export function selectE2e(event: string, changed: () => string[]): boolean {
-	if (event !== 'pull_request') return true;
+	if (event !== 'pull_request' && event !== 'merge_group') return true;
 	try {
 		const files = changed();
 		return files.length === 0 || files.some(file => !documentationPaths.has(file));
@@ -13,11 +13,12 @@ export function selectE2e(event: string, changed: () => string[]): boolean {
 	}
 }
 
-export function changedFiles(base: string, head: string): string[] {
-	if (!/^[a-f0-9]{40}$/.test(base) || !/^[a-f0-9]{40}$/.test(head)) throw new Error('Invalid PR commit');
+export function changedFiles(base: string, head: string, event = 'pull_request'): string[] {
+	if (!/^[a-f0-9]{40}$/.test(base) || !/^[a-f0-9]{40}$/.test(head)) throw new Error('Invalid comparison commit');
 	// Both sides of a rename must be classified.
-	const diff = Bun.spawnSync(['git', 'diff', '--no-renames', '--name-only', '-z', `${base}...${head}`, '--']);
-	if (diff.exitCode !== 0) throw new Error('Cannot read PR diff');
+	const range = event === 'merge_group' ? `${base}..${head}` : `${base}...${head}`;
+	const diff = Bun.spawnSync(['git', 'diff', '--no-renames', '--name-only', '-z', range, '--']);
+	if (diff.exitCode !== 0) throw new Error('Cannot read comparison diff');
 	const output = diff.stdout.toString();
 	if (output && !output.endsWith('\0')) throw new Error('Incomplete PR diff');
 	return output ? output.slice(0, -1).split('\0') : [];
@@ -38,7 +39,8 @@ export function required(needs: Needs, _labelSkip = false): boolean {
 
 if (import.meta.main) {
 	if (process.argv[2] === 'classify') {
-		const selected = selectE2e(process.env.EVENT_NAME ?? '', () => changedFiles(process.env.BASE_SHA ?? '', process.env.HEAD_SHA ?? ''));
+		const event = process.env.EVENT_NAME ?? '';
+		const selected = selectE2e(event, () => changedFiles(process.env.BASE_SHA ?? '', process.env.HEAD_SHA ?? '', event));
 		const output = `e2e=${selected}\n`;
 		if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, output);
 		process.stdout.write(output);

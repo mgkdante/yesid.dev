@@ -13,6 +13,7 @@ name: web
 on:
   pull_request:
     branches: [main]
+  merge_group:
   workflow_dispatch:
 
 permissions:
@@ -60,12 +61,24 @@ jobs:
         id: policy
         env:
           EVENT_NAME: ${{ github.event_name }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_SHA: ${{ github.event.merge_group.base_sha || github.event.pull_request.base.sha }}
         shell: bash
         run: |
           set -euo pipefail
           git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
-          if [[ "$EVENT_NAME" == pull_request ]]; then
+          force_e2e=false
+          if [[ "$EVENT_NAME" == merge_group ]]; then
+            if [[ "$BASE_SHA" =~ ^[a-f0-9]{40}$ ]] &&
+              git merge-base --is-ancestor "$BASE_SHA" origin/main &&
+              git cat-file -e "$BASE_SHA:.github/scripts/web-ci.ts" &&
+              git cat-file -e "$BASE_SHA:.bun-version"; then
+              revision="$BASE_SHA"
+            else
+              echo '::warning::Unreadable or untrusted merge-group base; use main policy and run everything.'
+              revision="$(git rev-parse origin/main)"
+              force_e2e=true
+            fi
+          elif [[ "$EVENT_NAME" == pull_request ]]; then
             [[ "$BASE_SHA" =~ ^[a-f0-9]{40}$ ]] || exit 1
             git merge-base --is-ancestor "$BASE_SHA" origin/main
             revision="$BASE_SHA"
@@ -83,6 +96,7 @@ jobs:
           echo "directory=$policy_dir" >> "$GITHUB_OUTPUT"
           echo "git_dir=$(git rev-parse --absolute-git-dir)" >> "$GITHUB_OUTPUT"
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
+          echo "force_e2e=$force_e2e" >> "$GITHUB_OUTPUT"
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version-file: ${{ steps.policy.outputs.directory }}/.bun-version
@@ -90,12 +104,19 @@ jobs:
         id: select
         env:
           EVENT_NAME: ${{ github.event_name }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: ${{ github.event.merge_group.base_sha || github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.merge_group.head_sha || github.event.pull_request.head.sha }}
+          FORCE_E2E: ${{ steps.policy.outputs.force_e2e }}
           GIT_DIR: ${{ steps.policy.outputs.git_dir }}
           GIT_WORK_TREE: ${{ github.workspace }}
         working-directory: ${{ steps.policy.outputs.directory }}
-        run: bun .github/scripts/web-ci.ts classify
+        shell: bash
+        run: |
+          if [[ "$FORCE_E2E" == true ]]; then
+            echo 'e2e=true' >> "$GITHUB_OUTPUT"
+          else
+            bun .github/scripts/web-ci.ts classify
+          fi
 
   ci-work:
     runs-on: ubuntu-latest
@@ -206,12 +227,24 @@ jobs:
         id: policy
         env:
           EVENT_NAME: ${{ github.event_name }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_SHA: ${{ github.event.merge_group.base_sha || github.event.pull_request.base.sha }}
         shell: bash
         run: |
           set -euo pipefail
           git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
-          if [[ "$EVENT_NAME" == pull_request ]]; then
+          force_e2e=false
+          if [[ "$EVENT_NAME" == merge_group ]]; then
+            if [[ "$BASE_SHA" =~ ^[a-f0-9]{40}$ ]] &&
+              git merge-base --is-ancestor "$BASE_SHA" origin/main &&
+              git cat-file -e "$BASE_SHA:.github/scripts/web-ci.ts" &&
+              git cat-file -e "$BASE_SHA:.bun-version"; then
+              revision="$BASE_SHA"
+            else
+              echo '::warning::Unreadable or untrusted merge-group base; use main policy and run everything.'
+              revision="$(git rev-parse origin/main)"
+              force_e2e=true
+            fi
+          elif [[ "$EVENT_NAME" == pull_request ]]; then
             [[ "$BASE_SHA" =~ ^[a-f0-9]{40}$ ]] || exit 1
             git merge-base --is-ancestor "$BASE_SHA" origin/main
             revision="$BASE_SHA"
@@ -229,6 +262,7 @@ jobs:
           echo "directory=$policy_dir" >> "$GITHUB_OUTPUT"
           echo "git_dir=$(git rev-parse --absolute-git-dir)" >> "$GITHUB_OUTPUT"
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
+          echo "force_e2e=$force_e2e" >> "$GITHUB_OUTPUT"
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version-file: ${{ steps.policy.outputs.directory }}/.bun-version
