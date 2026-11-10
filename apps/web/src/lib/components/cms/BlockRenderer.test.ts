@@ -451,7 +451,7 @@ describe('image article layouts', () => {
 		const widths = [...container.querySelectorAll('figure.portrait')].map((f) => (f as HTMLElement).style.getPropertyValue('--portrait-width'));
 		expect(widths).toEqual(['400px', '400px', '400px']);
 	});
-	it('advertises the real column width in sizes for rows, beside images and theme pairs', () => {
+	it('lets the browser measure (sizes=auto) with a column-width fallback for rows, beside images and theme pairs', () => {
 		const wide = (id: string, layout?: 'row' | 'beside', both = false): BlockEditorDoc['blocks'][number] => ({
 			id, type: 'image', data: { file: { fileId: id, fileURL: '', url: '', width: 1600, height: 1000 },
 				caption: id, withBorder: false, withBackground: false, stretched: false, ...(layout ? { layout } : {}),
@@ -466,15 +466,15 @@ describe('image article layouts', () => {
 		]) });
 		const sizes = [...container.querySelectorAll('img')].map((n) => n.getAttribute('sizes'));
 		expect(sizes).toEqual([
-			'(min-width: 768px) 211px, 94vw', '(min-width: 768px) 211px, 94vw', '(min-width: 768px) 211px, 94vw',
-			'(min-width: 768px) 328px, 94vw',
-			'(min-width: 768px) 328px, 94vw', '(min-width: 768px) 328px, 94vw',
-			'(min-width: 768px) 680px, 94vw',
+			'auto, (min-width: 768px) 211px, 94vw', 'auto, (min-width: 768px) 211px, 94vw', 'auto, (min-width: 768px) 211px, 94vw',
+			'auto, (min-width: 768px) 328px, 94vw',
+			'auto, (min-width: 768px) 328px, 94vw', 'auto, (min-width: 768px) 328px, 94vw',
+			'auto, (min-width: 768px) 680px, 94vw',
 		]);
 	});
 	it('sizes a portrait to its capped width on every viewport', () => {
 		const { container } = render(BlockRenderer, { doc: doc([image('phone')]) });
-		expect(container.querySelector('img')?.getAttribute('sizes')).toBe('(min-width: 768px) 390px, (max-width: 415px) 94vw, 390px');
+		expect(container.querySelector('img')?.getAttribute('sizes')).toBe('auto, (min-width: 768px) 390px, (max-width: 415px) 94vw, 390px');
 	});
 	it('reserves the stored aspect ratio when responsive metadata is unavailable', () => {
 		const { container } = render(BlockRenderer, { doc: doc([image('phone')]) });

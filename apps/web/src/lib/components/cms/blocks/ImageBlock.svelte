@@ -37,12 +37,18 @@
 	const PAIR_GAP = 24;
 	const isPortrait = (f: ImageBlockFile) => (f.height ?? 0) > (f.width ?? Infinity);
 	const pair = $derived(Boolean(data.showBothThemes && data.variants?.light));
-	/** The rendered width: the column (halved for a theme pair on desktop), never above the portrait cap. */
+	/**
+	 * `auto` lets the browser use the measured layout width (these images are
+	 * lazy and carry width/height), so rows, beside columns and theme pairs pick
+	 * the right candidate at every breakpoint and DPR. The estimate after it is
+	 * the fallback for browsers without `sizes=auto`: the column (halved for a
+	 * theme pair on desktop), never above the portrait cap.
+	 */
 	function sizesFor(f: ImageBlockFile): string {
 		const desktop = Math.round(pair ? (slot - PAIR_GAP) / 2 : slot);
-		if (!isPortrait(f)) return `(min-width: 768px) ${desktop}px, 94vw`;
+		if (!isPortrait(f)) return `auto, (min-width: 768px) ${desktop}px, 94vw`;
 		const cap = Math.min(PORTRAIT_CAP, f.width!);
-		return `(min-width: 768px) ${Math.min(desktop, cap)}px, (max-width: ${Math.ceil(cap / 0.94)}px) 94vw, ${cap}px`;
+		return `auto, (min-width: 768px) ${Math.min(desktop, cap)}px, (max-width: ${Math.ceil(cap / 0.94)}px) 94vw, ${cap}px`;
 	}
 </script>
 
