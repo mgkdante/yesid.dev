@@ -1,4 +1,7 @@
 import { describe, expect, test } from 'bun:test';
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { changedFiles, required, selectE2e } from './web-ci';
 
 describe('e2e selection', () => {
@@ -14,15 +17,49 @@ describe('e2e selection', () => {
 		[[], true],
 	] as [string[], boolean][])('%j selects %s', (files, selected) => {
 		expect(selectE2e('pull_request', () => files)).toBe(selected);
+		expect(selectE2e('merge_group', () => files)).toBe(selected);
 	});
 	test('errors and git failures select e2e', () => {
 		expect(selectE2e('pull_request', () => { throw new Error('diff failed'); })).toBe(true);
 		expect(selectE2e('pull_request', () => changedFiles('a'.repeat(40), 'b'.repeat(40)))).toBe(true);
 		expect(selectE2e('pull_request', () => changedFiles('', ''))).toBe(true);
+		expect(selectE2e('merge_group', () => { throw new Error('unreadable group'); })).toBe(true);
+		expect(selectE2e('merge_group', () => changedFiles('', ''))).toBe(true);
 	});
 	test.each(['workflow_dispatch', 'push', ''])('%s always selects e2e', event => {
 		expect(selectE2e(event, () => ['README.md'])).toBe(true);
 	});
+});
+
+test('merge groups compare the supplied base tree directly to the group head', () => {
+	const repo = mkdtempSync(join(tmpdir(), 'web-ci-range-'));
+	const git = (...args: string[]) => {
+		const result = Bun.spawnSync(['git', '-C', repo, ...args]);
+		if (result.exitCode) throw new Error(result.stderr.toString());
+		return result.stdout.toString().trim();
+	};
+	try {
+		git('init', '-b', 'main');
+		git('config', 'user.name', 'Range test');
+		git('config', 'user.email', 'range@example.invalid');
+		writeFileSync(join(repo, 'README.md'), 'initial');
+		git('add', '.'); git('commit', '-m', 'initial');
+		git('branch', 'group');
+		writeFileSync(join(repo, 'app.ts'), 'main change');
+		git('add', '.'); git('commit', '-m', 'main advances');
+		const base = git('rev-parse', 'HEAD');
+		git('checkout', 'group');
+		writeFileSync(join(repo, 'README.md'), 'group change');
+		git('add', '.'); git('commit', '-m', 'group head');
+		const head = git('rev-parse', 'HEAD');
+		const classify = (event: string) => Bun.spawnSync([process.execPath,
+			join(import.meta.dir, 'web-ci.ts'), 'classify'], { cwd: repo,
+			env: { ...process.env, EVENT_NAME: event, BASE_SHA: base, HEAD_SHA: head, GITHUB_OUTPUT: '' } });
+		expect(classify('pull_request').stdout.toString()).toBe('e2e=false\n');
+		expect(classify('merge_group').stdout.toString()).toBe('e2e=true\n');
+	} finally {
+		rmSync(repo, { recursive: true, force: true });
+	}
 });
 
 const needs = (selected = 'true', e2e = 'success') => ({

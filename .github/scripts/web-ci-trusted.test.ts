@@ -41,6 +41,11 @@ test('trusted workflow runs base policy and rejects bases outside main', () => {
 		write('.bun-version', '0.0.0');
 		git('add', '.'); git('commit', '-m', 'forge policy');
 		const head = git('rev-parse', 'HEAD');
+		git('checkout', 'main');
+		write('README.md', 'main advanced beyond event base');
+		git('add', '.'); git('commit', '-m', 'advance main');
+		const mainHead = git('rev-parse', 'HEAD');
+		git('checkout', 'pr');
 		const run = (script: string, event: string, baseSha: string) => {
 			const output = join(root, 'outputs');
 			writeFileSync(output, '');
@@ -51,9 +56,10 @@ test('trusted workflow runs base policy and rejects bases outside main', () => {
 			return { result, outputs: readFileSync(output, 'utf8') };
 		};
 		for (const script of bootstraps) {
-			for (const event of ['pull_request', 'workflow_dispatch']) {
+			for (const event of ['pull_request', 'merge_group', 'workflow_dispatch']) {
 				const { result, outputs } = run(script, event, base);
 				expect(result.exitCode).toBe(0);
+				expect(outputs).toContain(`revision=${event === 'workflow_dispatch' ? mainHead : base}\n`);
 				const directory = /^directory=(.+)$/m.exec(outputs)![1]!.trim();
 				const nativeDir = process.platform === 'win32'
 					? Bun.spawnSync([bash, '-c', 'cygpath -w "$1"', '--', directory]).stdout.toString().trim()
@@ -77,6 +83,12 @@ test('trusted workflow runs base policy and rejects bases outside main', () => {
 		for (const script of bootstraps) {
 			expect(run(script, 'pull_request', unrelated).result.exitCode).not.toBe(0);
 			expect(run(script, 'pull_request', '').result.exitCode).not.toBe(0);
+			for (const invalidBase of [unrelated, '', 'a'.repeat(40)]) {
+				const { result, outputs } = run(script, 'merge_group', invalidBase);
+				expect(result.exitCode).toBe(0);
+				expect(outputs).toContain('force_e2e=true\n');
+				expect(outputs).toContain(`revision=${mainHead}\n`);
+			}
 		}
 	} finally {
 		rmSync(root, { recursive: true, force: true });
