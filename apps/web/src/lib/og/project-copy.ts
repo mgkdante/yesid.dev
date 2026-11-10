@@ -6,12 +6,7 @@ import { SHARE_CTA, withShareCta } from './share-copy';
 const normalize = (text: string) => text.replace(/\s+/gu, ' ').trim();
 const inBounds = (text: string) => text.length >= 50 && text.length <= 200;
 
-/**
- * Protect EN/FR/ES titles (Dr., M., Mme., Sr., Sra.), examples (e.g., i.e.,
- * p. ex., p. ej.), etc., U.S., núm., env., initials and decimal periods.
- * Examples/titles introduce a continuation; etc./country initials can close
- * before an uppercase or opening-punctuation start. Any final period closes.
- */
+/** Abbreviations and initials can close only at the end of the text. */
 function insideAbbreviation(text: string, period: number, end: number): boolean {
 	const abbreviations = /\b(?:p\.\s*(?:ex|ej)|e\.g|i\.e|(?:[A-Z]\.)+[A-Z]|Mr|Mrs|Ms|Dr|Prof|Sr|Sra|Srta|Mme|Mlle|M|St|vs|etc|núm|env|[A-Z])\./gu;
 	for (const match of text.matchAll(abbreviations)) {
@@ -19,9 +14,6 @@ function insideAbbreviation(text: string, period: number, end: number): boolean 
 		if (period < match.index || period > lastPeriod) continue;
 		if (period < lastPeriod) return true;
 		if (end === text.length) return false;
-		if (/^(?:etc\.|(?:[A-Z]\.){2,})$/u.test(match[0])) {
-			return !/^[\s]*[\p{Lu}«“"'¿¡(]/u.test(text.slice(end));
-		}
 		return true;
 	}
 	return false;
@@ -35,6 +27,7 @@ function leadingSentences(text: string): string {
 	for (const ending of endings) {
 		const end = ending.index + ending[0].length;
 		const sentence = text.slice(start, end).trim();
+		if (/^(?:\.{3,}|…)/u.test(ending[0]) && end < text.length && !/^\s+[\p{Lu}«“"'¿¡(]/u.test(text.slice(end))) continue;
 		if (ending[0].startsWith('.') && insideAbbreviation(text, ending.index, end)) continue;
 		const candidate = normalize(`${result} ${sentence}`);
 		if (candidate.length > 200) break;

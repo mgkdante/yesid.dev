@@ -15,20 +15,21 @@ export interface OgCardRenderer {
 
 export function createOgCardRenderer(fontFiles: readonly string[]): OgCardRenderer {
 	const font = { fontFiles: [...fontFiles], loadSystemFonts: false, defaultFontFamily: 'Inter' };
-	const measured = new Map<string, number>();
+	const measured = new Map<string, { left: number; right: number; ascent: number; descent: number }>();
 
 	// Glyph widths scale linearly, so one reference size and a cache are enough.
-	const measure: MeasureText = (text, { family, weight, tracking = 0 }) => {
+	const bounds = (text: string, { family, weight, tracking = 0 }: Parameters<MeasureText>[1]) => {
 		const key = `${family}|${weight}|${tracking}|${text}`;
 		const known = measured.get(key);
 		if (known !== undefined) return known;
 		const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text x="0" y="50" font-family="${family}" font-weight="${weight}" font-size="${MEASURE_SIZE}" letter-spacing="${tracking * MEASURE_SIZE}">${escapeXml(text)}</text></svg>`;
 		const box = new Resvg(svg, { font }).getBBox();
-		const width = box ? (box.x + box.width) / MEASURE_SIZE : 0;
+		const width = box ? { left: box.x / MEASURE_SIZE, right: (box.x + box.width) / MEASURE_SIZE, ascent: (50 - box.y) / MEASURE_SIZE, descent: (box.y + box.height - 50) / MEASURE_SIZE } : { left: 0, right: 0, ascent: 0, descent: 0 };
 		measured.set(key, width);
 		return width;
 	};
 
+	const measure: MeasureText = Object.assign((text: string, spec: Parameters<MeasureText>[1]) => bounds(text, spec).right, { bounds });
 	const svg = (card: OgCard) => buildOgCardSvg(card, measure);
 	return {
 		measure,

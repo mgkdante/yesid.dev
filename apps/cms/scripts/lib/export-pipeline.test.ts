@@ -17,6 +17,23 @@ const liveSnapshot = (snapshot: unknown) => {
 };
 
 describe('export source checks', () => {
+	it.each(['‱'.repeat(200), 'a' + '\u0301'.repeat(199)])('rejects unrenderable project copy before export: %s', async (text) => {
+		const snapshot = { ...structuredClone(fixture.data), mediaAssets: {}, mediaVariants: {} };
+		snapshot.projects[0]!.oneLiner.en = text;
+		await expect(loadExport(createFixtureSource(snapshot))).rejects.toThrow(
+			new RegExp(`${snapshot.projects[0]!.slug}.*one[Ll]iner.*en|${snapshot.projects[0]!.slug}.*en.*one_liner`),
+		);
+	});
+
+	it('exports normalized NFC one-liners and accepts adversarial wide copy', async () => {
+		for (const text of ['Cafe\u0301.', Array(6).fill('W'.repeat(32)).join(' '), Array(6).fill('W'.repeat(32)).join(' ') + ' WW', 'WM'.repeat(100)]) {
+			const snapshot = { ...structuredClone(fixture.data), mediaAssets: {}, mediaVariants: {} };
+			snapshot.projects[0]!.oneLiner.en = text;
+			const result = await loadExport(createFixtureSource(snapshot));
+			expect(result.projects[0]!.oneLiner.en).toBe(text.normalize('NFC'));
+		}
+	});
+
 	it('accepts the fixture through the same pipeline as a fake live source', async () => {
 		const snapshot = {
 			...structuredClone(fixture.data),

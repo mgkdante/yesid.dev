@@ -47,7 +47,9 @@ export interface OgFontSpec {
 }
 
 /** Ink width of one line, in em. */
-export type MeasureText = (text: string, font: OgFontSpec) => number;
+export type MeasureText = ((text: string, font: OgFontSpec) => number) & {
+	bounds?: (text: string, font: OgFontSpec) => { left: number; right: number; ascent: number; descent: number };
+};
 type MeasureLine = (line: string) => number;
 
 const TITLE_FONT: OgFontSpec = { family: 'Inter', weight: 900, tracking: -0.015 };
@@ -64,6 +66,8 @@ const SUBTITLE_LEADING = 1.3;
 const BLOCK_GAP = 26;
 const COPY_TOP = 146;
 const COPY_BOTTOM = 448;
+
+const GRAPHEMES = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 
 const DOT_GAP_EM = 0.05;
 const DOT_RADIUS_EM = 0.095;
@@ -104,7 +108,7 @@ function breakLongWord(word: string, maxEm: number, measure: MeasureLine): strin
 	if (measure(word) <= maxEm) return [word];
 	const pieces: string[] = [];
 	let piece = '';
-	for (const character of word) {
+	for (const { segment: character } of GRAPHEMES.segment(word)) {
 		if (piece && measure(piece + character) > maxEm) {
 			pieces.push(piece);
 			piece = character;
@@ -171,25 +175,38 @@ function subtitleBlock(subtitle: string, width: number, size: number, measure: M
 	return { lines, size, height: lines.length * size * SUBTITLE_LEADING };
 }
 
+function subtitleFits(lines: string[], width: number, size: number, measure: MeasureText): boolean {
+	return lines.length * size * SUBTITLE_LEADING <= 124 && lines.every((line) => {
+		const box = measure.bounds?.(line, SUBTITLE_FONT);
+		return measure(line, SUBTITLE_FONT) * size <= width && (!box || (
+			box.left >= 0 && box.right * size <= width && box.ascent <= 0.98 && box.descent <= SUBTITLE_LEADING - 0.98
+		));
+	});
+}
+
+/** Shared by export validation and rendering; never truncates CMS copy. */
+export function fitFullSubtitle(subtitle: string, width: number, measure: MeasureText): TextBlock {
+	// CMS whitespace is not an authored layout. Never clip a full subtitle.
+	if (/\p{M}{3}/u.test(subtitle.normalize('NFC'))) throw new Error('Remove stacked combining marks from one_liner.');
+	const text = subtitle.normalize('NFC').replace(/\s+/gu, ' ').trim();
+	for (let size = SUBTITLE_SIZE.min; size >= 18; size -= 2) {
+		const lines = wrapGreedy(text, width / size, (line) => measure(line, SUBTITLE_FONT));
+		if (subtitleFits(lines, width, size, measure)) {
+			return { lines, size, height: lines.length * size * SUBTITLE_LEADING };
+		}
+	}
+	// Word boundaries can waste almost half of every line. Only after prose
+	// wrapping fails at every size, fill lines even across fitting words.
+	const size = 18;
+	const lines = breakLongWord(text, width / size, (line) => measure(line, SUBTITLE_FONT));
+	const height = lines.length * size * SUBTITLE_LEADING;
+	if (subtitleFits(lines, width, size, measure)) return { lines, size, height };
+	throw new Error('OG full subtitle cannot fit at 18px or larger; shorten the project one-liner (maximum 200 characters).');
+}
+
 function fitSubtitle(subtitle: string | undefined, width: number, measure: MeasureText, full = false): TextBlock | undefined {
 	if (!subtitle) return undefined;
-	if (full) {
-		// CMS whitespace is not an authored layout. Never clip a full subtitle.
-		const text = subtitle.replace(/\s+/gu, ' ').trim();
-		for (let size = SUBTITLE_SIZE.min; size >= 18; size -= 2) {
-			const lines = wrapGreedy(text, width / size, (line) => measure(line, SUBTITLE_FONT));
-			if (lines.length * size * SUBTITLE_LEADING <= 124) {
-				return { lines, size, height: lines.length * size * SUBTITLE_LEADING };
-			}
-		}
-		// Word boundaries can waste almost half of every line. Only after prose
-		// wrapping fails at every size, fill lines even across fitting words.
-		const size = 18;
-		const lines = breakLongWord(text, width / size, (line) => measure(line, SUBTITLE_FONT));
-		const height = lines.length * size * SUBTITLE_LEADING;
-		if (height <= 124) return { lines, size, height };
-		throw new Error('OG full subtitle cannot fit at 18px or larger; shorten the project one-liner (maximum 200 characters).');
-	}
+	if (full) return fitFullSubtitle(subtitle, width, measure);
 	// One clean line beats two slightly bigger ones.
 	for (let size = SUBTITLE_SIZE.max; size >= SUBTITLE_SIZE.oneLineMin; size -= 2) {
 		const wrapped = wrapParagraphs(subtitle, width / size, (line) => measure(line, SUBTITLE_FONT));

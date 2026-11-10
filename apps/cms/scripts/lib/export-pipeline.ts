@@ -1,3 +1,5 @@
+import { validateProjectLines } from '../../../web/src/lib/og/validate-project-lines';
+import { ProjectSchema } from '@repo/shared/schemas';
 import type { CompleteExportData, ExportData } from '../export-data';
 import { EXPORT_MODULES, type LiveExportContext } from './export-modules';
 import { z } from 'zod';
@@ -90,6 +92,13 @@ export function validateExport(
 		if (!result.success) throw schemaError(module.name, result.error, data);
 	}
 	const complete = data as CompleteExportData;
+	try {
+		validateProjectLines(complete.projects);
+	} catch (error) {
+		throw new ExportValidationError((error as Error).message, { cause: error });
+	}
+	// NFC is an intentional field normalization; preserve all other editorial bytes.
+	for (const project of complete.projects) project.oneLiner = ProjectSchema.shape.oneLiner.parse(project.oneLiner);
 	for (const module of EXPORT_MODULES) {
 		// Each checker accepts its own module's fields plus the shared relation targets.
 		module.check?.(complete, complete);
