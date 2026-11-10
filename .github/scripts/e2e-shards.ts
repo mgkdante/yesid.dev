@@ -26,21 +26,23 @@ export function assignFiles(files: string[], durations: Record<string, number>, 
 	return shards;
 }
 
-export function filePattern(file: string): string {
+export function filePattern(file: string, testRoot: string): string {
 	// Playwright positional arguments are regexes, not literal filenames.
-	const path = file.split('/').map(part => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[/\\\\]');
-	return `(?:^|[/\\\\])${path}$`;
+	const absolute = `${testRoot.replaceAll('\\', '/').replace(/\/$/, '')}/${file}`;
+	const path = absolute.split('/').map(part => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[/\\\\]');
+	return `^${path}$`;
 }
 
 if (import.meta.main) {
 	const index = Number(process.argv[2]);
 	if (!Number.isInteger(index) || index < 1 || index > 4) throw new Error('Expected shard 1, 2, 3 or 4');
 	const web = fileURLToPath(new URL('../../apps/web/', import.meta.url));
-	const files = Array.from(new Bun.Glob('**/*.spec.ts').scanSync({ cwd: `${web}/tests` }), file => file.replaceAll('\\', '/'));
+	const testRoot = fileURLToPath(new URL('../../apps/web/tests/', import.meta.url));
+	const files = Array.from(new Bun.Glob('**/*.spec.ts').scanSync({ cwd: testRoot }), file => file.replaceAll('\\', '/'));
 	const shards = assignFiles(files, profile.durationMs);
 	const selected = shards[index - 1]!;
 	process.stderr.write(`Shard ${index}/4: ${selected.files.length} files, ${(selected.durationMs / 1000).toFixed(1)} measured serial seconds\n`);
-	const child = Bun.spawn(['bun', 'x', 'playwright', 'test', ...selected.files.map(filePattern), ...process.argv.slice(3)], {
+	const child = Bun.spawn(['bun', 'x', 'playwright', 'test', ...selected.files.map(file => filePattern(file, testRoot)), ...process.argv.slice(3)], {
 		cwd: web, stdin: 'inherit', stdout: 'inherit', stderr: 'inherit',
 	});
 	process.exitCode = await child.exited;

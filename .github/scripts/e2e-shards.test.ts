@@ -27,10 +27,24 @@ describe('duration-balanced file assignment', () => {
 		}
 	});
 	test('matches exact paths rather than similarly named or nested alternatives', () => {
-		const pattern = new RegExp(filePattern('page-content/a[1].spec.ts'));
+		const pattern = new RegExp(filePattern('page-content/a[1].spec.ts', '/home/runner/tests'));
 		expect(pattern.test('/home/runner/tests/page-content/a[1].spec.ts')).toBe(true);
-		expect(pattern.test('C:\\tests\\page-content\\a[1].spec.ts')).toBe(true);
+		expect(new RegExp(filePattern('page-content/a[1].spec.ts', 'C:\\tests')).test('C:\\tests\\page-content\\a[1].spec.ts')).toBe(true);
 		expect(pattern.test('/home/runner/tests/page-content/a1.spec.ts')).toBe(false);
 		expect(pattern.test('/home/runner/tests/page-content/a[1].spec.ts.extra')).toBe(false);
+	});
+	test('keeps root and nested basenames disjoint when new files change the assignment', () => {
+		const files = [...Object.keys(profile.durationMs), 'new.spec.ts'];
+		const shards = assignFiles(files, profile.durationMs);
+		for (const root of ['/repo/tests', 'C:\\repo\\tests']) {
+			const separator = root.includes('\\') ? '\\' : '/';
+			const patterns = shards.map(shard => shard.files.map(file => new RegExp(filePattern(file, root))));
+			for (const file of files) {
+				const absolute = `${root}${separator}${file.replaceAll('/', separator)}`;
+				const matches = patterns.flatMap((group, index) => group.some(pattern => pattern.test(absolute)) ? [index] : []);
+				expect(matches).toEqual([shards.findIndex(shard => shard.files.includes(file))]);
+			}
+			expect(new RegExp(filePattern('contact.spec.ts', root)).test(`${root}${separator}mobile${separator}contact.spec.ts`)).toBe(false);
+		}
 	});
 });
