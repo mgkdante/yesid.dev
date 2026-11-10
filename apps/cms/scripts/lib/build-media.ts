@@ -104,9 +104,10 @@ async function prepareImage(id: string, read: ReturnType<typeof cmsReader>, opti
 	if (!MIME_FORMATS[mime]) throw new Error(`Unsupported CMS image type: ${mime}; SVG requires a reviewed mirror`);
 	const bytes = await boundedBytes(response);
 	const { default: sharp } = await import('sharp');
-	const decoder = sharp(bytes, { limitInputPixels: MAX_PIXELS, failOn: 'warning' });
+	const decoder = sharp(bytes, { limitInputPixels: MAX_PIXELS, failOn: 'warning' }).autoOrient();
 	const meta = await decoder.metadata();
-	if (meta.format !== MIME_FORMATS[mime] || !meta.width || !meta.height || meta.width > 16000 || meta.height > 16000 || meta.width * meta.height > MAX_PIXELS || (meta.pages ?? 1) > 1) {
+	const { width, height } = meta.autoOrient;
+	if (meta.format !== MIME_FORMATS[mime] || !width || !height || width > 16000 || height > 16000 || width * height > MAX_PIXELS || (meta.pages ?? 1) > 1) {
 		throw new Error('CMS image has invalid format, dimensions or multiple frames');
 	}
 	// Metadata alone does not prove that the entire compressed image decodes.

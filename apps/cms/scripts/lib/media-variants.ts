@@ -97,12 +97,14 @@ export async function prepareMediaVariants(
 		if (!meta.width || !meta.height) {
 			throw new Error(`[media-variants] could not read dimensions of ${legacyPath}`);
 		}
+		const { width, height } = meta.autoOrient;
 
 		const originalBytes = sourceBytes.length;
 		const variants: MediaVariantSource[] = [];
-		const widths = pickVariantWidths(meta.width, config.widths);
+		const widths = pickVariantWidths(width, config.widths);
 		// Bound parallel work to one source's width ladder and consume it in order.
 		const encodedVariants = await Promise.all(widths.map((width) => sharp(sourceBytes)
+				.autoOrient()
 				.resize({ width })
 				.webp(config.webp)
 				.toBuffer()));
@@ -125,7 +127,7 @@ export async function prepareMediaVariants(
 			variants.push({ width, path: `/${variantRelPath}` });
 		}
 
-		return { legacyPath, data: { width: meta.width, height: meta.height, variants }, writes: assetWrites };
+		return { legacyPath, data: { width, height, variants }, writes: assetWrites };
 	};
 
 	// Keep encoding bounded while another source fills idle width-encoding slots.

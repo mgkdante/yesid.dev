@@ -37,6 +37,23 @@ const transport = (bytes: Uint8Array, filename = 'single.png', siblings: string[
 });
 
 describe('build image publication', () => {
+	it('orients JPEG pixels and metadata before selecting widths, including cache reuse', async () => {
+		const bytes = await sharp({ create: { width: 800, height: 600, channels: 3, background: 'red' } })
+			.withMetadata({ orientation: 6 }).jpeg({ quality: 100 }).toBuffer();
+		const opts = await options(async () => new Response(bytes, { headers: { 'content-type': 'image/jpeg' } }));
+		const data: ExportData = { projects: [{ image: dark }] as never };
+		const first = await prepareBuildMedia(data, opts);
+		const entry = Object.values(first.data)[0]!;
+		expect([entry.width, entry.height]).toEqual([600, 800]);
+		expect(entry.variants.map(row => row.width)).toEqual([240, 600]);
+		for (const variant of first.writes.filter(row => row.filePath.endsWith('.webp'))) {
+			const meta = await sharp(variant.content).metadata();
+			expect(meta.height).toBe(Math.round(meta.width! * 800 / 600));
+			expect(meta.orientation).toBeUndefined();
+		}
+		expect(await prepareBuildMedia({ projects: [{ image: dark }] as never }, opts)).toEqual(first);
+	});
+
 	it.each(['jpeg', 'webp', 'gif', 'avif'] as const)('exports supported single-frame %s uploads with responsive metadata', async format => {
 		const bytes = await sharp({ create: { width: 700, height: 400, channels: 3, background: 'blue' } }).toFormat(format).toBuffer();
 		const opts = await options(async () => new Response(bytes, { headers: { 'content-type': `image/${format}` } }));

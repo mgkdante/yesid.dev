@@ -1,5 +1,5 @@
 {
-	"recipe": "{\"algorithm\":1,\"widths\":[240,600,1200,1600],\"webp\":{\"quality\":82,\"effort\":4},\"sharp\":\"0.35.5\",\"vips\":\"8.18.7\",\"webpVersion\":\"1.6.0\"}",
+	"recipe": "{\"algorithm\":2,\"widths\":[240,600,1200,1600],\"webp\":{\"quality\":82,\"effort\":4},\"sharp\":\"0.35.5\",\"vips\":\"8.18.7\",\"webpVersion\":\"1.6.0\"}",
 	"assets": {
 		"images/about/headshot.webp": {
 			"sourceSha256": "1f5551a13f2171569a23c77d474ea00dc4e19fcd952993487d856172ba561376",

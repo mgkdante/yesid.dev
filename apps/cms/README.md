@@ -99,14 +99,15 @@ published content. Edits never rebuild the site by themselves.
 
 Upload in Directus, reference the file in published content, then run **Publish
 site**. No registry, ID-map, manifest or repository PR is needed for new raster
-images. Images are optional everywhere. Articles, sections and projects may
+images. Articles, sections and projects may
 have no image. A single image works as-is in both themes and appears once in
 the gallery. An optional pair follows the theme inline and shows both captures
-in the gallery.
+in the gallery. The existing editor contract still requires `about_languages.image`.
 
 For a Block Editor pair, upload files named `example.dark.png` and
 `example.light.png` (same stem and extension), then select only the dark file
-in the image block. The exporter finds the unique light filename, fills
+in the image block. Selecting both files as separate blocks creates duplicate
+gallery entries. The exporter finds the unique light filename, fills
 `data.variants.light`, and exports both. Without a light sibling the selected
 image remains a single image, without warning. Ordinary filenames work for
 single images. Keep pair filenames unique across files visible to Build Bot;
@@ -135,8 +136,9 @@ before reuse. Cache loss only costs encoding time. Originals are fetched on
 every live export, so caching cannot hide a deleted or unreadable CMS file.
 Fixtures/previews never read the CMS: pinned mirrors stay real, and unpinned
 references get a visibly labelled **FIXTURE IMAGE PLACEHOLDER**. They cannot
-preview a new upload's appearance without refreshing the fixture or a live
-build. Visitors use static files on yesid.dev; CSP is unchanged.
+preview a new upload's appearance by refreshing fixture JSON alone: its bytes
+must also be mirrored, or a live build must be used. Visitors use static files
+on yesid.dev; CSP is unchanged.
 
 Committed mirrors are optional pinning for reviewed source releases, using
 `scripts/mirror-asset.ts`; their digests, registry contracts and reuse receipts
