@@ -1,15 +1,15 @@
 /** Committed encoding receipts let builds verify bytes instead of re-encoding them. */
 import { createHash } from 'node:crypto';
-import { createReadStream } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import type { MediaVariantEntry } from '@repo/shared';
 import type { MediaVariantsManifestInput, PreparedMediaVariants } from './media-variants';
+import { VARIANT_CONFIG, VARIANT_ALGORITHM_REVISION, pickVariantWidths, variantPathFor, type VariantConfig } from './variant-config';
 
-// Bump the recipe whenever resize, width selection, fallback or encoding rules change.
-async function variantRecipe(): Promise<string> {
+async function variantRecipe(config: VariantConfig): Promise<string> {
 	const { default: sharp } = await import('sharp');
-	return `widths-240-600-1200-1600-webp-q82-v1/sharp-${sharp.versions.sharp}/vips-${sharp.versions.vips}/webp-${sharp.versions.webp}`;
+	return JSON.stringify({ algorithm: VARIANT_ALGORITHM_REVISION, ...config,
+		sharp: sharp.versions.sharp, vips: sharp.versions.vips, webpVersion: sharp.versions.webp });
 }
 export interface VariantReceipt {
 	recipe: string;
@@ -17,9 +17,7 @@ export interface VariantReceipt {
 }
 
 export async function fileDigest(path: string): Promise<string> {
-	const hash = createHash('sha256');
-	for await (const chunk of createReadStream(path)) hash.update(chunk);
-	return hash.digest('hex');
+	return createHash('sha256').update(await readFile(path)).digest('hex');
 }
 
 export async function readVariantReceipt(repoRoot: string): Promise<VariantReceipt | undefined> {
@@ -33,20 +31,40 @@ export async function readVariantReceipt(repoRoot: string): Promise<VariantRecei
 
 export async function reuseVariant(
 	receipt: VariantReceipt | undefined, staticRoot: string, legacyPath: string,
+	config: VariantConfig = VARIANT_CONFIG,
 ): Promise<MediaVariantEntry | undefined> {
-	if (!receipt || receipt.recipe !== await variantRecipe()) return undefined;
+	if (!receipt || receipt.recipe !== await variantRecipe(config)) return undefined;
 	const entry = receipt.assets[legacyPath];
-	if (!entry || await fileDigest(resolve(staticRoot, legacyPath)) !== entry.sourceSha256) return undefined;
-	for (const variant of entry.data.variants) {
-		if (variant.path === `/${legacyPath}`) continue;
-		const digest = entry.outputs[variant.path];
-		if (!digest) return undefined;
-		try {
-			if (await fileDigest(resolve(staticRoot, variant.path.slice(1))) !== digest) return undefined;
-		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
-			throw error;
+	if (!entry) return undefined;
+	const sourceBytes = await readFile(resolve(staticRoot, legacyPath));
+	if (createHash('sha256').update(sourceBytes).digest('hex') !== entry.sourceSha256) return undefined;
+	const { default: sharp } = await import('sharp');
+	const meta = await sharp(sourceBytes).metadata();
+	if (!meta.width || !meta.height || entry.data.width !== meta.width || entry.data.height !== meta.height) return undefined;
+	const widths = pickVariantWidths(meta.width, config.widths);
+	const variants = entry.data.variants;
+	if (!Array.isArray(variants) || !variants.length || variants.length > widths.length) return undefined;
+	const fallback = variants.at(-1)?.path === `/${legacyPath}`;
+	if (!fallback && variants.length !== widths.length) return undefined;
+	if (Object.keys(entry.outputs).length !== variants.length - Number(fallback)) return undefined;
+	try {
+		for (const [index, variant] of variants.entries()) {
+			const width = widths[index]!;
+			if (variant.width !== width) return undefined;
+			if (fallback && index === variants.length - 1) continue;
+			if (variant.path !== `/${variantPathFor(legacyPath, width)}`) return undefined;
+			const digest = entry.outputs[variant.path];
+			if (!digest) return undefined;
+			const outputBytes = await readFile(resolve(staticRoot, variant.path.slice(1)));
+			if (outputBytes.length >= sourceBytes.length || createHash('sha256').update(outputBytes).digest('hex') !== digest) return undefined;
+			// JPEG shrink-on-load can round the scaled height by one pixel.
+			const output = await sharp(outputBytes).metadata();
+			if (output.format !== 'webp' || output.width !== width ||
+				!output.height || Math.abs(output.height - Math.max(1, Math.round(meta.height * width / meta.width))) > 1) return undefined;
 		}
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
+		throw error;
 	}
 	return entry.data;
 }
@@ -54,6 +72,7 @@ export async function reuseVariant(
 /** Called only by the explicit local refresh command after writing generated variants. */
 export async function createVariantReceipt(
 	manifest: MediaVariantsManifestInput, prepared: PreparedMediaVariants, repoRoot: string,
+	config: VariantConfig = VARIANT_CONFIG,
 ): Promise<VariantReceipt> {
 	const staticRoot = resolve(repoRoot, manifest.sourceRoot);
 	const assets: VariantReceipt['assets'] = {};
@@ -65,5 +84,5 @@ export async function createVariantReceipt(
 		}
 		assets[legacyPath] = { sourceSha256: await fileDigest(resolve(staticRoot, legacyPath)), data, outputs };
 	}
-	return { recipe: await variantRecipe(), assets };
+	return { recipe: await variantRecipe(config), assets };
 }
