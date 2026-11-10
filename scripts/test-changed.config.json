@@ -1,0 +1,65 @@
+{
+  "app": "apps/web",
+  "rules": [
+    {
+      "specs": [
+        "head.spec.ts"
+      ],
+      "path": "apps/web/src/routes/robots.txt/+server.ts"
+    },
+    {
+      "specs": [
+        "head.spec.ts"
+      ],
+      "path": "apps/web/src/routes/sitemap.xml/+server.ts"
+    }
+  ],
+  "browserGroups": [
+    {
+      "match": ".*",
+      "allProjects": [
+        "*"
+      ],
+      "projects": [
+        "phone",
+        "desktop"
+      ]
+    }
+  ],
+  "playwright": "playwright.changed.config.ts",
+  "unitEnv": {
+    "EXPORT_FALLBACKS_SOURCE": "fixture"
+  },
+  "specDir": "apps/web/tests",
+  "generatedInputs": [
+    {
+      "workspaces": [
+        "apps/web"
+      ],
+      "prefix": "apps/cms/"
+    },
+    {
+      "workspaces": [
+        "apps/web"
+      ],
+      "prefix": "packages/shared/fixtures/"
+    }
+  ],
+  "fullPlaywright": "playwright.config.ts",
+  "unitFileTests": [
+    {
+      "prefix": "apps/web/src/routes/",
+      "tests": [
+        "src/tests/sitemap-coverage.test.ts"
+      ],
+      "workspace": "apps/web"
+    },
+    {
+      "tests": [
+        "src/tests/asset-guards.test.ts"
+      ],
+      "workspace": "apps/web",
+      "prefix": "apps/web/src/"
+    }
+  ]
+}
