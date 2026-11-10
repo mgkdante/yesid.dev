@@ -48,6 +48,18 @@ bunx playwright install chromium
 bun run test:e2e
 ```
 
+## Admin deploy now
+
+`deploy-now.yml` builds and deploys an explicit ref, without tests or check gates.
+Set Actions secret `VERCEL_TOKEN`, variables `VERCEL_ORG_ID` and
+`VERCEL_PROJECT_ID` for web; set secret `RAILWAY_TOKEN` for CMS.
+Choose `web` (default), `cms`, or `both`; each target queues independently.
+The run summary records the checked-out SHA and deployment receipt.
+
+```bash
+gh workflow run deploy-now.yml -R yesid-dev/yesid.dev --ref main -f ref=<sha> -f target=web
+```
+
 ## Architecture
 
 | Path | Owns |
