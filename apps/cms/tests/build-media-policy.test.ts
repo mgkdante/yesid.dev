@@ -2,12 +2,18 @@ import { expect, it } from 'bun:test';
 import permissions from '../directus/collections/permissions.json';
 import folders from '../directus/collections/folders.json';
 import policies from '../directus/collections/policies.json';
+import { fetchBlog } from '../scripts/lib/fetchers/blog-posts';
+import type { CmsClient } from '../scripts/lib/fetchers/types';
+
+const BUILD_BOT_POLICY = '8a69d5ef-e94b-44ec-ac4d-736fb4d328f1';
+const buildBotFileGrants = () =>
+	permissions.filter(row => row.policy === BUILD_BOT_POLICY && row.collection === 'directus_files');
 
 it('Build Bot reads only delivery-folder or unfiled media with export metadata', () => {
-	const policy = policies.find(row => row._syncId === '8a69d5ef-e94b-44ec-ac4d-736fb4d328f1')!;
-	expect(policy._syncId).toBe('8a69d5ef-e94b-44ec-ac4d-736fb4d328f1');
+	const policy = policies.find(row => row._syncId === BUILD_BOT_POLICY)!;
+	expect(policy._syncId).toBe(BUILD_BOT_POLICY);
 	expect(policy.admin_access).toBe(false);
-	const grants = permissions.filter(row => row.policy === policy._syncId && row.collection === 'directus_files');
+	const grants = buildBotFileGrants();
 	expect(grants).toHaveLength(1);
 	expect(grants[0]).toEqual({
 		collection: 'directus_files', action: 'read',
@@ -18,8 +24,25 @@ it('Build Bot reads only delivery-folder or unfiled media with export metadata',
 			'3b0880d2-9e19-4812-9b35-d16fba7c2e46',
 		] } }, { folder: { _null: true } }] },
 		validation: null, presets: null,
-		fields: ['id', 'filename_download', 'type', 'filesize', 'width', 'height', 'folder'],
+		fields: ['id', 'filename_download', 'type', 'filesize', 'width', 'height', 'folder', 'title', 'description'],
 		policy: policy._syncId, _syncId: '_sync_perm_build_files_read_delivery',
 	});
 	expect(folders.map(row => row.name).sort()).toEqual(['about', 'blog', 'brand', 'illustrations', 'og', 'projects', 'services']);
+});
+
+it('Build Bot can read every file field the blog export requests for cover images', async () => {
+	let query: { params?: { fields?: unknown[] } } | undefined;
+	const client = {
+		request: async (command: () => typeof query) => {
+			query = command();
+			return [];
+		},
+	} as unknown as CmsClient;
+	await fetchBlog({ client });
+	const cover = query?.params?.fields?.find(
+		(field): field is { cover_image: string[] } => typeof field === 'object' && field !== null && 'cover_image' in field,
+	);
+	expect(cover?.cover_image.length).toBeGreaterThan(0);
+	const granted = new Set(buildBotFileGrants().flatMap(row => row.fields ?? []));
+	expect(cover!.cover_image.filter(field => !granted.has(field))).toEqual([]);
 });

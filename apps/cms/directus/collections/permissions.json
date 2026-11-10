@@ -22,7 +22,7 @@
     },
     "validation": null,
     "presets": null,
-    "fields": ["id", "filename_download", "type", "filesize", "width", "height", "folder"],
+    "fields": ["id", "filename_download", "type", "filesize", "width", "height", "folder", "title", "description"],
     "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
     "_syncId": "_sync_perm_build_files_read_delivery"
   },
