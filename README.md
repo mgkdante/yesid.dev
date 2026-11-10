@@ -62,8 +62,10 @@ gh workflow run deploy-now.yml -R yesid-dev/yesid.dev --ref main -f ref=<sha> -f
 ```
 
 Token-free admin fallback: from an authenticated local Vercel CLI session,
-promote an existing deployment after verifying it contains the intended commit.
-This ships that already-built deployment without rebuilding it:
+promote an existing deployment built for the **Production environment**, after
+verifying its project and intended commit. This ships that Production build
+without rebuilding it. Promoting a Preview deployment rebuilds for Production
+and cannot provide this no-rebuild fallback:
 
 ```bash
 vercel promote <deployment-url> --scope mgkdantes-projects
