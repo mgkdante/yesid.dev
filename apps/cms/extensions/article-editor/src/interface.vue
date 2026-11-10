@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch, resolveComponent } from 'vue';
 import { useApi } from '@directus/extensions-sdk';
-import { roundTrip, setImageControl, imageFile, normalizeIds, pasteBlocks, componentError } from './data.js';
+import { roundTrip, setImageControl, imageFile, normalizeIds, pasteBlocks, componentError, sanitizeClipboardBlocks } from './data.js';
 
 defineOptions({ inheritAttrs: false });
 const props = defineProps({ value: Object, disabled: Boolean, folder: String });
@@ -45,8 +45,8 @@ function paste(event) {
   const raw = event.clipboardData?.getData(clipboardType);
   if (!raw || props.disabled || unavailable) return;
   try {
-    const blocks = JSON.parse(raw);
-    if (!Array.isArray(blocks) || !blocks.every(block => typeof block.type === 'string' && block.data && typeof block.data === 'object')) return;
+    const blocks = sanitizeClipboardBlocks(JSON.parse(raw));
+    if (!blocks) return;
     const afterId = event.target.closest('.ce-block')?.dataset.id;
     event.preventDefault();
     event.stopPropagation();

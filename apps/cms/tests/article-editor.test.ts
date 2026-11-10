@@ -37,7 +37,7 @@ describe('article editor image save/load boundary', () => {
   });
 });
 // @ts-expect-error Independently built browser JS package.
-import { normalizeIds, pasteBlocks, componentError } from '../extensions/article-editor/src/data.js';
+import { normalizeIds, pasteBlocks, componentError, sanitizeClipboardBlocks } from '../extensions/article-editor/src/data.js';
 import { BlockEditorDocSchema } from '../../../packages/shared/src/types/blocks';
 
 test('duplicate ids are normalized before editing and controls target only their image', () => {
@@ -84,4 +84,32 @@ test('missing Directus components fail visibly instead of mounting unresolved ta
   expect(componentError('interface-input-block-editor', {})).toContain('unavailable');
   expect(componentError({}, 'v-upload')).toContain('unavailable');
   expect(componentError({}, {})).toBe('');
+});
+
+describe('untrusted clipboard payloads', () => {
+  const file = { fileId: 'dark', fileURL: '/files/dark', url: '/assets/dark', width: 780, height: 1688 };
+  const image = (data: Record<string, unknown>) => ({ id: 'x', type: 'image', data: { file, caption: 'c', withBorder: false, withBackground: false, stretched: false, ...data } });
+  test('drops invalid layout, theme and light metadata so the pasted document still validates', () => {
+    const injected = image({ layout: 'grid', showBothThemes: 'injected', variants: { light: { fileId: 'l', fileURL: '/files/l', url: '/assets/l', width: 0, height: null, size: 123 } } });
+    const blocks = sanitizeClipboardBlocks([injected])!;
+    expect(blocks[0].data).not.toHaveProperty('layout');
+    expect(blocks[0].data).not.toHaveProperty('showBothThemes');
+    expect(blocks[0].data).not.toHaveProperty('variants');
+    const doc = pasteBlocks({ time: 0, version: '2.31.2', blocks: [] }, blocks, undefined);
+    expect(BlockEditorDocSchema.safeParse(doc).success).toBe(true);
+  });
+  test('keeps legitimate metadata and normalizes a numeric size', () => {
+    const light = { fileId: 'l', fileURL: '/files/l', url: '/assets/l', width: 780, height: 1688, size: 123 };
+    const [block] = sanitizeClipboardBlocks([image({ layout: 'beside', showBothThemes: true, variants: { light } })])!;
+    expect(block.data).toMatchObject({ layout: 'beside', showBothThemes: true, variants: { light: { ...light, size: '123' } } });
+  });
+  test('falls back to ordinary paste when an image file or block shape is unusable', () => {
+    expect(sanitizeClipboardBlocks([image({ file: { fileId: 'd', url: '/a', width: 0, height: 10 } })])).toBeNull();
+    expect(sanitizeClipboardBlocks([{ id: 'p', type: 'paragraph', data: [] }])).toBeNull();
+    expect(sanitizeClipboardBlocks('nope')).toBeNull();
+  });
+  test('strips layout fields from non-image blocks', () => {
+    const [block] = sanitizeClipboardBlocks([{ id: 'p', type: 'paragraph', data: { text: 'Hi', layout: 'row' } }])!;
+    expect(block.data).toEqual({ text: 'Hi' });
+  });
 });

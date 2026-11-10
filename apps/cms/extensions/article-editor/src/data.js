@@ -54,6 +54,47 @@ function assertUniqueIds(document) {
   }
 }
 
+const isDim = value => Number.isInteger(value) && value > 0 && value <= 16000;
+const isText = value => typeof value === 'string' && value.length > 0;
+
+/** A file object as the site expects it, or null when it is unusable. */
+function cleanFile(file) {
+  if (!file || typeof file !== 'object' || !isText(file.fileId) || !isText(file.url)) return null;
+  const width = file.width ?? undefined;
+  const height = file.height ?? undefined;
+  if ((width !== undefined || height !== undefined) && !(isDim(width) && isDim(height))) return null;
+  const out = { fileId: file.fileId, fileURL: isText(file.fileURL) ? file.fileURL : '', url: file.url };
+  if (width !== undefined) Object.assign(out, { width, height });
+  if (typeof file.size === 'string' || (typeof file.size === 'number' && Number.isFinite(file.size))) out.size = String(file.size);
+  for (const key of ['name', 'extension', 'title']) if (typeof file[key] === 'string') out[key] = file[key];
+  return out;
+}
+
+/**
+ * Clipboard payloads come from outside this field, so they are untrusted.
+ * Returns sanitized copies, or null when an image's main file is unusable
+ * (the caller then lets the ordinary paste path handle the clipboard).
+ * Invalid layout, theme or light-version metadata is dropped, never kept.
+ */
+export function sanitizeClipboardBlocks(blocks) {
+  if (!Array.isArray(blocks) || blocks.length === 0) return null;
+  const clean = [];
+  for (const block of blocks) {
+    if (!block || typeof block.type !== 'string' || !block.data || typeof block.data !== 'object' || Array.isArray(block.data)) return null;
+    const { layout, showBothThemes, variants, ...data } = block.data;
+    if (block.type !== 'image') { clean.push({ ...block, data }); continue; }
+    const file = cleanFile(data.file);
+    if (!file) return null;
+    const out = { ...data, file };
+    if (layout === 'row' || layout === 'beside') out.layout = layout;
+    const light = cleanFile(variants?.light);
+    if (light) out.variants = { light };
+    if (light && typeof showBothThemes === 'boolean') out.showBothThemes = showBothThemes;
+    clean.push({ ...block, data: out });
+  }
+  return clean;
+}
+
 // Explicit clipboard provenance: clone selected blocks, never infer from a file ID.
 export function pasteBlocks(document, blocks, afterId) {
   const copies = blocks.map(block => ({ ...block, id: crypto.randomUUID() }));
