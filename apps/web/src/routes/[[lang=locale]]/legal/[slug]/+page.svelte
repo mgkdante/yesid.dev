@@ -12,7 +12,7 @@
 	const body = $derived(resolveLocale(data.legalPage.body, locale));
 </script>
 
-<article class="reading-detail mx-auto w-full max-w-3xl px-6 py-16 md:py-24" data-testid="page-legal">
+<article class="reading-detail mx-auto w-full max-w-3xl px-6 py-16 md:py-24" data-testid="page-legal" data-ripple-exempt>
 	<h1 class="mb-10 font-mono text-3xl font-bold text-[var(--foreground)] md:text-4xl">
 		{title}
 	</h1>

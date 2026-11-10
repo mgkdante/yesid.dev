@@ -102,7 +102,7 @@
 >
 	<div class="relative z-10">
 
-		<div class="services-grid grid grid-cols-1 gap-5 lg:grid-cols-2">
+		<div class="services-grid grid grid-cols-1 gap-5 lg:grid-cols-2" data-ripple-exempt>
 			{#each orderedServices as service, i}
 				{@const benefit = service.benefitHeadline ? resolveLocale(service.benefitHeadline, locale) : ''}
 				{@const title = resolveLocale(service.title, locale)}

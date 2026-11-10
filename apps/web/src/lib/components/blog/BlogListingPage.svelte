@@ -209,7 +209,7 @@
 			     no posts at all" (blaming filters that don't exist reads as a bug). -->
 			<StateNotice role="status" title={hasActiveFilters ? emptyState : emptyStateNoPosts} data-testid="blog-empty-state" />
 		{:else}
-			<div class="flex flex-col gap-4">
+			<div class="flex flex-col gap-4" data-ripple-exempt>
 				{#each filteredPosts as post (post.slug)}
 					<BlogRow
 						post={post}

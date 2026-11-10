@@ -193,7 +193,7 @@
 		{#if filteredProjects.length === 0}
 			<StateNotice role="status" title={emptyStateText} data-testid="work-empty-state" />
 		{:else}
-			<div class="project-grid" use:alignProjectCards>
+			<div class="project-grid" use:alignProjectCards data-ripple-exempt>
 				{#each filteredProjects as project, i (project.slug)}
 					<!-- First card is the listing's LCP candidate: eager + high priority.
 					     The rest stay lazy. -->

@@ -315,7 +315,7 @@
 					counterPrefix={tocCounterPrefix}
 				/>
 				{#if hasImpact}
-					<div class="toc-impact-stack">
+					<div class="toc-impact-stack" data-ripple-exempt>
 						<ProjectImpactCard project={project} />
 					</div>
 				{/if}
@@ -327,7 +327,7 @@
 			</div>
 		{/snippet}
 
-		<div class="sections-column">
+		<div class="sections-column" data-ripple-exempt>
 			<div class="section-block lg:hidden" data-testid="project-overview-mobile">
 				<ProjectOverviewCard project={project} {codeHighlights} />
 			</div>

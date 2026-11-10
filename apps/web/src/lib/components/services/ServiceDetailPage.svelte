@@ -149,7 +149,7 @@
 		{/if}
 
 		{#if metricValue}
-			<div class="impact-metric">
+			<div class="impact-metric" data-ripple-exempt>
 				<span class="impact-value" class:impact-value-compact={metricValue.length > 8}>{metricValue}</span>
 				{#if metricLabel}
 					<span class="impact-label">{metricLabel}</span>
@@ -164,7 +164,7 @@
 {/snippet}
 
 {#snippet projectsAside()}
-	<div class="projects-panel reading-support">
+	<div class="projects-panel reading-support" data-ripple-exempt>
 		<ServiceStackPanel
 			variant="desktop"
 			stack={service.stack ?? []}
@@ -227,7 +227,7 @@
 
 				<!-- SVG panel — desktop/tablet only (wrapper controls visibility). -->
 				{#if svgContent}
-					<div class="svg-desktop">
+					<div class="svg-desktop" data-ripple-exempt>
 						{@render clickMeNote()}
 						<ServiceSvgPanel {svgContent} />
 					</div>
@@ -236,7 +236,7 @@
 
 			<!-- SVG banner — mobile only (wrapper controls visibility) -->
 			{#if svgContent}
-				<div class="svg-mobile">
+				<div class="svg-mobile" data-ripple-exempt>
 					{@render clickMeNote()}
 					<ServiceSvgPanel {svgContent} variant="banner" />
 				</div>
@@ -251,7 +251,7 @@
 	{#snippet after()}
 
 		{#if hasStack || relatedProjects.length > 0}
-			<div class="projects-mobile reading-support">
+			<div class="projects-mobile reading-support" data-ripple-exempt>
 				<ServiceStackPanel
 					variant="mobile"
 					stack={service.stack ?? []}
@@ -293,7 +293,7 @@
 			landFragments: true,
 		}}
 	>
-		<div class="sections article-body">
+		<div class="sections article-body" data-ripple-exempt>
 			<!-- Mobile-only inline metric -->
 			{#if metricValue}
 				<div class="metric-inline">

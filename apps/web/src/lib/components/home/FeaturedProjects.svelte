@@ -122,7 +122,7 @@
 		use:emblaCarouselSvelte={{ options: emblaOptions, plugins: [WheelGesturesPlugin()] }}
 		onemblaInit={onEmblaInit}
 	>
-		<div class="embla__container" use:alignProjectCards>
+		<div class="embla__container" use:alignProjectCards data-ripple-exempt>
 			{#each visibleProjects as project, i}
 				<div class="embla__slide">
 					<ProjectCard {project} {services} {serviceSvgContents} placement="proof" class="w-full" data-active={activeIndex === i} />

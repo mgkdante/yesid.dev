@@ -208,7 +208,7 @@
           </div>
         {/if}
 
-        <div class="meta-card" data-testid="blog-meta-card">
+        <div class="meta-card" data-testid="blog-meta-card" data-ripple-exempt>
           <CollapsibleSection title={categoryName} open={true} accentColor={accentColor}>
             {#snippet icon()}
               <SectionIcon name="list" class="h-4 w-4 shrink-0 text-primary" />
@@ -291,7 +291,7 @@
       </ArticleHeader>
     {/snippet}
 
-    <div class="sections-column" data-testid="blog-sections">
+    <div class="sections-column" data-testid="blog-sections" data-ripple-exempt>
       {#each articleSections as section, i (section.id)}
         <div class="blog-section-block">
           <CollapsibleSection

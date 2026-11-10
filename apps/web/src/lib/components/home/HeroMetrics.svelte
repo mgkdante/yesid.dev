@@ -74,7 +74,7 @@
 
 <!-- Compact stacked rows on narrow phones; a card row where space permits. -->
 <!-- Mobile single-card layout -->
-<div class="hero-metrics-mobile md:hidden" data-testid="hero-metrics">
+<div class="hero-metrics-mobile md:hidden" data-testid="hero-metrics" data-ripple-exempt>
   <Card class="px-4 py-3.5" data-testid="metric-card-mobile">
     <div class="hero-metrics-row flex items-stretch justify-between gap-3">
       {#each metrics as metric, i (metric.key)}
@@ -93,7 +93,7 @@
 </div>
 
 <!-- Desktop 3-card grid -->
-<div class="hero-metrics-desktop hidden gap-3.5 md:grid md:grid-cols-3" data-testid="hero-metrics-desktop">
+<div class="hero-metrics-desktop hidden gap-3.5 md:grid md:grid-cols-3" data-testid="hero-metrics-desktop" data-ripple-exempt>
   {#each metrics as metric (metric.key)}
     <Card
       class="md:px-5 md:py-4"

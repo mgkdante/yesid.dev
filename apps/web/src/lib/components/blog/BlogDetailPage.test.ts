@@ -60,6 +60,13 @@ describe('BlogDetailPage', () => {
 		expect(screen.queryByTestId('blog-image-gallery')).toBeNull();
 	});
 
+	it('keeps the global click ripple off the article body', () => {
+		render(BlogDetailPage, { props: { post: makePost(), body: mockBody, headings: mockHeadings } });
+		for (const body of screen.getAllByTestId('blog-section-body')) {
+			expect(body.closest('[data-ripple-exempt]')).not.toBeNull();
+		}
+	});
+
 	it.each(['en', 'fr', 'es'] as const)('renders an Images card in %s and opens inline images at their shared index without collapsing', async (locale) => {
 		const images: BlockEditorDoc['blocks'] = ['First', 'Second'].map((caption) => ({
 			id: caption, type: 'image', data: {
