@@ -7,10 +7,27 @@ const normalize = (text: string) => text.replace(/\s+/gu, ' ').trim();
 const inBounds = (text: string) => text.length >= 50 && text.length <= 200;
 
 /**
- * Conservative sentence boundaries for EN/FR/ES, including closing quotes and ¿/¡.
- * Keep common titles, e.g./i.e./p.ex., initials and decimal periods inside sentences.
- * Unknown abbreviations follow normal punctuation rules; unfinished tails are ignored.
+ * Protect EN/FR/ES titles (Dr., M., Mme., Sr., Sra.), examples (e.g., i.e.,
+ * p. ex., p. ej.), etc., U.S., núm., env., initials and decimal periods.
+ * Examples/titles introduce a continuation; etc./country initials can close
+ * before an uppercase or opening-punctuation start. Any final period closes.
  */
+function insideAbbreviation(text: string, period: number, end: number): boolean {
+	const abbreviations = /\b(?:p\.\s*(?:ex|ej)|e\.g|i\.e|(?:[A-Z]\.)+[A-Z]|Mr|Mrs|Ms|Dr|Prof|Sr|Sra|Srta|Mme|Mlle|M|St|vs|etc|núm|env|[A-Z])\./gu;
+	for (const match of text.matchAll(abbreviations)) {
+		const lastPeriod = match.index + match[0].length - 1;
+		if (period < match.index || period > lastPeriod) continue;
+		if (period < lastPeriod) return true;
+		if (end === text.length) return false;
+		if (/^(?:etc\.|(?:[A-Z]\.){2,})$/u.test(match[0])) {
+			return !/^[\s]*[\p{Lu}«“"'¿¡(]/u.test(text.slice(end));
+		}
+		return true;
+	}
+	return false;
+}
+
+/** Leading complete sentences only; unfinished and over-budget tails are ignored. */
 function leadingSentences(text: string): string {
 	const endings = text.matchAll(/[.!?…]+(?:\s*[»”"’')\]])*(?=\s|$)/gu);
 	let result = '';
@@ -18,7 +35,7 @@ function leadingSentences(text: string): string {
 	for (const ending of endings) {
 		const end = ending.index + ending[0].length;
 		const sentence = text.slice(start, end).trim();
-		if (/(?:\b(?:Mr|Mrs|Ms|Dr|Prof|Sr|Sra|Srta|Mme|Mlle|M|St|vs|etc)|\b[A-Z]|e\.g|i\.e|p\.ex)\.$/u.test(sentence)) continue;
+		if (ending[0].startsWith('.') && insideAbbreviation(text, ending.index, end)) continue;
 		const candidate = normalize(`${result} ${sentence}`);
 		if (candidate.length > 200) break;
 		result = candidate;

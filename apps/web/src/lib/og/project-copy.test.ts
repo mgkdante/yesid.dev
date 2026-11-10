@@ -83,6 +83,43 @@ describe('CMS project share copy', () => {
 		expect(copy.line).toBe(text);
 		expect(copy.description).toBe(withShareCta(text, SHARE_CTA.project.label[locale]));
 	});
+	it.each([
+		['en', 'This project helps teams publish useful reports, dashboards, maps, etc.'],
+		['en', 'This project helps teams publish useful reports across the U.S.'],
+		['fr', 'Ce projet aide toutes les équipes à publier des rapports utiles, etc.'],
+		['es', 'Este proyecto ayuda a los equipos a publicar informes útiles en U.S.'],
+	] as const)('retains complete %s overviews ending in abbreviations', (locale, text) => {
+		const project: Project = { ...projectFactory.build(), oneLiner: { en: 'Tiny.' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text } }] } } };
+		expect(projectCopy(project, locale, { en: 'Site default' }).description).toBe(withShareCta(text, SHARE_CTA.project.label[locale]));
+	});
+
+	it.each([
+		['en', 'This project lets every team share useful reports and dashboards, e.g.'],
+		['fr', 'Ce projet permet à toutes les équipes de partager des données utiles, p. ex.'],
+		['es', 'Este proyecto permite a todos los equipos compartir datos importantes, p. ej.'],
+		['fr', 'Ce projet permet à toutes les équipes de partager des données avec Mme.'],
+		['es', 'Este proyecto permite a todos los equipos compartir datos con el Sr.'],
+	] as const)('rejects %s abbreviation fragments before over-budget continuations', (locale, prefix) => {
+		const text = prefix + ' ' + 'Continuation '.repeat(30) + '.';
+		const project: Project = { ...projectFactory.build(), oneLiner: { en: 'Tiny.' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text } }] } } };
+		expect(projectCopy(project, locale, { en: 'Site default' }).description).toBe('Site default');
+	});
+
+	it.each(['e.g.', 'i.e.', 'p. ex.', 'p. ej.', 'Dr.', 'M.', 'Mme.', 'Sr.', 'Sra.', 'núm.', 'env.'])(
+		'keeps %s attached to an over-budget continuation after a complete sentence', (abbreviation) => {
+			const first = 'This project gives every website a consistent visual language.';
+			const text = `${first} Teams share useful reports and dashboards with ${abbreviation} ${'Continuation '.repeat(30)}.`;
+			const project: Project = { ...projectFactory.build(), oneLiner: { en: 'Tiny.' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text } }] } } };
+			expect(projectCopy(project, 'en', { en: 'Site default' }).description).toBe(withShareCta(first, SHARE_CTA.project.label.en));
+		},
+	);
+	it.each(['etc.', 'U.S.'])('allows %s to end a sentence before a new quoted sentence', (abbreviation) => {
+		const first = `This project helps teams publish useful reports across the ${abbreviation}`;
+		const text = `${first} « ${'An over-budget continuation '.repeat(20)}. »`;
+		const project: Project = { ...projectFactory.build(), oneLiner: { en: 'Tiny.' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text } }] } } };
+		expect(projectCopy(project, 'en', { en: 'Site default' }).description).toBe(withShareCta(first, SHARE_CTA.project.label.en));
+	});
+
 	it('uses a valid one-liner alone when the CTA would exceed 200 characters', () => {
 		const line = 'Useful project context '.repeat(8).trim() + ' for teams.';
 		const project = { ...projectFactory.build(), oneLiner: { en: line } };
