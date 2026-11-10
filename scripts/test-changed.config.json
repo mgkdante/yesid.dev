@@ -3,18 +3,15 @@
   "rules": [
     {
       "specs": [
-        "contact.spec.ts"
+        "head.spec.ts"
       ],
-      "prefix": "apps/web/src/lib/components/contact/"
+      "path": "apps/web/src/routes/robots.txt/+server.ts"
     },
     {
       "specs": [
-        "hero-layout.spec.ts",
-        "hero-intro-scroll.spec.ts",
-        "hero-intro-replay.spec.ts",
-        "hero-intro-reload.spec.ts"
+        "head.spec.ts"
       ],
-      "prefix": "apps/web/src/lib/components/home/"
+      "path": "apps/web/src/routes/sitemap.xml/+server.ts"
     }
   ],
   "browserGroups": [
@@ -33,5 +30,26 @@
   "unitEnv": {
     "EXPORT_FALLBACKS_SOURCE": "fixture"
   },
-  "specDir": "apps/web/tests"
+  "specDir": "apps/web/tests",
+  "generatedInputs": [
+    {
+      "prefix": "apps/cms/scripts/",
+      "workspaces": [
+        "apps/web"
+      ]
+    },
+    {
+      "prefix": "apps/cms/fixtures/",
+      "workspaces": [
+        "apps/web"
+      ]
+    },
+    {
+      "prefix": "packages/shared/fixtures/",
+      "workspaces": [
+        "apps/web"
+      ]
+    }
+  ],
+  "fullPlaywright": "playwright.config.ts"
 }
