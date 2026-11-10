@@ -70,6 +70,12 @@ const needs = (selected = 'true', e2e = 'success') => ({
 });
 
 describe('required CI', () => {
+	test.each(['failure', 'cancelled', 'skipped', ''])('an artifact build with result %s cannot pass', result => {
+		expect(required({ ...needs('false', 'skipped'), build: { result } })).toBe(false);
+	});
+	test('a successful artifact build is accepted', () => {
+		expect(required({ ...needs(), build: { result: 'success' } })).toBe(true);
+	});
 	test('successful selected run passes', () => expect(required(needs(), false)).toBe(true));
 	test('unexpected skip fails', () => expect(required(needs('true', 'skipped'), false)).toBe(false));
 	test('label cannot permit a selected skip', () => expect(required(needs('true', 'skipped'), true)).toBe(false));

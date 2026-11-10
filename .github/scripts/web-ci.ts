@@ -29,6 +29,7 @@ type Needs = Record<string, { result?: string; outputs?: Record<string, string> 
 // Keep the legacy second argument accepted during the trusted-base rollout.
 export function required(needs: Needs, _labelSkip = false): boolean {
 	if (Object.values(needs).some(job => job.result === 'failure' || job.result === 'cancelled')) return false;
+	if ('build' in needs && needs.build?.result !== 'success') return false;
 	if (needs['prerelease-guard']?.result !== 'success') return false;
 	if (needs.classify?.result !== 'success' || needs['ci-work']?.result !== 'success') return false;
 	const selected = needs.classify.outputs?.e2e;
