@@ -55,9 +55,18 @@ Set Actions secret `VERCEL_TOKEN`, variables `VERCEL_ORG_ID` and
 `VERCEL_PROJECT_ID` for web; set secret `RAILWAY_TOKEN` for CMS.
 Choose `web` (default), `cms`, or `both`; each target queues independently.
 The run summary records the checked-out SHA and deployment receipt.
+The deployment tokens are not provisioned yet; dispatch fails early until they are.
 
 ```bash
 gh workflow run deploy-now.yml -R yesid-dev/yesid.dev --ref main -f ref=<sha> -f target=web
+```
+
+Token-free admin fallback: from an authenticated local Vercel CLI session,
+promote an existing deployment after verifying it contains the intended commit.
+This ships that already-built deployment without rebuilding it:
+
+```bash
+vercel promote <deployment-url> --scope mgkdantes-projects
 ```
 
 ## Architecture
