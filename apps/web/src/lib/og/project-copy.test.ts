@@ -159,7 +159,7 @@ describe('CMS project share copy', () => {
 			expect(projectCopy(project, locale, { en: 'Site default' }).description).toBe(first ? withShareCta(first.trim(), SHARE_CTA.project.label[locale]) : 'Site default');
 		}
 	});
-	it.each(['Dr', 'Dre', 'Dra', 'Pr', 'Prof', 'M', 'Mme', 'Mmes', 'Mlle', 'Mr', 'Mrs', 'Ms', 'Sr', 'Sra', 'Sres', 'Srta', 'St', 'Ste', 'No', 'Nº', 'núm', 'boul', 'av', 'ave', 'blvd', 'ch', 'pág', 'p', 'vol', 'fig', 'Lic', 'Ing', 'J.R.R', 'J\u030c', 'U.S'])(
+	it.each(['Dr', 'Dre', 'Dra', 'Pr', 'Prof', 'M', 'Mme', 'Mmes', 'Mlle', 'Mr', 'Mrs', 'Ms', 'Sr', 'Sra', 'Sres', 'Srta', 'St', 'Ste', 'No', 'Nº', 'núm', 'boul', 'av', 'ave', 'blvd', 'ch', 'pág', 'p', 'vol', 'fig', 'Lic', 'Ing', 'J.R.R', 'J\u030c', 'U.S', 'e.g', 'i.e', 'p. ex', 'p. ej'])(
 		'protects %s before uppercase continuations but accepts it at end of text', (prefix) => {
 			const sentence = `This project shares useful service observations with ${prefix}.`;
 			const project = projectFactory.build({ oneLiner: { en: 'Tiny.' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text: sentence } }] } } });
@@ -168,7 +168,7 @@ describe('CMS project share copy', () => {
 			expect(projectCopy(continued, 'en', { en: 'Site default' }).description).toBe('Site default');
 		},
 	);
-	it.each(['Inc.', 'Ltd.', 'Co.', 'Corp.', 'etc.', 'a.m.', 'p.m.', 'e.g.', 'i.e.'])(
+	it.each(['Inc.', 'Ltd.', 'Co.', 'Corp.', 'etc.', 'a.m.', 'p.m.'])(
 		'accepts %s before a new uppercase sentence', (suffix) => {
 			const first = `This project gives local teams reliable and timely service updates from Acme ${suffix}`;
 			if (suffix === 'Inc.') expect(first).toHaveLength(81);
@@ -187,6 +187,36 @@ describe('CMS project share copy', () => {
 			}
 		},
 	);
+	it.each([
+		['en', 'To help local commuters answer “Where is my bus? Is it running late?”, this dashboard combines live vehicle positions with historical arrival data'],
+		['fr', 'Pour aider les usagers à répondre à « Où est mon autobus? Est-il en retard? », ce tableau de bord combine les positions en direct et l’historique'],
+		['es', 'Para ayudar a responder «¿Dónde está mi autobús? ¿Llega tarde?», este panel combina las posiciones en vivo con el historial de llegadas'],
+		['en', 'This project connects the tools small teams already use (Where does each figure come from? Which system wins?) and keeps every source traceable'],
+	] as const)('never ends a %s sentence inside an open quotation or bracket', (locale, opening) => {
+		for (const first of ['', 'This project gives every website a consistent visual language. ']) {
+			const text = first + opening + ' ' + 'with continued observations '.repeat(10) + '.';
+			const project: Project = { ...projectFactory.build(), oneLiner: { en: 'Long project summary '.repeat(11).trim() }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text } }] } } };
+			expect(projectCopy(project, locale, { en: 'Site default' }).description).toBe(first ? withShareCta(first.trim(), SHARE_CTA.project.label[locale]) : 'Site default');
+		}
+	});
+	it.each([
+		['en', 'This project connects the tools that small teams already use, e.g. Google Analytics for traffic reports'],
+		['en', 'This project keeps one reporting source for each figure, i.e. Shopify for customer orders'],
+		['fr', 'Ce projet relie les outils que les petites équipes utilisent déjà, p. ex. Google Analytics pour le trafic'],
+		['es', 'Este proyecto conecta las herramientas que los equipos ya usan, p. ej. Google Analytics para el tráfico'],
+	] as const)('keeps a %s example introducer with its proper-name complement', (locale, opening) => {
+		for (const first of ['', 'This project gives every website a consistent visual language. ']) {
+			const text = first + opening + ', ' + 'Stripe for payments and more '.repeat(10) + '.';
+			const project: Project = { ...projectFactory.build(), oneLiner: { en: 'Long project summary '.repeat(11).trim() }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text } }] } } };
+			expect(projectCopy(project, locale, { en: 'Site default' }).description).toBe(first ? withShareCta(first.trim(), SHARE_CTA.project.label[locale]) : 'Site default');
+		}
+	});
+	it('closes a sentence after a complete quotation', () => {
+		const first = 'Riders kept asking “Where is my bus? Is it late?” and this project answers both.';
+		const text = first + ' It ' + 'adds observations '.repeat(20) + '.';
+		const project = projectFactory.build({ oneLiner: { en: 'Tiny.' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text } }] } } });
+		expect(projectCopy(project, 'en', { en: 'Site default' }).description).toBe(withShareCta(first, SHARE_CTA.project.label.en));
+	});
 	it('uses the site default when all project copy is empty or unfinished', () => {
 		const project: Project = { ...projectFactory.build(), oneLiner: { en: '' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text: 'An unfinished overview' } }] } } };
 		expect(projectCopy(project, 'en', { en: 'Site default' })).toEqual({ line: 'Site default', description: 'Site default' });

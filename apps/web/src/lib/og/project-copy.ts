@@ -6,9 +6,16 @@ import { SHARE_CTA, withShareCta } from './share-copy';
 const normalize = (text: string) => text.normalize('NFC').replace(/\s+/gu, ' ').trim();
 const inBounds = (text: string) => text.length >= 50 && text.length <= 200;
 
-// Only name/title/address prefixes and initials require a following word.
-// Keep U.S. protected too, so U.S. Department cannot produce a misleading tail.
-const prefix = /(?:^|[^\p{L}\p{M}])(?:Dr|Dre|Dra|Pr|Prof|M|Mme|Mmes|Mlle|Mr|Mrs|Ms|Sr|Sra|Sres|Srta|St|Ste|No|Nº|núm|boul|av|ave|blvd|ch|pág|p|vol|fig|Lic|Ing|U\.S|\p{Lu}\p{M}*)$/u;
+// Only name/title/address prefixes, initials and example introducers (e.g., i.e.,
+// p. ex., p. ej.) require a following word. Keep U.S. protected too, so
+// U.S. Department cannot produce a misleading tail.
+const prefix = /(?:^|[^\p{L}\p{M}])(?:Dr|Dre|Dra|Pr|Prof|M|Mme|Mmes|Mlle|Mr|Mrs|Ms|Sr|Sra|Sres|Srta|St|Ste|No|Nº|núm|boul|av|ave|blvd|ch|pág|p|vol|fig|Lic|Ing|U\.S|e\.g|i\.e|p\.\s?ex|p\.\s?ej|\p{Lu}\p{M}*)$/u;
+
+// Curly quotes, guillemets and brackets only: straight quotes and ’ double as
+// apostrophes, so they cannot tell an opening from a closing mark.
+const spans: [string, string][] = [['“', '”'], ['«', '»'], ['(', ')'], ['[', ']'], ['{', '}']];
+const insideOpenSpan = (sentence: string) =>
+	spans.some(([open, close]) => sentence.split(open).length > sentence.split(close).length);
 
 /** Leading complete sentences only; unfinished and over-budget tails are ignored. */
 function leadingSentences(text: string): string {
@@ -21,6 +28,8 @@ function leadingSentences(text: string): string {
 		const end = ending.index + ending[0].length;
 		const sentence = text.slice(start, end).trim();
 		if (ending[0].startsWith('.') && end < text.length && prefix.test(text.slice(0, ending.index))) continue;
+		// A question or exclamation inside an open quotation or bracket is not a sentence end.
+		if (end < text.length && insideOpenSpan(text.slice(start, end))) continue;
 		// Other suffixes follow the same rule: "Acme Inc. Montréal office..."
 		// may split at Inc.; this accepted ambiguity keeps a complete-looking sentence.
 		const candidate = normalize(`${result} ${sentence}`);
