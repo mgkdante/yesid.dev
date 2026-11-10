@@ -10,7 +10,7 @@
     "field": "description",
     "group": null,
     "hidden": false,
-    "interface": "input-block-editor",
+    "interface": "article-block-editor",
     "note": "Shown in the Overview panel beside the page sections, and used as the search description. Its images join the gallery.",
     "options": null,
     "readonly": false,

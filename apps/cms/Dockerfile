@@ -55,6 +55,13 @@ RUN npm pack directus-extension-sync@3.0.6 --ignore-scripts --registry=https://r
 	&& rm /tmp/directus-extension-sync-3.0.6.tgz \
 	&& node -e "const fs=require('node:fs');const p='extension/package.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));if(j.name!=='directus-extension-sync'||j.version!=='3.0.6'||j['directus:extension'].host!=='^11.0.0'||Object.keys(j.dependencies||{}).length)throw new Error('unexpected sync extension package');fs.accessSync('extension/'+j['directus:extension'].path);j['directus:extension'].host='^11.0.0 || ^12.0.0';fs.writeFileSync(p,JSON.stringify(j,null,2));"
 
+FROM node:22.23.4-alpine@sha256:fe4f6d74e20370acb04ad889077d14d0f64a9c8ea6a42bc60cddf1e844699914 AS article-editor
+WORKDIR /article-editor
+COPY extensions/article-editor/package*.json ./
+RUN npm ci --ignore-scripts --registry=https://registry.npmjs.org
+COPY extensions/article-editor/src ./src
+RUN npm run build
+
 FROM directus/directus:12.5.1@sha256:ef6fc027605ea659a972356e0c35fd7f88b02118b0b3a322dafbec3cc709fdab
 
 WORKDIR /directus
@@ -62,5 +69,7 @@ WORKDIR /directus
 COPY --from=sync-extension --chown=node:node /extension-build/extension /directus/extensions/directus-extension-sync
 
 COPY --chown=node:node extensions/noindex /directus/extensions/directus-extension-noindex
+COPY --from=article-editor --chown=node:node /article-editor/package.json /directus/extensions/directus-extension-article-editor/package.json
+COPY --from=article-editor --chown=node:node /article-editor/dist /directus/extensions/directus-extension-article-editor/dist
 
 USER node
