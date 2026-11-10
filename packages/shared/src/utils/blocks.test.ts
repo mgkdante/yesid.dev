@@ -714,3 +714,13 @@ describe('table blocks', () => {
 		expect(serializeBlocksToHtml(doc)).toBe('<table><tbody><tr><td><b>Safe</b><a>Link</a><i>Italic</i></td></tr></tbody></table>');
 	});
 });
+
+describe('optional image presentation fields', () => {
+	const parse = (fields: Record<string, unknown>) => BlockEditorDocSchema.safeParse({ time: 0, version: '2', blocks: [{ id: 'i', type: 'image', data: { file: { fileId: 'id', fileURL: '', url: '' }, caption: '', withBorder: false, withBackground: false, stretched: false, ...fields } }] });
+	it.each([{}, { layout: 'row' }, { layout: 'beside', showBothThemes: true }, { showBothThemes: false }])('retains valid fields %j', fields => {
+		const result = parse(fields);
+		expect(result.success).toBe(true);
+		if (result.success) expect(result.data.blocks[0].data).toMatchObject(fields);
+	});
+	it.each([{ layout: 'grid' }, { layout: null }, { showBothThemes: 'true' }, { showBothThemes: 1 }])('rejects invalid fields %j', fields => expect(parse(fields).success).toBe(false));
+});

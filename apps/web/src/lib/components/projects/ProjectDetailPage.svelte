@@ -76,7 +76,10 @@
 	};
 
 	function isImageGalleryDoc(doc: BlockEditorDoc): boolean {
-		return doc.blocks.length > 0 && doc.blocks.every((block) => block.type === 'image');
+		// An explicit layout or theme-pair choice asks for inline rendering, so the
+		// section stays in the article (its images still feed the central gallery).
+		return doc.blocks.length > 0 && doc.blocks.every((block) =>
+			block.type === 'image' && !block.data.layout && !block.data.showBothThemes);
 	}
 
 	function articleTocEntry(section: SectionView, articleIndex: number): TocEntry {
