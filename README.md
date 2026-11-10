@@ -48,6 +48,29 @@ bunx playwright install chromium
 bun run test:e2e
 ```
 
+## Admin deploy now
+
+`deploy-now.yml` builds and deploys an explicit ref, without tests or check gates.
+Set Actions secret `VERCEL_TOKEN`, variables `VERCEL_ORG_ID` and
+`VERCEL_PROJECT_ID` for web; set secret `RAILWAY_TOKEN` for CMS.
+Choose `web` (default), `cms`, or `both`; each target queues independently.
+The run summary records the checked-out SHA and deployment receipt.
+The deployment tokens are not provisioned yet; dispatch fails early until they are.
+
+```bash
+gh workflow run deploy-now.yml -R yesid-dev/yesid.dev --ref main -f ref=<sha> -f target=web
+```
+
+Token-free admin fallback: from an authenticated local Vercel CLI session,
+promote an existing deployment built for the **Production environment**, after
+verifying its project and intended commit. This ships that Production build
+without rebuilding it. Promoting a Preview deployment rebuilds for Production
+and cannot provide this no-rebuild fallback:
+
+```bash
+vercel promote <deployment-url> --scope mgkdantes-projects
+```
+
 ## Architecture
 
 | Path | Owns |

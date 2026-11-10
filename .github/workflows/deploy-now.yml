@@ -1,0 +1,123 @@
+name: deploy-now
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: SHA or branch to build and deploy to production
+        required: true
+        type: string
+      target:
+        description: Production target
+        required: true
+        type: choice
+        options: [web, cms, both]
+        default: web
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    if: inputs.target == 'web' || inputs.target == 'both'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-now-web
+      queue: max
+      cancel-in-progress: false
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Require Vercel credentials and target
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing $name. Configure it before dispatching deploy-now."
+              exit 1
+            fi
+          done
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install Vercel CLI
+        run: npm install --global vercel@65.14.0
+      - name: Build and deploy web
+        id: deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          # Override only this checkout; preserve the normal build's quality gates.
+          node --input-type=module -e 'import fs from "node:fs"; const p="apps/web/vercel.json"; const c=JSON.parse(fs.readFileSync(p,"utf8")); c.buildCommand="bun run prebuild && bun x vite build"; fs.writeFileSync(p,JSON.stringify(c));'
+          vercel pull --yes --environment=production
+          vercel build --prod
+          vercel deploy --prebuilt --prod --yes --meta githubCommitSha="$sha" | tee "$RUNNER_TEMP/web-deploy.log"
+      - name: Web deployment summary
+        if: always()
+        env:
+          DEPLOY_SHA: ${{ steps.deploy.outputs.sha }}
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+        shell: bash
+        run: |
+          printf '### Production deployment attempt\n\n- SHA: `%s`\n- Target: web\n- Result: %s\n\n' "${DEPLOY_SHA:-unavailable (checkout/build not reached)}" "$DEPLOY_OUTCOME" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -f "$RUNNER_TEMP/web-deploy.log" ]]; then
+            cat "$RUNNER_TEMP/web-deploy.log" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  cms:
+    if: inputs.target == 'cms' || inputs.target == 'both'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-now-cms
+      queue: max
+      cancel-in-progress: false
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      CI: 'true'
+    steps:
+      - name: Require Railway token
+        shell: bash
+        run: |
+          if [[ -z "$RAILWAY_TOKEN" ]]; then
+            echo '::error::Missing RAILWAY_TOKEN. Configure it before dispatching deploy-now.'
+            exit 1
+          fi
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - name: Install Railway CLI
+        run: npm install --global @railway/cli@5.71.0
+      - name: Build and deploy CMS
+        id: deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          railway up apps/cms --path-as-root --ci \
+            --project 6da31832-268c-4c26-a7f6-3fc09ebf943f \
+            --service 11c21c44-df6a-4738-ae2b-90287c760281 \
+            --environment 694a42f5-58ab-44b7-b399-b3d8c8d8713c \
+            --message "deploy-now $sha" | tee "$RUNNER_TEMP/railway-deploy.log"
+      - name: CMS deployment summary
+        if: always()
+        env:
+          DEPLOY_SHA: ${{ steps.deploy.outputs.sha }}
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+        shell: bash
+        run: |
+          printf '### Production deployment attempt\n\n- SHA: `%s`\n- Target: cms\n- Result: %s\n\nRailway receipt:\n\n```text\n' "${DEPLOY_SHA:-unavailable (checkout/build not reached)}" "$DEPLOY_OUTCOME" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -f "$RUNNER_TEMP/railway-deploy.log" ]]; then
+            cat "$RUNNER_TEMP/railway-deploy.log" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          printf '\n```\n' >> "$GITHUB_STEP_SUMMARY"
