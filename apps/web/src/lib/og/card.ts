@@ -32,6 +32,8 @@ export interface OgCard {
 	/** A closing period becomes the orange dot; one is added when the title has no closing mark. */
 	title: string;
 	subtitle?: string;
+	/** Keep the CMS project summary complete, allowing smaller type and more lines. */
+	fullSubtitle?: boolean;
 	cta: string;
 	ctaTone: OgCtaTone;
 	art?: OgCardArt;
@@ -45,7 +47,10 @@ export interface OgFontSpec {
 }
 
 /** Ink width of one line, in em. */
-export type MeasureText = (text: string, font: OgFontSpec) => number;
+export type MeasureText = ((text: string, font: OgFontSpec) => number) & {
+	unsupported?: (text: string) => string[];
+	bounds?: (text: string, font: OgFontSpec) => { left: number; right: number; ascent: number; descent: number };
+};
 type MeasureLine = (line: string) => number;
 
 const TITLE_FONT: OgFontSpec = { family: 'Inter', weight: 900, tracking: -0.015 };
@@ -62,6 +67,8 @@ const SUBTITLE_LEADING = 1.3;
 const BLOCK_GAP = 26;
 const COPY_TOP = 146;
 const COPY_BOTTOM = 448;
+
+const GRAPHEMES = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 
 const DOT_GAP_EM = 0.05;
 const DOT_RADIUS_EM = 0.095;
@@ -102,7 +109,7 @@ function breakLongWord(word: string, maxEm: number, measure: MeasureLine): strin
 	if (measure(word) <= maxEm) return [word];
 	const pieces: string[] = [];
 	let piece = '';
-	for (const character of word) {
+	for (const { segment: character } of GRAPHEMES.segment(word)) {
 		if (piece && measure(piece + character) > maxEm) {
 			pieces.push(piece);
 			piece = character;
@@ -158,6 +165,7 @@ function clipLines(lines: readonly string[], maxLines: number, maxEm: number, me
 }
 
 interface TextBlock {
+	xOffsets?: number[];
 	lines: string[];
 	size: number;
 	height: number;
@@ -169,8 +177,49 @@ function subtitleBlock(subtitle: string, width: number, size: number, measure: M
 	return { lines, size, height: lines.length * size * SUBTITLE_LEADING };
 }
 
-function fitSubtitle(subtitle: string | undefined, width: number, measure: MeasureText): TextBlock | undefined {
+function subtitleWidth(line: string, measure: MeasureText): number {
+	const box = measure.bounds?.(line, SUBTITLE_FONT);
+	return box ? box.right - Math.min(0, box.left) : measure(line, SUBTITLE_FONT);
+}
+
+function fullSubtitleBlock(lines: string[], size: number, measure: MeasureText): TextBlock {
+	const xOffsets = lines.map((line) => -Math.min(0, measure.bounds?.(line, SUBTITLE_FONT).left ?? 0) * size);
+	return { lines, size, height: lines.length * size * SUBTITLE_LEADING, xOffsets };
+}
+
+function subtitleFits(lines: string[], width: number, size: number, measure: MeasureText): boolean {
+	return lines.length * size * SUBTITLE_LEADING <= 124 && lines.every((line) => {
+		const box = measure.bounds?.(line, SUBTITLE_FONT);
+		return subtitleWidth(line, measure) * size <= width && (!box || (
+			(box.right - Math.min(0, box.left)) * size <= width && box.ascent <= 0.98 && box.descent <= SUBTITLE_LEADING - 0.98
+		));
+	});
+}
+
+/** Shared by export validation and rendering; never truncates CMS copy. */
+export function fitFullSubtitle(subtitle: string, width: number, measure: MeasureText): TextBlock {
+	// CMS whitespace is not an authored layout. Never clip a full subtitle.
+	if (/\p{M}{3}/u.test(subtitle.normalize('NFC'))) throw new Error('Remove stacked combining marks from one_liner.');
+	const text = subtitle.normalize('NFC').replace(/\s+/gu, ' ').trim();
+	const unsupported = measure.unsupported?.(text) ?? [];
+	if (unsupported.length) throw new Error(`unsupported graphemes ${unsupported.join(' ')}`);
+	for (let size = SUBTITLE_SIZE.min; size >= 18; size -= 2) {
+		const lines = wrapGreedy(text, width / size, (line) => subtitleWidth(line, measure));
+		if (subtitleFits(lines, width, size, measure)) {
+			return fullSubtitleBlock(lines, size, measure);
+		}
+	}
+	// Word boundaries can waste almost half of every line. Only after prose
+	// wrapping fails at every size, fill lines even across fitting words.
+	const size = 18;
+	const lines = breakLongWord(text, width / size, (line) => subtitleWidth(line, measure));
+	if (subtitleFits(lines, width, size, measure)) return fullSubtitleBlock(lines, size, measure);
+	throw new Error('OG full subtitle cannot fit at 18px or larger; shorten the project one-liner.');
+}
+
+function fitSubtitle(subtitle: string | undefined, width: number, measure: MeasureText, full = false): TextBlock | undefined {
 	if (!subtitle) return undefined;
+	if (full) return fitFullSubtitle(subtitle, width, measure);
 	// One clean line beats two slightly bigger ones.
 	for (let size = SUBTITLE_SIZE.max; size >= SUBTITLE_SIZE.oneLineMin; size -= 2) {
 		const wrapped = wrapParagraphs(subtitle, width / size, (line) => measure(line, SUBTITLE_FONT));
@@ -178,7 +227,9 @@ function fitSubtitle(subtitle: string | undefined, width: number, measure: Measu
 	}
 	for (let size = SUBTITLE_SIZE.max; size > SUBTITLE_SIZE.min; size -= 2) {
 		const wrapped = wrapParagraphs(subtitle, width / size, (line) => measure(line, SUBTITLE_FONT));
-		if (wrapped.length <= SUBTITLE_MAX_LINES) return subtitleBlock(subtitle, width, size, measure);
+		if (wrapped.length <= SUBTITLE_MAX_LINES) {
+			return subtitleBlock(subtitle, width, size, measure);
+		}
 	}
 	return subtitleBlock(subtitle, width, SUBTITLE_SIZE.min, measure);
 }
@@ -232,7 +283,7 @@ function subtitleSvg(block: TextBlock, top: number): string {
 	return block.lines
 		.map(
 			(line, index) =>
-				`<text x="${MARGIN}" y="${(top + block.size * 0.98 + index * leading).toFixed(1)}" ${fontAttrs(SUBTITLE_FONT, block.size)} fill="${MUTED}">${escapeXml(line)}</text>`,
+				`<text x="${MARGIN + (block.xOffsets?.[index] ?? 0)}" y="${(top + block.size * 0.98 + index * leading).toFixed(1)}" ${fontAttrs(SUBTITLE_FONT, block.size)} fill="${MUTED}">${escapeXml(line)}</text>`,
 		)
 		.join('');
 }
@@ -281,7 +332,7 @@ function gridSvg(): string {
 export function buildOgCardSvg(card: OgCard, measure: MeasureText): string {
 	const width = card.art?.contentWidth ?? OG_CARD_WIDTH - 2 * MARGIN;
 	const { body, mark } = splitClosingMark(card.title);
-	const subtitle = fitSubtitle(card.subtitle, width, measure);
+	const subtitle = fitSubtitle(card.subtitle, width, measure, card.fullSubtitle);
 	const subtitleSpace = subtitle ? subtitle.height + BLOCK_GAP : 0;
 	const title = fitTitle(body, mark, width, COPY_BOTTOM - COPY_TOP - subtitleSpace, measure);
 	const copyHeight = title.height + subtitleSpace;

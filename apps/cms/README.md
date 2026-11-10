@@ -280,3 +280,28 @@ credential change.
 - [Shared content interfaces](../../packages/shared/src/types/content.ts)
 - [Asset-registry interface](../../packages/shared/src/asset-registry.ts)
 - [Security reporting](../../SECURITY.md)
+
+## Project share copy
+
+Project `one_liner` is evergreen display copy. The CMS field permits 500
+characters; OG acceptance depends on the shared fit check, with no separate
+200-character limit. One-liners are normalized to NFC and reject more than two consecutive
+combining marks. Before writing any content module, export uses the same fit
+routine and bundled fonts as the 1200×630 project OG card, checking width and
+glyph ascent/descent in its 124px subtitle area at 18px or larger. Impossible
+layouts fail export with the project, locale and `one_liner` field named. Full
+subtitles never use ellipsis clipping; the renderer retains its final guard.
+CMS newlines become spaces. Export rejects unsupported graphemes using the same
+bundled fonts as rendering and names the characters in the field error.
+
+The OG image always uses the localized one-liner, falling back to English when
+missing, empty or switched off. Without a one-liner it uses leading complete
+sentences from overview paragraphs, within 200 characters, then the site default.
+Metadata tries the one-liner with the localized CTA, then the one-liner alone,
+then leading complete overview sentences with a CTA if it fits. Metadata must
+be 50–200 characters; otherwise it uses the site default. Sentence extraction
+recognizes EN/FR/ES punctuation and closing quotes, preserves common titles,
+initials, decimals and e.g./i.e./p.ex., and discards unfinished tails. Known
+abbreviations and initials close only at end of text; ellipses close at end of
+text or before whitespace and an uppercase/opening-punctuation start. Unknown
+abbreviations follow normal punctuation rules. Generic CTA helpers are unchanged.

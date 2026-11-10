@@ -1,6 +1,7 @@
+import { ProjectSchema } from '@repo/shared';
 import { describe, expect, it } from 'vitest';
 import { ogFontFiles } from '@yesid/seo-kit/og/files';
-import { OG_CTA_TONES, buildOgCardSvg, type OgCard } from './card';
+import { OG_CTA_TONES, buildOgCardSvg, escapeXml, type OgCard } from './card';
 import { inlinedOgFontFiles } from './font-files';
 import { createOgCardRenderer } from './render';
 import { Resvg } from '@resvg/resvg-js';
@@ -72,6 +73,54 @@ describe('share card', () => {
 		expect(fromDisk.png(card()).byteLength).toBeGreaterThan(1_000);
 		expect(inlinedOgFontFiles()).toBe(files);
 	});
+
+	it('renders a full CMS summary near the description limit without cutting sentences', () => {
+		const subtitle = 'This project brings together complete information for people making decisions about their daily work. It keeps the useful context available in one place and explains the limits of the published results.';
+		const svg = renderer.svg(card({ title: 'CMS project', subtitle, fullSubtitle: true }));
+		const text = Array.from(svg.matchAll(/<text[^>]*>(.*?)<\/text>/g), (match) => match[1]).join(' ');
+		expect(text).toContain(subtitle);
+		expect(renderer.png(card({ title: 'CMS project', subtitle, fullSubtitle: true })).byteLength).toBeLessThan(150_000);
+	});
+
+	it.each(['One\nlook\nfor\nevery\nsite.', 'W'.repeat(200), 'Wide words '.repeat(18).trim()])('renders the complete normalized CMS line: %s', (subtitle) => {
+		const svg = renderer.svg(card({ title: 'CMS project', subtitle, fullSubtitle: true }));
+		const text = Array.from(svg.matchAll(/<text[^>]*>(.*?)<\/text>/g), (match) => match[1]).join(' ');
+		expect(text.replaceAll(' ', '')).toContain(subtitle.replace(/\s+/gu, ''));
+		expect(svg).not.toContain('…');
+	});
+
+	it.each([
+		'Île de Montréal : des données fiables pour mieux planifier les transports.',
+		'j’aide les équipes à publier des données fiables pour mieux planifier les transports.',
+		'A bilingual publishing platform that helps local teams manage their websites, share useful information with customers, automate repetitive updates, and keep their content accessible across English, French, and Spanish.',
+		Array(6).fill('W'.repeat(32)).join(' '),
+		Array(6).fill('W'.repeat(32)).join(' ') + ' WW',
+		'WM'.repeat(100),
+		Array(12).fill('MWMWMWMWMWMWMWM').join(' '),
+		Array(20).fill('éÉàçüñWWW').join(' '),
+		'https://example.com/' + 'WideWW/path?key=value&'.repeat(8),
+	])('renders accepted adversarial one-liners fully within bounds: %s', (input) => {
+		const subtitle = ProjectSchema.shape.oneLiner.parse({ en: input }).en;
+		const fromDisk = createOgCardRenderer(inlinedOgFontFiles());
+		const svg = fromDisk.svg(card({ title: 'CMS project', subtitle, fullSubtitle: true }));
+		const lines = [...svg.matchAll(/<text[^>]*font-weight="500"[^>]*fill="[^"]+">.*?<\/text>/g)]
+			.filter(([text]) => text.includes('font-family="Inter"'));
+		const content = lines.map(([text]) => />(.*?)<\/text>/.exec(text)![1]);
+		// Line breaks may occur inside words; no character may be lost or added.
+		expect(content.join('').replace(/\s/gu, '')).toBe(escapeXml(subtitle).replace(/\s/gu, ''));
+		for (const [text] of lines) {
+			const size = Number(/font-size="([\d.]+)"/.exec(text)![1]);
+			expect(size).toBeGreaterThanOrEqual(18);
+			const box = new Resvg(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">${text}</svg>`, {
+				font: { fontFiles: [...inlinedOgFontFiles()], loadSystemFonts: false },
+			}).getBBox()!;
+			expect(box.x).toBeGreaterThanOrEqual(80);
+			expect(box.x + box.width).toBeLessThanOrEqual(1120);
+			expect(box.y).toBeGreaterThanOrEqual(146);
+			expect(box.y + box.height).toBeLessThanOrEqual(448);
+		}
+		expect(fromDisk.png(card({ title: 'CMS project', subtitle, fullSubtitle: true })).byteLength).toBeGreaterThan(1000);
+	}, 30_000);
 
 	it('honours a manual line break in code-owned titles', () => {
 		const svg = renderer.svg(card({ title: 'Websites &\nOnline Stores' }));

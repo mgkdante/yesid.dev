@@ -82,6 +82,12 @@ describe('statusFromDirectus mapping', () => {
 });
 
 describe('projects fetcher transform', () => {
+	it('leaves OG acceptance to the shared card fit check', async () => {
+		const row = { ...FIXTURE, translations: [{ ...FIXTURE.translations![0]!, one_liner: 'W'.repeat(201) }] };
+		expect(await fetchProjects({ client: cmsClientDouble(() => [row]) })).toHaveLength(1);
+		const accepted = { ...row, translations: [{ ...row.translations[0]!, one_liner: 'W'.repeat(100) + '\n   ' + 'W'.repeat(99) }] };
+		expect(await fetchProjects({ client: cmsClientDouble(() => [accepted]) })).toHaveLength(1);
+	});
 	it('maps status from Directus to legacy enum', () => {
 		const result = toProject(FIXTURE);
 		expect(result.status).toBe('public');
