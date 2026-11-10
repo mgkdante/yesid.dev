@@ -1,7 +1,7 @@
 # yesid.dev
 
-[![cms](https://github.com/mgkdante/yesid.dev/actions/workflows/cms.yml/badge.svg?branch=main)](https://github.com/mgkdante/yesid.dev/actions/workflows/cms.yml)
-[![secret-scan](https://github.com/mgkdante/yesid.dev/actions/workflows/secret-scan.yml/badge.svg?branch=main)](https://github.com/mgkdante/yesid.dev/actions/workflows/secret-scan.yml)
+[![cms](https://github.com/yesid-dev/yesid.dev/actions/workflows/cms.yml/badge.svg?branch=main)](https://github.com/yesid-dev/yesid.dev/actions/workflows/cms.yml)
+[![secret-scan](https://github.com/yesid-dev/yesid.dev/actions/workflows/secret-scan.yml/badge.svg?branch=main)](https://github.com/yesid-dev/yesid.dev/actions/workflows/secret-scan.yml)
 
 Source for [yesid.dev](https://yesid.dev), the portfolio and information site of
 Yesid Fernando Otalora, a freelance digital-infrastructure consultant in Quebec,
@@ -13,14 +13,14 @@ analytics and reporting, and web development, in English, French and Spanish.
 - [SvelteKit](https://svelte.dev) with Svelte 5 and TypeScript, Tailwind CSS 4 and GSAP
 - [Directus 12](https://directus.io) as the editorial CMS, on Railway with Neon Postgres and Cloudflare R2
 - Vercel for the site, Bun workspaces and Turborepo for the monorepo
-- The `@yesid/*` design-system packages from [yesid.design](https://github.com/mgkdante/yesid.design)
+- The `@yesid/*` design-system packages from [yesid.design](https://github.com/yesid-dev/yesid.design)
 
 ## Quickstart
 
 You need Bun 1.4.4 and Node.js 22.23.4+ or 24.22.1+.
 
 ```bash
-git clone https://github.com/mgkdante/yesid.dev.git
+git clone https://github.com/yesid-dev/yesid.dev.git
 cd yesid.dev
 bun install --frozen-lockfile
 bun run dev
@@ -84,7 +84,7 @@ Each page is written against a pinned commit of this repository and names it.
 ## Links
 
 - Live site: [yesid.dev](https://yesid.dev)
-- Design system: [mgkdante/yesid.design](https://github.com/mgkdante/yesid.design)
+- Design system: [yesid-dev/yesid.design](https://github.com/yesid-dev/yesid.design)
 - Contributor guide: [AGENTS.md](AGENTS.md)
 - Security reports: [SECURITY.md](SECURITY.md)
 - Support: [SUPPORT.md](SUPPORT.md)

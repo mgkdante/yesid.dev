@@ -52,7 +52,7 @@ describe('profileClickNetwork', () => {
 	});
 
 	it('ignores other links and non-link targets', () => {
-		expect(profileClickNetwork(clickOn('https://github.com/mgkdante/yesid.dev'))).toBeNull();
+		expect(profileClickNetwork(clickOn('https://github.com/yesid-dev/yesid.dev'))).toBeNull();
 		expect(profileClickNetwork({ target: document.body })).toBeNull();
 	});
 });

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { renderGithubReadme } from './markdown';
 
-const RAW_README = 'https://raw.githubusercontent.com/mgkdante/yesid.dev/main/README.md';
+const RAW_README = 'https://raw.githubusercontent.com/yesid-dev/yesid.dev/main/README.md';
 
 async function render(markdown: string): Promise<string> {
 	const request = (async () => new Response(markdown, { status: 200 })) as typeof globalThis.fetch;
