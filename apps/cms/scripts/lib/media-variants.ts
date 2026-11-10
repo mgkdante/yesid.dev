@@ -24,15 +24,18 @@ import { existsSync, statSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import type { MediaVariantEntry, MediaVariantSource } from '@repo/shared';
+import { VARIANT_CONFIG, pickVariantWidths, variantPathFor, type VariantConfig } from './variant-config';
+export { pickVariantWidths, variantPathFor } from './variant-config';
+import { readVariantReceipt, reuseVariant, type VariantReceipt } from './variant-receipt';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_REPO_ROOT = resolve(SCRIPT_DIR, '../../../..');
 
 /** Preset widths + lightbox rung. Keep ascending. */
-export const VARIANT_WIDTHS = [240, 600, 1200, 1600] as const;
+export const VARIANT_WIDTHS = VARIANT_CONFIG.widths;
 
 const RASTER_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'webp']);
-const WEBP_QUALITY = 82;
+
 
 export interface MediaVariantsManifestInput {
 	sourceRoot: string;
@@ -53,29 +56,6 @@ export function isRasterAsset(legacyPath: string): boolean {
 }
 
 /**
- * Widths to generate for a source of `intrinsicWidth`: every ladder rung
- * strictly below the intrinsic width, plus the intrinsic width itself when it
- * is at or below the top rung (a small source still gets ONE full-size webp).
- * Sources wider than the top rung are capped at the top rung — no upscales,
- * no multi-megapixel webp for a 2482px screenshot.
- */
-export function pickVariantWidths(
-	intrinsicWidth: number,
-	ladder: readonly number[] = VARIANT_WIDTHS,
-): number[] {
-	const below = ladder.filter((w) => w < intrinsicWidth);
-	const top = ladder[ladder.length - 1];
-	if (top !== undefined && intrinsicWidth <= top) return [...below, intrinsicWidth];
-	return [...below];
-}
-
-/** `images/work/a.png` + 600 → `images/work/a.w600.webp` */
-export function variantPathFor(legacyPath: string, width: number): string {
-	const withoutExt = legacyPath.replace(/\.[^./]+$/, '');
-	return `${withoutExt}.w${width}.webp`;
-}
-
-/**
  * Prepare every variant and its module data without touching the filesystem.
  * The caller validates the complete CMS snapshot before committing `writes`.
  * Keys, variants, and writes are deterministic so regeneration diffs stay
@@ -84,12 +64,15 @@ export function variantPathFor(legacyPath: string, width: number): string {
 export async function prepareMediaVariants(
 	manifest: MediaVariantsManifestInput,
 	repoRoot = DEFAULT_REPO_ROOT,
+	options: { reuse?: boolean; receipt?: VariantReceipt; config?: VariantConfig } = {},
 ): Promise<PreparedMediaVariants> {
 	// Load sharp only when preparing variants, after source resolution and auth.
 	const { default: sharp } = await import('sharp');
 	const staticRoot = resolve(repoRoot, manifest.sourceRoot);
+	const config = options.config ?? VARIANT_CONFIG;
 	const out: Record<string, MediaVariantEntry> = {};
 	const writes: Array<PreparedMediaVariants['writes'][number]> = [];
+	const receipt = options.reuse === false ? undefined : options.receipt ?? await readVariantReceipt(repoRoot);
 
 	const rasterAssets = manifest.assets
 		.filter((a) => isRasterAsset(a.legacyPath))
@@ -104,6 +87,8 @@ export async function prepareMediaVariants(
 		if (!existsSync(sourcePath)) {
 			throw new Error(`[media-variants] missing mirrored source file: ${legacyPath}`);
 		}
+		const reused = await reuseVariant(receipt, staticRoot, legacyPath, config);
+		if (reused) return { legacyPath, data: reused, writes: assetWrites };
 
 		const source = sharp(sourcePath);
 		const meta = await source.metadata();
@@ -113,11 +98,11 @@ export async function prepareMediaVariants(
 
 		const originalBytes = statSync(sourcePath).size;
 		const variants: MediaVariantSource[] = [];
-		const widths = pickVariantWidths(meta.width);
+		const widths = pickVariantWidths(meta.width, config.widths);
 		// Bound parallel work to one source's width ladder and consume it in order.
 		const encodedVariants = await Promise.all(widths.map((width) => sharp(sourcePath)
 				.resize({ width })
-				.webp({ quality: WEBP_QUALITY })
+				.webp(config.webp)
 				.toBuffer()));
 		for (const [index, width] of widths.entries()) {
 			const encoded = encodedVariants[index]!;

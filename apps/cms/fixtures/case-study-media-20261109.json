@@ -1,0 +1,2460 @@
+{
+	"transit": [
+		{
+			"order": 1,
+			"section": "(hero, before the first section)",
+			"caption_en": "The live Montréal map on a computer, Nov 9, 2026: every orange marker is a bus the STM reported in the last few seconds. The \"!\" markers carry a service alert.",
+			"status": "held-map-polish"
+		},
+		{
+			"order": 2,
+			"section": "What you can do on it",
+			"caption_en": "On a phone, in English, dark theme.",
+			"status": "held-map-polish"
+		},
+		{
+			"order": 3,
+			"section": "What you can do on it",
+			"caption_en": "The same map in French, light theme: \"Carte du réseau\".",
+			"status": "held-map-polish"
+		},
+		{
+			"order": 4,
+			"section": "A tour of every page",
+			"caption_en": "Home: \"How Montréal's transit holds up.\"",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-4",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "128b8939-ce46-4a80-b254-09bcdc2bb0af",
+						"fileURL": "/files/128b8939-ce46-4a80-b254-09bcdc2bb0af",
+						"url": "/assets/128b8939-ce46-4a80-b254-09bcdc2bb0af",
+						"width": 2880,
+						"height": 1800,
+						"size": "328176",
+						"name": "transit-home-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Home: \"How Montréal's transit holds up.\"",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "c5dde465-4c75-45b0-931c-fe0ea143e0af",
+							"fileURL": "/files/c5dde465-4c75-45b0-931c-fe0ea143e0af",
+							"url": "/assets/c5dde465-4c75-45b0-931c-fe0ea143e0af",
+							"width": 2880,
+							"height": 1800,
+							"size": "367018",
+							"name": "transit-home-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 5,
+			"section": "A tour of every page",
+			"caption_en": "Lines: 210 lines, with reliability next to each",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-5",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "3bd9c5e7-b74a-463d-8eb2-64200b472465",
+						"fileURL": "/files/3bd9c5e7-b74a-463d-8eb2-64200b472465",
+						"url": "/assets/3bd9c5e7-b74a-463d-8eb2-64200b472465",
+						"width": 2880,
+						"height": 1800,
+						"size": "414733",
+						"name": "transit-lines-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Lines: 210 lines, with reliability next to each",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "949885d9-4a22-45f2-ba90-2e09e43534c0",
+							"fileURL": "/files/949885d9-4a22-45f2-ba90-2e09e43534c0",
+							"url": "/assets/949885d9-4a22-45f2-ba90-2e09e43534c0",
+							"width": 2880,
+							"height": 1800,
+							"size": "478688",
+							"name": "transit-lines-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 6,
+			"section": "A tour of every page",
+			"caption_en": "Network health: 79% on time, 86% coverage, 972 vehicle positions, 91 trips without a signal",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-6",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "ad240bb6-0f52-4f9e-9093-26165f1f7fec",
+						"fileURL": "/files/ad240bb6-0f52-4f9e-9093-26165f1f7fec",
+						"url": "/assets/ad240bb6-0f52-4f9e-9093-26165f1f7fec",
+						"width": 2880,
+						"height": 1800,
+						"size": "308785",
+						"name": "transit-network-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Network health: 79% on time, 86% coverage, 972 vehicle positions, 91 trips without a signal",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "e5d37f09-b5fe-4d88-8fbd-9ac6d78d0cd5",
+							"fileURL": "/files/e5d37f09-b5fe-4d88-8fbd-9ac6d78d0cd5",
+							"url": "/assets/e5d37f09-b5fe-4d88-8fbd-9ac6d78d0cd5",
+							"width": 2880,
+							"height": 1800,
+							"size": "338798",
+							"name": "transit-network-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 7,
+			"section": "A tour of every page",
+			"caption_en": "Search for \"saint-laurent\": 3 lines, 102 stops",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-7",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "1ddaf9c9-e0e6-4a4e-ab30-03f1badf8c08",
+						"fileURL": "/files/1ddaf9c9-e0e6-4a4e-ab30-03f1badf8c08",
+						"url": "/assets/1ddaf9c9-e0e6-4a4e-ab30-03f1badf8c08",
+						"width": 2880,
+						"height": 1800,
+						"size": "267579",
+						"name": "transit-search-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Search for \"saint-laurent\": 3 lines, 102 stops",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "6eb075fe-cb25-4d19-949f-d1a883c79ea2",
+							"fileURL": "/files/6eb075fe-cb25-4d19-949f-d1a883c79ea2",
+							"url": "/assets/6eb075fe-cb25-4d19-949f-d1a883c79ea2",
+							"width": 2880,
+							"height": 1800,
+							"size": "312428",
+							"name": "transit-search-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 8,
+			"section": "A tour of every page",
+			"caption_en": "Station Henri-Bourassa: 18 departures, one \"Unknown · not reported in the live feed\"",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-8",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "43ba5f2b-b7c0-4642-ab21-78f3e6ed2874",
+						"fileURL": "/files/43ba5f2b-b7c0-4642-ab21-78f3e6ed2874",
+						"url": "/assets/43ba5f2b-b7c0-4642-ab21-78f3e6ed2874",
+						"width": 2880,
+						"height": 1800,
+						"size": "268058",
+						"name": "transit-stop-departures-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Station Henri-Bourassa: 18 departures, one \"Unknown · not reported in the live feed\"",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "932dd214-343f-4eaa-8b16-2596d0970b9b",
+							"fileURL": "/files/932dd214-343f-4eaa-8b16-2596d0970b9b",
+							"url": "/assets/932dd214-343f-4eaa-8b16-2596d0970b9b",
+							"width": 2880,
+							"height": 1800,
+							"size": "299388",
+							"name": "transit-stop-departures-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 9,
+			"section": "A tour of every page",
+			"caption_en": "A line 51 trip: late by 2 minutes, 14 predictions reported",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-9",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "540d0ebb-1be9-4070-96f3-5027e36b3203",
+						"fileURL": "/files/540d0ebb-1be9-4070-96f3-5027e36b3203",
+						"url": "/assets/540d0ebb-1be9-4070-96f3-5027e36b3203",
+						"width": 2880,
+						"height": 1800,
+						"size": "329500",
+						"name": "transit-trip-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "A line 51 trip: late by 2 minutes, 14 predictions reported",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "36dc2a48-b5b8-4dfb-b8ea-8131d1207d6b",
+							"fileURL": "/files/36dc2a48-b5b8-4dfb-b8ea-8131d1207d6b",
+							"url": "/assets/36dc2a48-b5b8-4dfb-b8ea-8131d1207d6b",
+							"width": 2880,
+							"height": 1800,
+							"size": "357305",
+							"name": "transit-trip-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 10,
+			"section": "A tour of every page",
+			"caption_en": "Hotspots for Nov 3: Henri-Bourassa, 20.2% severe-delay predictions",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-10",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "1925fe94-0d4c-4d82-86cb-5c44b1d41c4a",
+						"fileURL": "/files/1925fe94-0d4c-4d82-86cb-5c44b1d41c4a",
+						"url": "/assets/1925fe94-0d4c-4d82-86cb-5c44b1d41c4a",
+						"width": 2880,
+						"height": 1800,
+						"size": "307359",
+						"name": "transit-hotspots-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Hotspots for Nov 3: Henri-Bourassa, 20.2% severe-delay predictions",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "aaa726d6-3425-4c35-a26f-16246125c024",
+							"fileURL": "/files/aaa726d6-3425-4c35-a26f-16246125c024",
+							"url": "/assets/aaa726d6-3425-4c35-a26f-16246125c024",
+							"width": 2880,
+							"height": 1800,
+							"size": "318422",
+							"name": "transit-hotspots-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 11,
+			"section": "A tour of every page",
+			"caption_en": "Repeat offenders, week ending Nov 3: the top trip with its 95% Wilson interval",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-11",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "6b4a9ba2-e7e5-40af-ab56-9938f5b2f7d6",
+						"fileURL": "/files/6b4a9ba2-e7e5-40af-ab56-9938f5b2f7d6",
+						"url": "/assets/6b4a9ba2-e7e5-40af-ab56-9938f5b2f7d6",
+						"width": 2880,
+						"height": 1800,
+						"size": "310887",
+						"name": "transit-repeat-offenders-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Repeat offenders, week ending Nov 3: the top trip with its 95% Wilson interval",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "789986bc-f867-4bac-9dcd-7de731074ef6",
+							"fileURL": "/files/789986bc-f867-4bac-9dcd-7de731074ef6",
+							"url": "/assets/789986bc-f867-4bac-9dcd-7de731074ef6",
+							"width": 2880,
+							"height": 1800,
+							"size": "327898",
+							"name": "transit-repeat-offenders-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 12,
+			"section": "A tour of every page",
+			"caption_en": "Alerts: 13,509 from Aug 6 to Nov 4, 2026, median duration 914 minutes",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-12",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "3cec3ddd-f932-487e-ad0e-dc202f5583d5",
+						"fileURL": "/files/3cec3ddd-f932-487e-ad0e-dc202f5583d5",
+						"url": "/assets/3cec3ddd-f932-487e-ad0e-dc202f5583d5",
+						"width": 2880,
+						"height": 1800,
+						"size": "286902",
+						"name": "transit-alerts-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Alerts: 13,509 from Aug 6 to Nov 4, 2026, median duration 914 minutes",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "47dcdd37-b9ed-4dde-87ac-997736fbd23f",
+							"fileURL": "/files/47dcdd37-b9ed-4dde-87ac-997736fbd23f",
+							"url": "/assets/47dcdd37-b9ed-4dde-87ac-997736fbd23f",
+							"width": 2880,
+							"height": 1800,
+							"size": "306172",
+							"name": "transit-alerts-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 13,
+			"section": "Can I trust my line?",
+			"caption_en": "Line 55 Saint-Laurent on Nov 9, 2026: 87% of delay observations in the on-time band, with a 95% confidence range of 83 to 90%.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-13",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "13e5cc8c-f37e-43cf-8293-5c763217d78c",
+						"fileURL": "/files/13e5cc8c-f37e-43cf-8293-5c763217d78c",
+						"url": "/assets/13e5cc8c-f37e-43cf-8293-5c763217d78c",
+						"width": 2880,
+						"height": 1800,
+						"size": "282534",
+						"name": "transit-line55-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Line 55 Saint-Laurent on Nov 9, 2026: 87% of delay observations in the on-time band, with a 95% confidence range of 83 to 90%.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "6b72006f-0206-4c40-9af6-c2a8daf96774",
+							"fileURL": "/files/6b72006f-0206-4c40-9af6-c2a8daf96774",
+							"url": "/assets/6b72006f-0206-4c40-9af6-c2a8daf96774",
+							"width": 2880,
+							"height": 1800,
+							"size": "296323",
+							"name": "transit-line55-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 14,
+			"section": "Can I trust my line?",
+			"caption_en": "The accountability receipt for Nov 3, 2026 in Montréal: 90% of known-delay predictions in the on-time band, 0.7 minutes average delay, 4.5% severe delays.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-14",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "f474649f-5259-4893-bc78-56622ec3cdfb",
+						"fileURL": "/files/f474649f-5259-4893-bc78-56622ec3cdfb",
+						"url": "/assets/f474649f-5259-4893-bc78-56622ec3cdfb",
+						"width": 2880,
+						"height": 1800,
+						"size": "348360",
+						"name": "transit-receipt-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The accountability receipt for Nov 3, 2026 in Montréal: 90% of known-delay predictions in the on-time band, 0.7 minutes average delay, 4.5% severe delays.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "90b15e6a-b8b8-4bc4-ac2f-666fdee02029",
+							"fileURL": "/files/90b15e6a-b8b8-4bc4-ac2f-666fdee02029",
+							"url": "/assets/90b15e6a-b8b8-4bc4-ac2f-666fdee02029",
+							"width": 2880,
+							"height": 1800,
+							"size": "361733",
+							"name": "transit-receipt-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 15,
+			"section": "The gate decides what ships",
+			"caption_en": "The Data health page on Nov 9, 2026: \"2 of 3 lanes passing, worst: Rollups\". A missing signal shows as \"no data\", never a made-up value.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-15",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "cdb8e476-1bb4-4c18-a3b1-11a77e7f17d3",
+						"fileURL": "/files/cdb8e476-1bb4-4c18-a3b1-11a77e7f17d3",
+						"url": "/assets/cdb8e476-1bb4-4c18-a3b1-11a77e7f17d3",
+						"width": 2880,
+						"height": 1800,
+						"size": "328734",
+						"name": "transit-status-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The Data health page on Nov 9, 2026: \"2 of 3 lanes passing, worst: Rollups\". A missing signal shows as \"no data\", never a made-up value.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "49f2b137-e559-4ee9-82ef-52b5ff23f038",
+							"fileURL": "/files/49f2b137-e559-4ee9-82ef-52b5ff23f038",
+							"url": "/assets/49f2b137-e559-4ee9-82ef-52b5ff23f038",
+							"width": 2880,
+							"height": 1800,
+							"size": "350449",
+							"name": "transit-status-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 16,
+			"section": "Two cities, one pipeline",
+			"caption_en": "Ottawa's live map on Nov 9, 2026. The controls say it plainly: \"Filter unavailable: no alert feed connected.\"",
+			"status": "held-map-polish"
+		},
+		{
+			"order": 17,
+			"section": "Accessible on purpose",
+			"caption_en": "The accessibility statement on a phone",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-17",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "6c036209-7665-4436-a2b9-74eaff37b859",
+						"fileURL": "/files/6c036209-7665-4436-a2b9-74eaff37b859",
+						"url": "/assets/6c036209-7665-4436-a2b9-74eaff37b859",
+						"width": 780,
+						"height": 1688,
+						"size": "126448",
+						"name": "transit-accessibility-phone-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The accessibility statement on a phone",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "4332b548-4cd9-4766-b527-b537659cf66f",
+							"fileURL": "/files/4332b548-4cd9-4766-b527-b537659cf66f",
+							"url": "/assets/4332b548-4cd9-4766-b527-b537659cf66f",
+							"width": 780,
+							"height": 1688,
+							"size": "144190",
+							"name": "transit-accessibility-phone-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 18,
+			"section": "Share cards and search engines",
+			"caption_en": "English · The Network health share card",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-18",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "d6c92ec3-8b0b-4c7b-917d-3777d5ffd5da",
+						"fileURL": "/files/d6c92ec3-8b0b-4c7b-917d-3777d5ffd5da",
+						"url": "/assets/d6c92ec3-8b0b-4c7b-917d-3777d5ffd5da",
+						"width": 1200,
+						"height": 630,
+						"size": "67942",
+						"name": "transit-og-network-card-en-single.png",
+						"extension": "png"
+					},
+					"caption": "English · The Network health share card",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 19,
+			"section": "Share cards and search engines",
+			"caption_en": "French · The same card on the French page",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-19",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "df9c5c1a-1e89-44c8-8fea-b3f80f43c0af",
+						"fileURL": "/files/df9c5c1a-1e89-44c8-8fea-b3f80f43c0af",
+						"url": "/assets/df9c5c1a-1e89-44c8-8fea-b3f80f43c0af",
+						"width": 1200,
+						"height": 630,
+						"size": "66434",
+						"name": "transit-og-network-card-fr-single.png",
+						"extension": "png"
+					},
+					"caption": "French · The same card on the French page",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 20,
+			"section": "What I learned",
+			"caption_en": "The \"How we measure\" page: 14 metrics in 5 families, each with what it measures, the exact math, the SQL and what it is not.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-transit-20",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "25ee3466-c2b0-4b39-a128-7ce45209ad2f",
+						"fileURL": "/files/25ee3466-c2b0-4b39-a128-7ce45209ad2f",
+						"url": "/assets/25ee3466-c2b0-4b39-a128-7ce45209ad2f",
+						"width": 2880,
+						"height": 1800,
+						"size": "373502",
+						"name": "transit-metrics-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The \"How we measure\" page: 14 metrics in 5 families, each with what it measures, the exact math, the SQL and what it is not.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "e2c80418-8ead-4acf-9e01-b0c97a1e43b7",
+							"fileURL": "/files/e2c80418-8ead-4acf-9e01-b0c97a1e43b7",
+							"url": "/assets/e2c80418-8ead-4acf-9e01-b0c97a1e43b7",
+							"width": 2880,
+							"height": 1800,
+							"size": "410462",
+							"name": "transit-metrics-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		}
+	],
+	"yesid-dev": [
+		{
+			"order": 1,
+			"section": "(hero, before the first section)",
+			"caption_en": "The home page on a computer, dark theme. The SQL panel and its numbers are labelled demo data.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-1",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "d7ea2cbe-9dfa-45bd-9324-6c6a164e1050",
+						"fileURL": "/files/d7ea2cbe-9dfa-45bd-9324-6c6a164e1050",
+						"url": "/assets/d7ea2cbe-9dfa-45bd-9324-6c6a164e1050",
+						"width": 2880,
+						"height": 1800,
+						"size": "353499",
+						"name": "yesid-dev-home-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The home page on a computer, dark theme. The SQL panel and its numbers are labelled demo data.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "b336b375-bb90-4e7f-abf3-d6c4a4b6c97a",
+							"fileURL": "/files/b336b375-bb90-4e7f-abf3-d6c4a4b6c97a",
+							"url": "/assets/b336b375-bb90-4e7f-abf3-d6c4a4b6c97a",
+							"width": 2880,
+							"height": 1800,
+							"size": "393103",
+							"name": "yesid-dev-home-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 2,
+			"section": "Three languages, one message",
+			"caption_en": "French on a phone.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-2",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "18c7fb48-0516-4f36-aae6-e98109e04a93",
+						"fileURL": "/files/18c7fb48-0516-4f36-aae6-e98109e04a93",
+						"url": "/assets/18c7fb48-0516-4f36-aae6-e98109e04a93",
+						"width": 780,
+						"height": 1688,
+						"size": "137142",
+						"name": "yesid-dev-home-phone-fr-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "French on a phone.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "b8018acf-c947-4790-abb9-2415e50f6c0b",
+							"fileURL": "/files/b8018acf-c947-4790-abb9-2415e50f6c0b",
+							"url": "/assets/b8018acf-c947-4790-abb9-2415e50f6c0b",
+							"width": 780,
+							"height": 1688,
+							"size": "152796",
+							"name": "yesid-dev-home-phone-fr-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 3,
+			"section": "Three languages, one message",
+			"caption_en": "Spanish on a phone.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-3",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "44ab058c-05c4-4473-b7ad-b3e1a7d24303",
+						"fileURL": "/files/44ab058c-05c4-4473-b7ad-b3e1a7d24303",
+						"url": "/assets/44ab058c-05c4-4473-b7ad-b3e1a7d24303",
+						"width": 780,
+						"height": 1688,
+						"size": "128244",
+						"name": "yesid-dev-home-phone-es-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Spanish on a phone.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "5114ecf9-75cc-40a0-9f5e-0258bf8721a5",
+							"fileURL": "/files/5114ecf9-75cc-40a0-9f5e-0258bf8721a5",
+							"url": "/assets/5114ecf9-75cc-40a0-9f5e-0258bf8721a5",
+							"width": 780,
+							"height": 1688,
+							"size": "143687",
+							"name": "yesid-dev-home-phone-es-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 4,
+			"section": "Three languages, one message",
+			"caption_en": "A fictional message typed on the French contact page.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-4",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "6adc7bf0-e79b-4779-9384-3c19e9252b60",
+						"fileURL": "/files/6adc7bf0-e79b-4779-9384-3c19e9252b60",
+						"url": "/assets/6adc7bf0-e79b-4779-9384-3c19e9252b60",
+						"width": 780,
+						"height": 1688,
+						"size": "104425",
+						"name": "yesid-dev-contact-typed-phone-fr-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "A fictional message typed on the French contact page.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "24cb6ebd-1dc1-4709-82ac-77d56b563b56",
+							"fileURL": "/files/24cb6ebd-1dc1-4709-82ac-77d56b563b56",
+							"url": "/assets/24cb6ebd-1dc1-4709-82ac-77d56b563b56",
+							"width": 780,
+							"height": 1688,
+							"size": "110248",
+							"name": "yesid-dev-contact-typed-phone-fr-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 5,
+			"section": "Three languages, one message",
+			"caption_en": "One tap on the language sign: Spanish labels, same words.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-5",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "6279f60c-8a31-4b6e-8760-beb1b932dbb5",
+						"fileURL": "/files/6279f60c-8a31-4b6e-8760-beb1b932dbb5",
+						"url": "/assets/6279f60c-8a31-4b6e-8760-beb1b932dbb5",
+						"width": 780,
+						"height": 1688,
+						"size": "98944",
+						"name": "yesid-dev-contact-after-switch-phone-es-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "One tap on the language sign: Spanish labels, same words.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "ef7e89ac-6ea3-4868-af07-ef79b5acc7d4",
+							"fileURL": "/files/ef7e89ac-6ea3-4868-af07-ef79b5acc7d4",
+							"url": "/assets/ef7e89ac-6ea3-4868-af07-ef79b5acc7d4",
+							"width": 780,
+							"height": 1688,
+							"size": "104633",
+							"name": "yesid-dev-contact-after-switch-phone-es-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 6,
+			"section": "What's measured, without cookies",
+			"caption_en": "The cookie policy: no tracking cookies, and every measuring tool named.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-6",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "6ab0441a-8421-471b-9c78-bb1d164023f6",
+						"fileURL": "/files/6ab0441a-8421-471b-9c78-bb1d164023f6",
+						"url": "/assets/6ab0441a-8421-471b-9c78-bb1d164023f6",
+						"width": 2880,
+						"height": 1800,
+						"size": "341713",
+						"name": "yesid-dev-cookies-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The cookie policy: no tracking cookies, and every measuring tool named.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "afd5fb27-08fb-4c3a-96aa-3f41bfa65763",
+							"fileURL": "/files/afd5fb27-08fb-4c3a-96aa-3f41bfa65763",
+							"url": "/assets/afd5fb27-08fb-4c3a-96aa-3f41bfa65763",
+							"width": 2880,
+							"height": 1800,
+							"size": "393350",
+							"name": "yesid-dev-cookies-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 7,
+			"section": "One design release, never patched",
+			"caption_en": "The projects list. Cards, filters and header come from my design system, yesid.design.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-7",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "9e7db9bd-8c8f-43f9-b985-5502da8f2720",
+						"fileURL": "/files/9e7db9bd-8c8f-43f9-b985-5502da8f2720",
+						"url": "/assets/9e7db9bd-8c8f-43f9-b985-5502da8f2720",
+						"width": 2880,
+						"height": 1800,
+						"size": "631500",
+						"name": "yesid-dev-projects-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The projects list. Cards, filters and header come from my design system, yesid.design.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "5d500186-f5c6-408f-9e93-68a23df22c75",
+							"fileURL": "/files/5d500186-f5c6-408f-9e93-68a23df22c75",
+							"url": "/assets/5d500186-f5c6-408f-9e93-68a23df22c75",
+							"width": 2880,
+							"height": 1800,
+							"size": "749287",
+							"name": "yesid-dev-projects-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 8,
+			"section": "One design release, never patched",
+			"caption_en": "This case study on the live site, light theme: table of contents, numbered section cards and the overview.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-8",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "042f9570-b6f2-41f0-af8b-8c1ac44a0285",
+						"fileURL": "/files/042f9570-b6f2-41f0-af8b-8c1ac44a0285",
+						"url": "/assets/042f9570-b6f2-41f0-af8b-8c1ac44a0285",
+						"width": 2880,
+						"height": 1800,
+						"size": "423526",
+						"name": "yesid-dev-project-page-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "This case study on the live site, light theme: table of contents, numbered section cards and the overview.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "405a22e1-64c5-47e1-882b-5f1660548922",
+							"fileURL": "/files/405a22e1-64c5-47e1-882b-5f1660548922",
+							"url": "/assets/405a22e1-64c5-47e1-882b-5f1660548922",
+							"width": 2880,
+							"height": 1800,
+							"size": "454320",
+							"name": "yesid-dev-project-page-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 9,
+			"section": "Everything else on the site",
+			"caption_en": "Home: the SQL panel and three Transit numbers. Automated browsers always get the labelled demo data.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-9",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "b5864276-2bc2-4b97-a783-59b4d19b6797",
+						"fileURL": "/files/b5864276-2bc2-4b97-a783-59b4d19b6797",
+						"url": "/assets/b5864276-2bc2-4b97-a783-59b4d19b6797",
+						"width": 2880,
+						"height": 1800,
+						"size": "353423",
+						"name": "yesid-dev-home-transit-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Home: the SQL panel and three Transit numbers. Automated browsers always get the labelled demo data.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "6744fcdd-5dd7-4f04-83e5-9377a5bcd8d7",
+							"fileURL": "/files/6744fcdd-5dd7-4f04-83e5-9377a5bcd8d7",
+							"url": "/assets/6744fcdd-5dd7-4f04-83e5-9377a5bcd8d7",
+							"width": 2880,
+							"height": 1800,
+							"size": "392969",
+							"name": "yesid-dev-home-transit-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 10,
+			"section": "Everything else on the site",
+			"caption_en": "A service page: station tabs, how it helps and related projects.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-10",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "9e1b9741-2a51-46d9-87c5-6841365854f8",
+						"fileURL": "/files/9e1b9741-2a51-46d9-87c5-6841365854f8",
+						"url": "/assets/9e1b9741-2a51-46d9-87c5-6841365854f8",
+						"width": 2880,
+						"height": 1800,
+						"size": "325821",
+						"name": "yesid-dev-service-detail-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "A service page: station tabs, how it helps and related projects.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "ef6fd6a3-2166-4ad2-95a3-2ec5d292b301",
+							"fileURL": "/files/ef6fd6a3-2166-4ad2-95a3-2ec5d292b301",
+							"url": "/assets/ef6fd6a3-2166-4ad2-95a3-2ec5d292b301",
+							"width": 2880,
+							"height": 1800,
+							"size": "371589",
+							"name": "yesid-dev-service-detail-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 11,
+			"section": "Everything else on the site",
+			"caption_en": "Projects on a phone: search, then Services and Tech Stack filters.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-11",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "b686fd17-c40f-4eee-a1e7-265db6d2ba0b",
+						"fileURL": "/files/b686fd17-c40f-4eee-a1e7-265db6d2ba0b",
+						"url": "/assets/b686fd17-c40f-4eee-a1e7-265db6d2ba0b",
+						"width": 780,
+						"height": 1688,
+						"size": "116250",
+						"name": "yesid-dev-projects-filters-phone-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Projects on a phone: search, then Services and Tech Stack filters.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "f67428ab-2529-49a7-b3da-c4e240cdbff4",
+							"fileURL": "/files/f67428ab-2529-49a7-b3da-c4e240cdbff4",
+							"url": "/assets/f67428ab-2529-49a7-b3da-c4e240cdbff4",
+							"width": 780,
+							"height": 1688,
+							"size": "134630",
+							"name": "yesid-dev-projects-filters-phone-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 12,
+			"section": "Everything else on the site",
+			"caption_en": "The blog: search, language, date range and tags.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-12",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "b1149504-6869-4632-a43e-e4b5f223ef99",
+						"fileURL": "/files/b1149504-6869-4632-a43e-e4b5f223ef99",
+						"url": "/assets/b1149504-6869-4632-a43e-e4b5f223ef99",
+						"width": 2880,
+						"height": 1800,
+						"size": "482695",
+						"name": "yesid-dev-blog-filters-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The blog: search, language, date range and tags.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "663483ef-2feb-473e-bb87-23e7401ef971",
+							"fileURL": "/files/663483ef-2feb-473e-bb87-23e7401ef971",
+							"url": "/assets/663483ef-2feb-473e-bb87-23e7401ef971",
+							"width": 2880,
+							"height": 1800,
+							"size": "556406",
+							"name": "yesid-dev-blog-filters-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 13,
+			"section": "Everything else on the site",
+			"caption_en": "A post: table of contents, read time, language and a side panel to get in touch.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-13",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "e55bb759-aa51-4f02-b70e-f8b78f5daa17",
+						"fileURL": "/files/e55bb759-aa51-4f02-b70e-f8b78f5daa17",
+						"url": "/assets/e55bb759-aa51-4f02-b70e-f8b78f5daa17",
+						"width": 2880,
+						"height": 1800,
+						"size": "350721",
+						"name": "yesid-dev-blog-post-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "A post: table of contents, read time, language and a side panel to get in touch.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "2394c353-3f68-4555-b2e0-63602bd0eed0",
+							"fileURL": "/files/2394c353-3f68-4555-b2e0-63602bd0eed0",
+							"url": "/assets/2394c353-3f68-4555-b2e0-63602bd0eed0",
+							"width": 2880,
+							"height": 1800,
+							"size": "374769",
+							"name": "yesid-dev-blog-post-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 14,
+			"section": "Everything else on the site",
+			"caption_en": "About: fun facts, beliefs, education, languages and interests.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-14",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "7911257c-4cf5-406d-b6cf-0b3b8f635216",
+						"fileURL": "/files/7911257c-4cf5-406d-b6cf-0b3b8f635216",
+						"url": "/assets/7911257c-4cf5-406d-b6cf-0b3b8f635216",
+						"width": 2880,
+						"height": 1800,
+						"size": "427065",
+						"name": "yesid-dev-about-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "About: fun facts, beliefs, education, languages and interests.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "0e39e05b-215b-4130-874a-c48b9a5bf84b",
+							"fileURL": "/files/0e39e05b-215b-4130-874a-c48b9a5bf84b",
+							"url": "/assets/0e39e05b-215b-4130-874a-c48b9a5bf84b",
+							"width": 2880,
+							"height": 1800,
+							"size": "497891",
+							"name": "yesid-dev-about-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 15,
+			"section": "Everything else on the site",
+			"caption_en": "Contact: Montréal time and weather next to the form.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-15",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "01eed4ad-3932-4f02-a993-217ffcb2c395",
+						"fileURL": "/files/01eed4ad-3932-4f02-a993-217ffcb2c395",
+						"url": "/assets/01eed4ad-3932-4f02-a993-217ffcb2c395",
+						"width": 2880,
+						"height": 1800,
+						"size": "256935",
+						"name": "yesid-dev-contact-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Contact: Montréal time and weather next to the form.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "42d48fed-a571-4395-9024-0e952958a51c",
+							"fileURL": "/files/42d48fed-a571-4395-9024-0e952958a51c",
+							"url": "/assets/42d48fed-a571-4395-9024-0e952958a51c",
+							"width": 2880,
+							"height": 1800,
+							"size": "283529",
+							"name": "yesid-dev-contact-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 16,
+			"section": "Everything else on the site",
+			"caption_en": "A missing page, in the site's own transit language.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-16",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "6d720426-d77d-4618-9db9-49969b8377ae",
+						"fileURL": "/files/6d720426-d77d-4618-9db9-49969b8377ae",
+						"url": "/assets/6d720426-d77d-4618-9db9-49969b8377ae",
+						"width": 2880,
+						"height": 1800,
+						"size": "230332",
+						"name": "yesid-dev-404-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "A missing page, in the site's own transit language.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "1fd6ac49-c04c-41e3-a8c0-6069d9a7aee4",
+							"fileURL": "/files/1fd6ac49-c04c-41e3-a8c0-6069d9a7aee4",
+							"url": "/assets/1fd6ac49-c04c-41e3-a8c0-6069d9a7aee4",
+							"width": 2880,
+							"height": 1800,
+							"size": "285821",
+							"name": "yesid-dev-404-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 17,
+			"section": "Share cards for every page",
+			"caption_en": "A project card.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-17",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "959f6f84-1402-4090-bf13-d01308526ae9",
+						"fileURL": "/files/959f6f84-1402-4090-bf13-d01308526ae9",
+						"url": "/assets/959f6f84-1402-4090-bf13-d01308526ae9",
+						"width": 1200,
+						"height": 630,
+						"size": "64447",
+						"name": "yesid-dev-og-project-card-en-single.png",
+						"extension": "png"
+					},
+					"caption": "A project card.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 18,
+			"section": "Share cards for every page",
+			"caption_en": "A blog card.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-18",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "fabb1879-4cdf-4f09-b45f-00dc60932018",
+						"fileURL": "/files/fabb1879-4cdf-4f09-b45f-00dc60932018",
+						"url": "/assets/fabb1879-4cdf-4f09-b45f-00dc60932018",
+						"width": 1200,
+						"height": 630,
+						"size": "57718",
+						"name": "yesid-dev-og-blog-card-en-single.png",
+						"extension": "png"
+					},
+					"caption": "A blog card.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 19,
+			"section": "Share cards for every page",
+			"caption_en": "A service card.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-19",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "e801203f-919b-423c-a6a8-94c92305aeda",
+						"fileURL": "/files/e801203f-919b-423c-a6a8-94c92305aeda",
+						"url": "/assets/e801203f-919b-423c-a6a8-94c92305aeda",
+						"width": 1200,
+						"height": 630,
+						"size": "79208",
+						"name": "yesid-dev-og-service-card-en-single.png",
+						"extension": "png"
+					},
+					"caption": "A service card.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 20,
+			"section": "How it's checked",
+			"caption_en": "A real check run on GitHub Actions: the quick job first, then three browser-test runners, then the final ci gate.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-20",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "e014ac72-70fd-4f9c-bd55-5ccf1c9e1140",
+						"fileURL": "/files/e014ac72-70fd-4f9c-bd55-5ccf1c9e1140",
+						"url": "/assets/e014ac72-70fd-4f9c-bd55-5ccf1c9e1140",
+						"width": 2880,
+						"height": 1800,
+						"size": "201966",
+						"name": "yesid-dev-github-actions-run-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "A real check run on GitHub Actions: the quick job first, then three browser-test runners, then the final ci gate.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "32abd6ec-7aca-4e26-a6cd-3783929a7136",
+							"fileURL": "/files/32abd6ec-7aca-4e26-a6cd-3783929a7136",
+							"url": "/assets/32abd6ec-7aca-4e26-a6cd-3783929a7136",
+							"width": 2880,
+							"height": 1800,
+							"size": "203265",
+							"name": "yesid-dev-github-actions-run-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 21,
+			"section": "How it's checked",
+			"caption_en": "The same home page in the light theme. The theme choice is set before the first paint, so the page never flashes the wrong one.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-dev-21",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "d7ea2cbe-9dfa-45bd-9324-6c6a164e1050",
+						"fileURL": "/files/d7ea2cbe-9dfa-45bd-9324-6c6a164e1050",
+						"url": "/assets/d7ea2cbe-9dfa-45bd-9324-6c6a164e1050",
+						"width": 2880,
+						"height": 1800,
+						"size": "353499",
+						"name": "yesid-dev-home-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The same home page in the light theme. The theme choice is set before the first paint, so the page never flashes the wrong one.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "b336b375-bb90-4e7f-abf3-d6c4a4b6c97a",
+							"fileURL": "/files/b336b375-bb90-4e7f-abf3-d6c4a4b6c97a",
+							"url": "/assets/b336b375-bb90-4e7f-abf3-d6c4a4b6c97a",
+							"width": 2880,
+							"height": 1800,
+							"size": "393103",
+							"name": "yesid-dev-home-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		}
+	],
+	"yesid-design": [
+		{
+			"order": 1,
+			"section": "(hero, before the first section)",
+			"caption_en": "The same release on three sites: yesid.dev, Transit and the login page share the header, colours, type, buttons and grid background. Each one says something different.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-1",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "2dd1a3c4-dc2e-4d11-abc2-9d36f37a52b1",
+						"fileURL": "/files/2dd1a3c4-dc2e-4d11-abc2-9d36f37a52b1",
+						"url": "/assets/2dd1a3c4-dc2e-4d11-abc2-9d36f37a52b1",
+						"width": 3344,
+						"height": 816,
+						"size": "218813",
+						"name": "yesid-design-three-sites-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The same release on three sites: yesid.dev, Transit and the login page share the header, colours, type, buttons and grid background. Each one says something different.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "338d7ee8-af91-4f4f-aabb-75ca594a6ab6",
+							"fileURL": "/files/338d7ee8-af91-4f4f-aabb-75ca594a6ab6",
+							"url": "/assets/338d7ee8-af91-4f4f-aabb-75ca594a6ab6",
+							"width": 3344,
+							"height": 816,
+							"size": "279233",
+							"name": "yesid-design-three-sites-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 2,
+			"section": "What's shared, and what each site keeps",
+			"caption_en": "One header, three sites. The pill, the wordmark with its orange dot, the traffic-light theme switch and the language signpost come from yesid.design. Each site fills it with its own links.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-2",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "3898622d-765e-4ea0-9806-f7024bccbbc5",
+						"fileURL": "/files/3898622d-765e-4ea0-9806-f7024bccbbc5",
+						"url": "/assets/3898622d-765e-4ea0-9806-f7024bccbbc5",
+						"width": 2314,
+						"height": 926,
+						"size": "82839",
+						"name": "yesid-design-headers-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "One header, three sites. The pill, the wordmark with its orange dot, the traffic-light theme switch and the language signpost come from yesid.design. Each site fills it with its own links.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "c9c89ffb-6bf1-462f-9e79-274e00ebf1d7",
+							"fileURL": "/files/c9c89ffb-6bf1-462f-9e79-274e00ebf1d7",
+							"url": "/assets/c9c89ffb-6bf1-462f-9e79-274e00ebf1d7",
+							"width": 2314,
+							"height": 926,
+							"size": "93239",
+							"name": "yesid-design-headers-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 3,
+			"section": "Light and dark",
+			"caption_en": "The same three pages in light mode. The theme switch is shared, and a visitor's choice is applied before the page paints, so there's no flash of the wrong theme.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-3",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "2dd1a3c4-dc2e-4d11-abc2-9d36f37a52b1",
+						"fileURL": "/files/2dd1a3c4-dc2e-4d11-abc2-9d36f37a52b1",
+						"url": "/assets/2dd1a3c4-dc2e-4d11-abc2-9d36f37a52b1",
+						"width": 3344,
+						"height": 816,
+						"size": "218813",
+						"name": "yesid-design-three-sites-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The same three pages in light mode. The theme switch is shared, and a visitor's choice is applied before the page paints, so there's no flash of the wrong theme.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "338d7ee8-af91-4f4f-aabb-75ca594a6ab6",
+							"fileURL": "/files/338d7ee8-af91-4f4f-aabb-75ca594a6ab6",
+							"url": "/assets/338d7ee8-af91-4f4f-aabb-75ca594a6ab6",
+							"width": 3344,
+							"height": 816,
+							"size": "279233",
+							"name": "yesid-design-three-sites-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 4,
+			"section": "Same frame, different content",
+			"caption_en": "yesid.dev on a phone: the Transit case study.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-4",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "f8736fe9-1c27-4b5d-9c17-3b9f7f263ad8",
+						"fileURL": "/files/f8736fe9-1c27-4b5d-9c17-3b9f7f263ad8",
+						"url": "/assets/f8736fe9-1c27-4b5d-9c17-3b9f7f263ad8",
+						"width": 780,
+						"height": 1688,
+						"size": "143915",
+						"name": "yesid-design-detail-phone-yesid-dev-phone-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "yesid.dev on a phone: the Transit case study.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "37c0a862-7421-4b55-afdc-97b4a671b66b",
+							"fileURL": "/files/37c0a862-7421-4b55-afdc-97b4a671b66b",
+							"url": "/assets/37c0a862-7421-4b55-afdc-97b4a671b66b",
+							"width": 780,
+							"height": 1688,
+							"size": "160369",
+							"name": "yesid-design-detail-phone-yesid-dev-phone-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 5,
+			"section": "Same frame, different content",
+			"caption_en": "Transit on a phone: \"How we measure\". Same frame, Transit's own words.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-5",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "db10e0a8-4199-438c-a68b-8c0f01fd71b0",
+						"fileURL": "/files/db10e0a8-4199-438c-a68b-8c0f01fd71b0",
+						"url": "/assets/db10e0a8-4199-438c-a68b-8c0f01fd71b0",
+						"width": 780,
+						"height": 1688,
+						"size": "137496",
+						"name": "yesid-design-detail-phone-transit-phone-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Transit on a phone: \"How we measure\". Same frame, Transit's own words.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "8f6b0e51-7d2e-4a37-9a3e-fcd89dd7ca8a",
+							"fileURL": "/files/8f6b0e51-7d2e-4a37-9a3e-fcd89dd7ca8a",
+							"url": "/assets/8f6b0e51-7d2e-4a37-9a3e-fcd89dd7ca8a",
+							"width": 780,
+							"height": 1688,
+							"size": "149123",
+							"name": "yesid-design-detail-phone-transit-phone-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 6,
+			"section": "Same frame, different content",
+			"caption_en": "yesid.dev: Projects.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-6",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "0b92049f-ebd6-4d08-ba71-de332b99db7b",
+						"fileURL": "/files/0b92049f-ebd6-4d08-ba71-de332b99db7b",
+						"url": "/assets/0b92049f-ebd6-4d08-ba71-de332b99db7b",
+						"width": 2880,
+						"height": 1800,
+						"size": "631500",
+						"name": "yesid-design-listing-yesid-dev-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "yesid.dev: Projects.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "6901f0a9-b96a-48ee-9a8e-cc6b2918e5f8",
+							"fileURL": "/files/6901f0a9-b96a-48ee-9a8e-cc6b2918e5f8",
+							"url": "/assets/6901f0a9-b96a-48ee-9a8e-cc6b2918e5f8",
+							"width": 2880,
+							"height": 1800,
+							"size": "749335",
+							"name": "yesid-design-listing-yesid-dev-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 7,
+			"section": "Same frame, different content",
+			"caption_en": "Transit: Lines.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-7",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "759ff974-7bed-4e11-b7ae-d8a15824e513",
+						"fileURL": "/files/759ff974-7bed-4e11-b7ae-d8a15824e513",
+						"url": "/assets/759ff974-7bed-4e11-b7ae-d8a15824e513",
+						"width": 2880,
+						"height": 1800,
+						"size": "414766",
+						"name": "yesid-design-listing-transit-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Transit: Lines.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "69293109-5a60-469f-9702-f65ef888a3c7",
+							"fileURL": "/files/69293109-5a60-469f-9702-f65ef888a3c7",
+							"url": "/assets/69293109-5a60-469f-9702-f65ef888a3c7",
+							"width": 2880,
+							"height": 1800,
+							"size": "478688",
+							"name": "yesid-design-listing-transit-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 8,
+			"section": "Components that behave, not just look",
+			"caption_en": "Transit's Lines page at the three standard test sizes: phone 390, tablet 768 and desktop 1440 pixels wide.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-8",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "192a7d75-dec6-4714-a1b2-9a2992793986",
+						"fileURL": "/files/192a7d75-dec6-4714-a1b2-9a2992793986",
+						"url": "/assets/192a7d75-dec6-4714-a1b2-9a2992793986",
+						"width": 2812,
+						"height": 1086,
+						"size": "304439",
+						"name": "yesid-design-sizes-multi-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Transit's Lines page at the three standard test sizes: phone 390, tablet 768 and desktop 1440 pixels wide.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "b208066c-2afa-4f39-b1cb-7f298222f42a",
+							"fileURL": "/files/b208066c-2afa-4f39-b1cb-7f298222f42a",
+							"url": "/assets/b208066c-2afa-4f39-b1cb-7f298222f42a",
+							"width": 2812,
+							"height": 1086,
+							"size": "364117",
+							"name": "yesid-design-sizes-multi-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 9,
+			"section": "Share cards and search, built in",
+			"caption_en": "yesid.dev: this case study's share card.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-9",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "52e91dab-3f00-452e-a780-8d4288eac4f8",
+						"fileURL": "/files/52e91dab-3f00-452e-a780-8d4288eac4f8",
+						"url": "/assets/52e91dab-3f00-452e-a780-8d4288eac4f8",
+						"width": 1200,
+						"height": 630,
+						"size": "66384",
+						"name": "yesid-design-og-project-card-en-single.png",
+						"extension": "png"
+					},
+					"caption": "yesid.dev: this case study's share card.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 10,
+			"section": "Share cards and search, built in",
+			"caption_en": "Transit: its own layout, on the shared colours and fonts.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-10",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "59ef22e4-a70d-48c0-86ee-51c8e1af1821",
+						"fileURL": "/files/59ef22e4-a70d-48c0-86ee-51c8e1af1821",
+						"url": "/assets/59ef22e4-a70d-48c0-86ee-51c8e1af1821",
+						"width": 1200,
+						"height": 630,
+						"size": "73359",
+						"name": "yesid-design-og-transit-card-en-single.png",
+						"extension": "png"
+					},
+					"caption": "Transit: its own layout, on the shared colours and fonts.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 11,
+			"section": "Share cards and search, built in",
+			"caption_en": "Login: the shared card. A link preview can't know the reader's language, so one card carries all three.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-11",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "97413cf6-9907-4434-9d20-d0e4dec696a3",
+						"fileURL": "/files/97413cf6-9907-4434-9d20-d0e4dec696a3",
+						"url": "/assets/97413cf6-9907-4434-9d20-d0e4dec696a3",
+						"width": 1200,
+						"height": 630,
+						"size": "56341",
+						"name": "yesid-design-og-login-card-multi-single.png",
+						"extension": "png"
+					},
+					"caption": "Login: the shared card. A link preview can't know the reader's language, so one card carries all three.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 12,
+			"section": "Share cards and search, built in",
+			"caption_en": "One shared error illustration on yesid.dev and Transit. Each site picks its own suggested links, and the page asks search engines not to index it.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-12",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "48ad32bf-f212-4561-8764-5dc2c4166fd5",
+						"fileURL": "/files/48ad32bf-f212-4561-8764-5dc2c4166fd5",
+						"url": "/assets/48ad32bf-f212-4561-8764-5dc2c4166fd5",
+						"width": 2728,
+						"height": 966,
+						"size": "135028",
+						"name": "yesid-design-404-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "One shared error illustration on yesid.dev and Transit. Each site picks its own suggested links, and the page asks search engines not to index it.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "30d2e124-dc8e-4766-ab15-52efd3adeaa0",
+							"fileURL": "/files/30d2e124-dc8e-4766-ab15-52efd3adeaa0",
+							"url": "/assets/30d2e124-dc8e-4766-ab15-52efd3adeaa0",
+							"width": 2728,
+							"height": 966,
+							"size": "206230",
+							"name": "yesid-design-404-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 13,
+			"section": "Share cards and search, built in",
+			"caption_en": "SQL and Python coloured on the server by the shared highlighter, on Transit's metrics page.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-13",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "21c7d7a0-6a1c-4df0-9efc-0e359cd5467f",
+						"fileURL": "/files/21c7d7a0-6a1c-4df0-9efc-0e359cd5467f",
+						"url": "/assets/21c7d7a0-6a1c-4df0-9efc-0e359cd5467f",
+						"width": 1780,
+						"height": 936,
+						"size": "158920",
+						"name": "yesid-design-code-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "SQL and Python coloured on the server by the shared highlighter, on Transit's metrics page.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "d357fc48-f31e-4ebe-a571-2cd615b52081",
+							"fileURL": "/files/d357fc48-f31e-4ebe-a571-2cd615b52081",
+							"url": "/assets/d357fc48-f31e-4ebe-a571-2cd615b52081",
+							"width": 1780,
+							"height": 936,
+							"size": "158763",
+							"name": "yesid-design-code-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 14,
+			"section": "Three languages, one set of rules",
+			"caption_en": "The yesid.dev home page in English, French and Spanish on a phone. Each language has its own address, and the counter follows each language's number format: 1,247, 1 247 and 1247.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-14",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "ecf43240-ab21-4256-b4eb-37609565d2de",
+						"fileURL": "/files/ecf43240-ab21-4256-b4eb-37609565d2de",
+						"url": "/assets/ecf43240-ab21-4256-b4eb-37609565d2de",
+						"width": 1778,
+						"height": 1286,
+						"size": "245304",
+						"name": "yesid-design-languages-phone-multi-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The yesid.dev home page in English, French and Spanish on a phone. Each language has its own address, and the counter follows each language's number format: 1,247, 1 247 and 1247.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "6ab18ad3-58c0-4b82-b3ec-b723960fd57d",
+							"fileURL": "/files/6ab18ad3-58c0-4b82-b3ec-b723960fd57d",
+							"url": "/assets/6ab18ad3-58c0-4b82-b3ec-b723960fd57d",
+							"width": 1778,
+							"height": 1286,
+							"size": "284173",
+							"name": "yesid-design-languages-phone-multi-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		},
+		{
+			"order": 15,
+			"section": "What a release is",
+			"caption_en": "The v0.39.1 release on GitHub: marked Immutable, one tarball per package with its sha256 fingerprint, and a release attestation that ties the files to the workflow that built them.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-yesid-design-15",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "d3a300c5-28ac-4d1b-ae95-c86173054710",
+						"fileURL": "/files/d3a300c5-28ac-4d1b-ae95-c86173054710",
+						"url": "/assets/d3a300c5-28ac-4d1b-ae95-c86173054710",
+						"width": 2480,
+						"height": 1574,
+						"size": "223633",
+						"name": "yesid-design-release-v0391-desktop-en-dark.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The v0.39.1 release on GitHub: marked Immutable, one tarball per package with its sha256 fingerprint, and a release attestation that ties the files to the workflow that built them.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false,
+					"variants": {
+						"light": {
+							"fileId": "7f51ddfb-d207-4b55-a823-b260986ed313",
+							"fileURL": "/files/7f51ddfb-d207-4b55-a823-b260986ed313",
+							"url": "/assets/7f51ddfb-d207-4b55-a823-b260986ed313",
+							"width": 2480,
+							"height": 1574,
+							"size": "239564",
+							"name": "yesid-design-release-v0391-desktop-en-light.jpg",
+							"extension": "jpg"
+						}
+					}
+				}
+			}
+		}
+	],
+	"cafe-arona": [
+		{
+			"order": 1,
+			"section": "(hero, before the first section)",
+			"caption_en": "The French home page on a computer: the brand's own video, \"Une culture, une histoire, plusieurs goûts\", and one button to the coffees.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-1",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "d90f2290-dcdf-453b-a602-f7e75163a598",
+						"fileURL": "/files/d90f2290-dcdf-453b-a602-f7e75163a598",
+						"url": "/assets/d90f2290-dcdf-453b-a602-f7e75163a598",
+						"width": 2880,
+						"height": 1800,
+						"size": "231121",
+						"name": "cafe-arona-home-desktop-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The French home page on a computer: the brand's own video, \"Une culture, une histoire, plusieurs goûts\", and one button to the coffees.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 2,
+			"section": "What a visitor finds",
+			"caption_en": "The team page: a group photo first, then each person's portrait and introduction.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-2",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "6a5e0db7-3e42-40ff-b508-67bd163a1108",
+						"fileURL": "/files/6a5e0db7-3e42-40ff-b508-67bd163a1108",
+						"url": "/assets/6a5e0db7-3e42-40ff-b508-67bd163a1108",
+						"width": 2880,
+						"height": 1800,
+						"size": "258462",
+						"name": "cafe-arona-team-desktop-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The team page: a group photo first, then each person's portrait and introduction.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 3,
+			"section": "The journal, the contact form and the newsletter",
+			"caption_en": "The journal in French: topic chips at the top, then each article as a numbered chapter, the newest one featured.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-3",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "6a0db37c-81f7-4177-b740-2292723d0393",
+						"fileURL": "/files/6a0db37c-81f7-4177-b740-2292723d0393",
+						"url": "/assets/6a0db37c-81f7-4177-b740-2292723d0393",
+						"width": 2880,
+						"height": 1800,
+						"size": "305786",
+						"name": "cafe-arona-blog-desktop-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The journal in French: topic chips at the top, then each article as a numbered chapter, the newest one featured.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 4,
+			"section": "The journal, the contact form and the newsletter",
+			"caption_en": "An article page: its chapter stamp, title and photo, then the byline with the reading time.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-4",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "9e81aac3-1648-49b9-9079-f5781327edf9",
+						"fileURL": "/files/9e81aac3-1648-49b9-9079-f5781327edf9",
+						"url": "/assets/9e81aac3-1648-49b9-9079-f5781327edf9",
+						"width": 2880,
+						"height": 1800,
+						"size": "322415",
+						"name": "cafe-arona-article-desktop-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "An article page: its chapter stamp, title and photo, then the byline with the reading time.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 5,
+			"section": "The journal, the contact form and the newsletter",
+			"caption_en": "The English contact page on a phone: four fields, one of them optional.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-5",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "d163021a-96b8-4a42-aa92-c7c696442a68",
+						"fileURL": "/files/d163021a-96b8-4a42-aa92-c7c696442a68",
+						"url": "/assets/d163021a-96b8-4a42-aa92-c7c696442a68",
+						"width": 780,
+						"height": 1688,
+						"size": "57166",
+						"name": "cafe-arona-contact-phone-en-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The English contact page on a phone: four fields, one of them optional.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 6,
+			"section": "How a coffee is described",
+			"caption_en": "Le Carburant's coffee sheet on a phone, in English: each filled field is one row, and lists show as tags.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-6",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "788ead30-9a95-41b7-9b33-aa01eeeca083",
+						"fileURL": "/files/788ead30-9a95-41b7-9b33-aa01eeeca083",
+						"url": "/assets/788ead30-9a95-41b7-9b33-aa01eeeca083",
+						"width": 780,
+						"height": 1688,
+						"size": "106603",
+						"name": "cafe-arona-fiche-phone-en-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Le Carburant's coffee sheet on a phone, in English: each filled field is one row, and lists show as tags.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 7,
+			"section": "How a coffee is described",
+			"caption_en": "Search on a phone: typing \"carbu\" already suggests Le Carburant, with its stickers.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-7",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "e165301e-4256-4135-9f3c-2302d349d1a9",
+						"fileURL": "/files/e165301e-4256-4135-9f3c-2302d349d1a9",
+						"url": "/assets/e165301e-4256-4135-9f3c-2302d349d1a9",
+						"width": 780,
+						"height": 1688,
+						"size": "41585",
+						"name": "cafe-arona-search-phone-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Search on a phone: typing \"carbu\" already suggests Le Carburant, with its stickers.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 8,
+			"section": "Brochure mode: visible, not for sale yet",
+			"caption_en": "Feu Doux on a phone, in English: a Coming soon stamp and no purchase button.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-8",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "33ca9d86-8693-479c-8bf3-9fbdc0cc6cf6",
+						"fileURL": "/files/33ca9d86-8693-479c-8bf3-9fbdc0cc6cf6",
+						"url": "/assets/33ca9d86-8693-479c-8bf3-9fbdc0cc6cf6",
+						"width": 780,
+						"height": 1688,
+						"size": "113300",
+						"name": "cafe-arona-product-phone-en-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "Feu Doux on a phone, in English: a Coming soon stamp and no purchase button.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 9,
+			"section": "Brochure mode: visible, not for sale yet",
+			"caption_en": "The roasted coffee collection: every coffee wears its Bientôt disponible stamp.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-9",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "1cc5b0a0-75db-4475-ad19-531ee4e88d08",
+						"fileURL": "/files/1cc5b0a0-75db-4475-ad19-531ee4e88d08",
+						"url": "/assets/1cc5b0a0-75db-4475-ad19-531ee4e88d08",
+						"width": 2880,
+						"height": 1800,
+						"size": "281093",
+						"name": "cafe-arona-collection-desktop-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The roasted coffee collection: every coffee wears its Bientôt disponible stamp.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 10,
+			"section": "Brochure mode: visible, not for sale yet",
+			"caption_en": "A product page in French: the stamp on the photo, the family's description, and the coffee's details below.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-10",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "284124e5-1620-4b5c-b257-ace66dab18bb",
+						"fileURL": "/files/284124e5-1620-4b5c-b257-ace66dab18bb",
+						"url": "/assets/284124e5-1620-4b5c-b257-ace66dab18bb",
+						"width": 2880,
+						"height": 1800,
+						"size": "266136",
+						"name": "cafe-arona-product-desktop-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "A product page in French: the stamp on the photo, the family's description, and the coffee's details below.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 11,
+			"section": "The same answer at every step",
+			"caption_en": "The cart on a phone, in English: a sheet from the bottom, empty for now, with a way back to the coffees.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-11",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "e6dc0d0c-3f47-4c06-9d81-3b12e0fbab58",
+						"fileURL": "/files/e6dc0d0c-3f47-4c06-9d81-3b12e0fbab58",
+						"url": "/assets/e6dc0d0c-3f47-4c06-9d81-3b12e0fbab58",
+						"width": 780,
+						"height": 1688,
+						"size": "83839",
+						"name": "cafe-arona-cart-phone-en-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The cart on a phone, in English: a sheet from the bottom, empty for now, with a way back to the coffees.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 12,
+			"section": "French first, English at /en",
+			"caption_en": "English home page on a phone.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-12",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "a6185d69-da47-44a0-b697-df3f09f36aec",
+						"fileURL": "/files/a6185d69-da47-44a0-b697-df3f09f36aec",
+						"url": "/assets/a6185d69-da47-44a0-b697-df3f09f36aec",
+						"width": 780,
+						"height": 1688,
+						"size": "99144",
+						"name": "cafe-arona-home-phone-en-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "English home page on a phone.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 13,
+			"section": "French first, English at /en",
+			"caption_en": "The phone menu with the FR \\| EN switch: \"Le café est meilleur dans votre langue\".",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-13",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "0ddd2c1d-502b-47e4-b8f9-f160902b2575",
+						"fileURL": "/files/0ddd2c1d-502b-47e4-b8f9-f160902b2575",
+						"url": "/assets/0ddd2c1d-502b-47e4-b8f9-f160902b2575",
+						"width": 780,
+						"height": 1688,
+						"size": "47708",
+						"name": "cafe-arona-menu-phone-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The phone menu with the FR \\| EN switch: \"Le café est meilleur dans votre langue\".",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 14,
+			"section": "French first, English at /en",
+			"caption_en": "The same home page in English on a computer.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-14",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "56e368e4-171e-45d1-a8bb-62bed6c587c0",
+						"fileURL": "/files/56e368e4-171e-45d1-a8bb-62bed6c587c0",
+						"url": "/assets/56e368e4-171e-45d1-a8bb-62bed6c587c0",
+						"width": 2880,
+						"height": 1800,
+						"size": "217889",
+						"name": "cafe-arona-home-desktop-en-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The same home page in English on a computer.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 15,
+			"section": "Built for every screen and keyboard",
+			"caption_en": "The French values page after one press of the right arrow key: the second value is selected and its panel follows.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-15",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "93f6b0ac-b6f0-4e03-a227-6c15709422da",
+						"fileURL": "/files/93f6b0ac-b6f0-4e03-a227-6c15709422da",
+						"url": "/assets/93f6b0ac-b6f0-4e03-a227-6c15709422da",
+						"width": 2880,
+						"height": 1800,
+						"size": "341562",
+						"name": "cafe-arona-values-keyboard-desktop-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The French values page after one press of the right arrow key: the second value is selected and its panel follows.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 16,
+			"section": "Cookies: the visitor decides",
+			"caption_en": "First visit on a phone: \"Vos témoins, votre choix\", with Accepter and Refuser.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-16",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "b8061a7a-0a78-463c-bd97-1473e437628e",
+						"fileURL": "/files/b8061a7a-0a78-463c-bd97-1473e437628e",
+						"url": "/assets/b8061a7a-0a78-463c-bd97-1473e437628e",
+						"width": 780,
+						"height": 1688,
+						"size": "140435",
+						"name": "cafe-arona-consent-phone-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "First visit on a phone: \"Vos témoins, votre choix\", with Accepter and Refuser.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 17,
+			"section": "Cookies: the visitor decides",
+			"caption_en": "A sample report with invented numbers, marked Exemple at the top: takeaways in plain words, the three goals, the audience, daily visitors, top products and articles, sources, languages and four journeys.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-17",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "992451ed-be43-4575-a6bf-1195c624a80e",
+						"fileURL": "/files/992451ed-be43-4575-a6bf-1195c624a80e",
+						"url": "/assets/992451ed-be43-4575-a6bf-1195c624a80e",
+						"width": 2400,
+						"height": 5090,
+						"size": "698472",
+						"name": "cafe-arona-report-sample-desktop-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "A sample report with invented numbers, marked Exemple at the top: takeaways in plain words, the three goals, the audience, daily visitors, top products and articles, sources, languages and four journeys.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 18,
+			"section": "When you share the link",
+			"caption_en": "The English preview card that shows when someone pastes cafearona.com/en in a chat. The French pages get their own card.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-18",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "67afa48e-ae6c-4b2d-bacc-287a194505ad",
+						"fileURL": "/files/67afa48e-ae6c-4b2d-bacc-287a194505ad",
+						"url": "/assets/67afa48e-ae6c-4b2d-bacc-287a194505ad",
+						"width": 1200,
+						"height": 630,
+						"size": "105945",
+						"name": "cafe-arona-og-share-card-en-single.png",
+						"extension": "png"
+					},
+					"caption": "The English preview card that shows when someone pastes cafearona.com/en in a chat. The French pages get their own card.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 19,
+			"section": "When you share the link",
+			"caption_en": "The French card, for any French page without a photo of its own.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-19",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "f1916e95-42a3-4b0b-8067-39f020b2c93e",
+						"fileURL": "/files/f1916e95-42a3-4b0b-8067-39f020b2c93e",
+						"url": "/assets/f1916e95-42a3-4b0b-8067-39f020b2c93e",
+						"width": 1200,
+						"height": 630,
+						"size": "101632",
+						"name": "cafe-arona-og-share-card-fr-single.png",
+						"extension": "png"
+					},
+					"caption": "The French card, for any French page without a photo of its own.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 20,
+			"section": "The small pages that still count",
+			"caption_en": "The French 404 page on a phone: a cup with a question mark and one way back.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-20",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "2dc2a28c-7bed-4972-ac5f-37b95afb154e",
+						"fileURL": "/files/2dc2a28c-7bed-4972-ac5f-37b95afb154e",
+						"url": "/assets/2dc2a28c-7bed-4972-ac5f-37b95afb154e",
+						"width": 780,
+						"height": 1688,
+						"size": "65817",
+						"name": "cafe-arona-404-phone-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The French 404 page on a phone: a cup with a question mark and one way back.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		},
+		{
+			"order": 21,
+			"section": "The small pages that still count",
+			"caption_en": "The French footer: the latest chapters above it, then the shop links, the newsletter and every policy, with Gérer mes témoins last.",
+			"status": "ok",
+			"block": {
+				"id": "case-study-cafe-arona-21",
+				"type": "image",
+				"data": {
+					"file": {
+						"fileId": "366c415e-0c5a-4888-94c1-01b5f0d2cba5",
+						"fileURL": "/files/366c415e-0c5a-4888-94c1-01b5f0d2cba5",
+						"url": "/assets/366c415e-0c5a-4888-94c1-01b5f0d2cba5",
+						"width": 2880,
+						"height": 1800,
+						"size": "383180",
+						"name": "cafe-arona-footer-desktop-fr-light.jpg",
+						"extension": "jpg"
+					},
+					"caption": "The French footer: the latest chapters above it, then the shop links, the newsletter and every policy, with Gérer mes témoins last.",
+					"withBorder": false,
+					"withBackground": false,
+					"stretched": false
+				}
+			}
+		}
+	]
+}
