@@ -17,6 +17,31 @@ const liveSnapshot = (snapshot: unknown) => {
 };
 
 describe('export source checks', () => {
+	it.each(['🚌', '🚀', '📊', '😀', '☕', '👩‍💻'])('rejects unsupported grapheme %s with an actionable export error', async (character) => {
+		const snapshot = { ...structuredClone(fixture.data), mediaAssets: {}, mediaVariants: {} };
+		snapshot.projects[0]!.oneLiner.fr = `Des données fiables ${character} pour les équipes.`;
+		await expect(loadExport(createFixtureSource(snapshot))).rejects.toThrow(
+			`Project ${snapshot.projects[0]!.slug}, locale fr, field one_liner: unsupported graphemes ${character}`,
+		);
+	});
+
+	it.each(['‱'.repeat(200), 'a' + '\u0301'.repeat(199)])('rejects unrenderable project copy before export: %s', async (text) => {
+		const snapshot = { ...structuredClone(fixture.data), mediaAssets: {}, mediaVariants: {} };
+		snapshot.projects[0]!.oneLiner.en = text;
+		await expect(loadExport(createFixtureSource(snapshot))).rejects.toThrow(
+			new RegExp(`${snapshot.projects[0]!.slug}.*one[Ll]iner.*en|${snapshot.projects[0]!.slug}.*en.*one_liner`),
+		);
+	});
+
+	it('exports normalized NFC one-liners and accepts adversarial wide copy', async () => {
+		for (const text of ['Île de Montréal : des données fiables pour mieux planifier les transports.', 'j’aide les équipes à publier des données fiables pour mieux planifier les transports.', 'A bilingual publishing platform that helps local teams manage their websites, share useful information with customers, automate repetitive updates, and keep their content accessible across English, French, and Spanish.', 'Cafe\u0301.', Array(6).fill('W'.repeat(32)).join(' '), Array(6).fill('W'.repeat(32)).join(' ') + ' WW', 'WM'.repeat(100)]) {
+			const snapshot = { ...structuredClone(fixture.data), mediaAssets: {}, mediaVariants: {} };
+			snapshot.projects[0]!.oneLiner.en = text;
+			const result = await loadExport(createFixtureSource(snapshot));
+			expect(result.projects[0]!.oneLiner.en).toBe(text.normalize('NFC'));
+		}
+	});
+
 	it('accepts the fixture through the same pipeline as a fake live source', async () => {
 		const snapshot = {
 			...structuredClone(fixture.data),

@@ -7,11 +7,11 @@ import type {
 	SiteSeoDefaults,
 } from '#lib/types.ts';
 import type { ContentCatalog } from '#lib/catalog/index.ts';
-import { extractText } from '@repo/shared';
 import { SITE_HOST, canonicalFor } from '#lib/utils/seo-defaults.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 import { ogImagePath } from '#lib/og/og-path.ts';
-import { SHARE_CTA, projectShareDescription, withShareCta } from '#lib/og/share-copy.ts';
+import { SHARE_CTA, withShareCta } from '#lib/og/share-copy.ts';
+import { projectCopy } from '#lib/og/project-copy.ts';
 import { appendBrandPerLocale, shareImageAltPerLocale, titleForSeo } from '#lib/adapters/compose-page-seo.ts';
 import { assetImage } from '#lib/directus/assets.ts';
 import {
@@ -103,27 +103,9 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 	const { params, locale, catalog, siteMeta, siteSeoDefaults } = args;
 	const project = await catalog.projects.bySlug(params.slug);
 	if (!project) throw new Error(`Unknown project slug: ${params.slug}`);
-	// Extract plain text from LocalizedBlockEditorDoc before passing to fitDescriptionForSeo.
-	const descriptionText: { en: string; fr?: string; es?: string } = {
-		en: extractText(project.description.en),
-		...(project.description.fr !== undefined && { fr: extractText(project.description.fr) }),
-		...(project.description.es !== undefined && { es: extractText(project.description.es) }),
-	};
-	// Prefer the short share line. Otherwise each language picks its own oneLiner,
-	// description, then site fallback, closing with the case-study invitation.
-	const fallback = siteSeoDefaults.defaultDescription;
-	const descriptionFor = (language: 'en' | 'fr' | 'es'): string | undefined =>
-		[project.oneLiner[language], descriptionText[language]]
-			.filter((text) => text !== undefined)
-			.map((text) => withShareCta(text, SHARE_CTA.project.label[language]))
-			.find((text) => text.length >= 50 && text.length <= 200) ?? fallback[language];
-	const fr = descriptionFor('fr');
-	const es = descriptionFor('es');
-	const desc = projectShareDescription(project.slug) ?? {
-		en: descriptionFor('en') ?? fallback.en,
-		...(fr && { fr }),
-		...(es && { es }),
-	};
+	const descriptionFor = (language: Locale) =>
+		projectCopy(project, language, siteSeoDefaults.defaultDescription).description;
+	const desc = { en: descriptionFor('en'), fr: descriptionFor('fr'), es: descriptionFor('es') };
 	const canonicalUrl = canonicalFor(`/projects/${project.slug}`, locale);
 	const seo: PageSeo = {
 		title: appendBrandPerLocale(project.title, siteMeta.name),

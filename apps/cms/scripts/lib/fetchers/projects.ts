@@ -187,5 +187,14 @@ export async function fetchProjects({ client }: FetcherContext): Promise<readonl
 		}),
 	)) as unknown as DirectusProject[];
 
-	return z.array(ProjectSchema).parse(rows.filter(isProjectShown).map(toProject));
+	return rows.filter(isProjectShown).map(toProject).map((project) => {
+		try {
+			return ProjectSchema.parse(project);
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				throw new z.ZodError(error.issues.map((issue) => ({ ...issue, path: [project.slug, ...issue.path] })));
+			}
+			throw error;
+		}
+	});
 }

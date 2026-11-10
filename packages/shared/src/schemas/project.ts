@@ -15,7 +15,19 @@ export const ProjectSchema = z.object({
 	/** URL-safe, globally unique identity; never localized. */
 	slug: z.string().min(1),
 	title: LocalizedStringSchema,
-	oneLiner: LocalizedStringSchema,
+	// Normalize authored copy; export checks the actual OG layout with bundled fonts.
+	oneLiner: LocalizedStringSchema.transform((copy) => ({
+		...copy,
+		en: copy.en.normalize('NFC'),
+		...(copy.fr !== undefined ? { fr: copy.fr.normalize('NFC') } : {}),
+		...(copy.es !== undefined ? { es: copy.es.normalize('NFC') } : {}),
+	})).superRefine((copy, ctx) => {
+		for (const [locale, text] of Object.entries(copy)) {
+			if (text && /\p{M}{3}/u.test(text)) {
+				ctx.addIssue({ code: 'custom', path: [locale], message: 'Project one_liner has more than 2 consecutive combining marks. Remove stacked accents before exporting.' });
+			}
+		}
+	}),
 	description: LocalizedBlockEditorDocSchema,
 	/** Technology names are not localized. */
 	stack: z.array(z.string()),

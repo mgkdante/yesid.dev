@@ -401,7 +401,7 @@ describe('projectsSlugSeoFactory', () => {
 				siteMeta,
 				siteSeoDefaults,
 			}));
-			expect(seo.description).toEqual(siteSeoDefaults.defaultDescription);
+			expect(seo.description).toEqual({ en: siteSeoDefaults.defaultDescription.en, fr: siteSeoDefaults.defaultDescription.en, es: siteSeoDefaults.defaultDescription.en });
 			expect(seo.noIndex).toBe(false);
 			expect(seo.title.en).toBe('yesid.design | yesid.');
 			expect(seo.ogImage?.url).toContain('/og/project/project-without-share-line');
@@ -431,7 +431,7 @@ describe('projectsSlugSeoFactory', () => {
 		expect(seo.description.fr).toBe('Une courte ligne sur le nouveau projet. Voir l’étude de cas.');
 	});
 
-	it('chooses each language on its own so a translation is never lost to English', async () => {
+	it('falls back to the English one-liner when it is not translated', async () => {
 		const paragraph = (text: string) => ({
 			time: 1,
 			version: '2.31.2',
@@ -461,21 +461,8 @@ describe('projectsSlugSeoFactory', () => {
 			},
 		}));
 		expect(seo.description.en).toBe('An English summary of this new project and its useful results. See the case study.');
-		expect(seo.description.fr).toBe('Une description française du projet et de ses résultats pour les lecteurs. Voir l’étude de cas.');
-		expect(seo.description.es).toBe(spanishDefault);
-	});
-
-	it('describes a known project with its short line and invitation, not the site fallback', async () => {
-		const known = projectFactory.build({ slug: 'yesid-design', title: { en: 'yesid.design' } });
-		const seo = PageSeoSchema.parse(await projectsSlugSeoFactory({
-			params: { slug: known.slug },
-			locale: 'es',
-			catalog: createContentCatalog({ projects: [known] }),
-			siteMeta,
-			siteSeoDefaults,
-		}));
-		expect(seo.description.en).toBe('One visual foundation, room for different products. See the case study.');
-		expect(seo.description.es).toBe('Una base visual común, espacio para cada producto. Ver el caso de estudio.');
+		expect(seo.description.fr).toBe('An English summary of this new project and its useful results. Voir l’étude de cas.');
+		expect(seo.description.es).toBe('An English summary of this new project and its useful results. Ver el caso de estudio.');
 	});
 
 	it('keeps short localized titles and missing translations unchanged', async () => {
