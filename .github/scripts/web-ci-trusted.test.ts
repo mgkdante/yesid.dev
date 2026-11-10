@@ -11,7 +11,8 @@ const realPolicy = readFileSync(new URL('./web-ci.ts', import.meta.url), 'utf8')
 const pin = readFileSync(new URL('../../.bun-version', import.meta.url), 'utf8').replaceAll('\r\n', '\n');
 const bash = process.platform === 'win32' ? 'C:/Program Files/Git/bin/bash.exe' : 'bash';
 
-test('trusted workflow runs base policy and rejects bases outside main', () => {
+test.each([0, 1])('trusted policy bootstrap %s uses the event base and rejects forged policy', index => {
+	const script = bootstraps[index]!;
 	expect(bootstraps).toHaveLength(2);
 	const root = mkdtempSync(join(tmpdir(), 'web-ci-trust-'));
 	const repo = join(root, 'repo');
@@ -55,40 +56,36 @@ test('trusted workflow runs base policy and rejects bases outside main', () => {
 			});
 			return { result, outputs: readFileSync(output, 'utf8') };
 		};
-		for (const script of bootstraps) {
-			for (const event of ['pull_request', 'merge_group', 'workflow_dispatch']) {
-				const { result, outputs } = run(script, event, base);
-				expect(result.exitCode).toBe(0);
-				expect(outputs).toContain(`revision=${event === 'workflow_dispatch' ? mainHead : base}\n`);
-				const directory = /^directory=(.+)$/m.exec(outputs)![1]!.trim();
-				const nativeDir = process.platform === 'win32'
-					? Bun.spawnSync([bash, '-c', 'cygpath -w "$1"', '--', directory]).stdout.toString().trim()
-					: directory;
-				expect(resolve(nativeDir).startsWith(resolve(repo))).toBe(false);
-				expect(readFileSync(join(nativeDir, '.bun-version'), 'utf8')).toBe(pin);
-				const env = { ...process.env, EVENT_NAME: event, BASE_SHA: base, HEAD_SHA: head,
-					GITHUB_OUTPUT: '', GIT_DIR: git('rev-parse', '--absolute-git-dir'), GIT_WORK_TREE: repo };
-				const classify = Bun.spawnSync([process.execPath, '.github/scripts/web-ci.ts', 'classify'], { cwd: nativeDir, env });
-				expect(classify.exitCode).toBe(0);
-				expect(classify.stdout.toString()).toBe('e2e=true\n');
-				const required = Bun.spawnSync([process.execPath, '.github/scripts/web-ci.ts', 'required'], {
-					cwd: nativeDir, env: { ...env, NEEDS: JSON.stringify({ extra: { result: 'failure' } }) },
-				});
-				expect(required.exitCode).toBe(1);
-			}
+		for (const event of ['pull_request', 'merge_group', 'workflow_dispatch']) {
+			const { result, outputs } = run(script, event, base);
+			expect(result.exitCode).toBe(0);
+			expect(outputs).toContain(`revision=${event === 'workflow_dispatch' ? mainHead : base}\n`);
+			const directory = /^directory=(.+)$/m.exec(outputs)![1]!.trim();
+			const nativeDir = process.platform === 'win32'
+				? Bun.spawnSync([bash, '-c', 'cygpath -w "$1"', '--', directory]).stdout.toString().trim()
+				: directory;
+			expect(resolve(nativeDir).startsWith(resolve(repo))).toBe(false);
+			expect(readFileSync(join(nativeDir, '.bun-version'), 'utf8')).toBe(pin);
+			const env = { ...process.env, EVENT_NAME: event, BASE_SHA: base, HEAD_SHA: head,
+				GITHUB_OUTPUT: '', GIT_DIR: git('rev-parse', '--absolute-git-dir'), GIT_WORK_TREE: repo };
+			const classify = Bun.spawnSync([process.execPath, '.github/scripts/web-ci.ts', 'classify'], { cwd: nativeDir, env });
+			expect(classify.exitCode).toBe(0);
+			expect(classify.stdout.toString()).toBe('e2e=true\n');
+			const required = Bun.spawnSync([process.execPath, '.github/scripts/web-ci.ts', 'required'], {
+				cwd: nativeDir, env: { ...env, NEEDS: JSON.stringify({ extra: { result: 'failure' } }) },
+			});
+			expect(required.exitCode).toBe(1);
 		}
 		git('checkout', '--orphan', 'unrelated');
 		git('commit', '--allow-empty', '-m', 'unrelated base');
 		const unrelated = git('rev-parse', 'HEAD');
-		for (const script of bootstraps) {
-			expect(run(script, 'pull_request', unrelated).result.exitCode).not.toBe(0);
-			expect(run(script, 'pull_request', '').result.exitCode).not.toBe(0);
-			for (const invalidBase of [unrelated, '', 'a'.repeat(40)]) {
-				const { result, outputs } = run(script, 'merge_group', invalidBase);
-				expect(result.exitCode).toBe(0);
-				expect(outputs).toContain('force_e2e=true\n');
-				expect(outputs).toContain(`revision=${mainHead}\n`);
-			}
+		expect(run(script, 'pull_request', unrelated).result.exitCode).not.toBe(0);
+		expect(run(script, 'pull_request', '').result.exitCode).not.toBe(0);
+		for (const invalidBase of [unrelated, '', 'a'.repeat(40)]) {
+			const { result, outputs } = run(script, 'merge_group', invalidBase);
+			expect(result.exitCode).toBe(0);
+			expect(outputs).toContain('force_e2e=true\n');
+			expect(outputs).toContain(`revision=${mainHead}\n`);
 		}
 	} finally {
 		rmSync(root, { recursive: true, force: true });
