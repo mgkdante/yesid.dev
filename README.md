@@ -30,7 +30,9 @@ The site runs at http://localhost:5173. Local builds read content from a
 committed fixture, so you need no credentials and no CMS access. Only Vercel
 production builds export live content from Directus. Pull requests target
 `main`, and their Vercel preview deployments build from the fixture; that
-preview is the staging environment.
+preview is the staging environment. Merges go through the `main` merge queue:
+enqueue a green pull request with `gh pr merge --auto --squash`, and the queue
+reruns the required checks on the combined change before squash-merging it.
 
 Check, test and build:
 
