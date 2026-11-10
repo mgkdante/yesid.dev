@@ -805,7 +805,7 @@
 			},
 			{
 				"translationKey": "one-brain-for-five-ai-tools-t3-code-and-notion",
-				"slug": "one-brain-for-five-ai-tools-t3-code-and-notion",
+				"slug": "one-brain-for-four-ai-tools-t3-code-and-notion",
 				"title": "One brain for four AI tools: T3 Code and Notion",
 				"excerpt": "I work with Codex, Claude, OpenCode and Antigravity. Each one has its own instructions, its own memory and its own way of knowing who I am.",
 				"date": "2026-11-01",
@@ -818,12 +818,12 @@
 				],
 				"animation": "draw",
 				"svg": "ai",
-				"url": "/blog/one-brain-for-five-ai-tools-t3-code-and-notion",
+				"url": "/blog/one-brain-for-four-ai-tools-t3-code-and-notion",
 				"external": false
 			},
 			{
 				"translationKey": "one-brain-for-five-ai-tools-t3-code-and-notion",
-				"slug": "un-seul-cerveau-pour-cinq-outils-dia-t3-code-et-notion",
+				"slug": "un-seul-cerveau-pour-quatre-outils-dia-t3-code-et-notion",
 				"title": "Un seul cerveau pour quatre outils d'IA : T3 Code et Notion",
 				"excerpt": "Je travaille avec Codex, Claude, OpenCode et Antigravity. Chacun a ses propres instructions, sa propre mémoire et sa propre façon de savoir qui je suis.",
 				"date": "2026-11-01",
@@ -836,12 +836,12 @@
 				],
 				"animation": "draw",
 				"svg": "ai",
-				"url": "/blog/un-seul-cerveau-pour-cinq-outils-dia-t3-code-et-notion",
+				"url": "/blog/un-seul-cerveau-pour-quatre-outils-dia-t3-code-et-notion",
 				"external": false
 			},
 			{
 				"translationKey": "one-brain-for-five-ai-tools-t3-code-and-notion",
-				"slug": "un-solo-cerebro-para-cinco-herramientas-de-ia-t3-code-y-notion",
+				"slug": "un-solo-cerebro-para-cuatro-herramientas-de-ia-t3-code-y-notion",
 				"title": "Un solo cerebro para cuatro herramientas de IA: T3 Code y Notion",
 				"excerpt": "Trabajo con Codex, Claude, OpenCode y Antigravity. Cada una tiene sus propias instrucciones, su propia memoria y su propia forma de saber quién soy.",
 				"date": "2026-11-01",
@@ -854,7 +854,7 @@
 				],
 				"animation": "draw",
 				"svg": "ai",
-				"url": "/blog/un-solo-cerebro-para-cinco-herramientas-de-ia-t3-code-y-notion",
+				"url": "/blog/un-solo-cerebro-para-cuatro-herramientas-de-ia-t3-code-y-notion",
 				"external": false
 			},
 			{
@@ -2674,7 +2674,7 @@
 				],
 				"version": "2.31.2"
 			},
-			"one-brain-for-five-ai-tools-t3-code-and-notion": {
+			"one-brain-for-four-ai-tools-t3-code-and-notion": {
 				"time": 1794096000000,
 				"blocks": [
 					{
@@ -2773,7 +2773,7 @@
 				],
 				"version": "2.31.2"
 			},
-			"un-seul-cerveau-pour-cinq-outils-dia-t3-code-et-notion": {
+			"un-seul-cerveau-pour-quatre-outils-dia-t3-code-et-notion": {
 				"time": 1794096000000,
 				"blocks": [
 					{
@@ -2872,7 +2872,7 @@
 				],
 				"version": "2.31.2"
 			},
-			"un-solo-cerebro-para-cinco-herramientas-de-ia-t3-code-y-notion": {
+			"un-solo-cerebro-para-cuatro-herramientas-de-ia-t3-code-y-notion": {
 				"time": 1794096000000,
 				"blocks": [
 					{
