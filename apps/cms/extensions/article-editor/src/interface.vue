@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch, resolveComponent } from 'vue';
 import { useApi } from '@directus/extensions-sdk';
-import { roundTrip, setImageControl, imageFile } from './data.js';
+import { roundTrip, setImageControl, imageFile, normalizeIds, pasteBlocks, componentError } from './data.js';
 
 defineOptions({ inheritAttrs: false });
 const props = defineProps({ value: Object, disabled: Boolean, folder: String });
@@ -9,34 +9,58 @@ const emit = defineEmits(['input']);
 const api = useApi();
 const editor = resolveComponent('interface-input-block-editor');
 const picker = resolveComponent('v-upload');
-const current = ref(props.value);
+const current = ref(normalizeIds(props.value));
+const unavailable = componentError(editor, picker);
 const error = ref('');
+const editorKey = ref(0);
+const clipboardType = 'application/x-yesid-article-blocks';
 const images = computed(() => current.value?.blocks?.filter(b => b.type === 'image') ?? []);
 watch(() => props.value, value => {
   if (value === null && props.disabled) return;
-  current.value = value;
+  current.value = normalizeIds(value);
 });
 function publish(value) {
-  if (props.disabled) return;
+  if (props.disabled || unavailable) return;
   current.value = value;
   emit('input', value);
 }
-function save(value) { publish(roundTrip(current.value, value)); }
+function save(value) {
+  try { publish(roundTrip(current.value, value)); }
+  catch (cause) { error.value = cause.message; }
+}
 function control(id, name, value) { publish(setImageControl(current.value, id, name, value)); }
 function selectLight(id, file) {
   error.value = '';
   if (!file) return;
-  if (!file.type?.startsWith('image/')) {
-    error.value = 'Select an image for the light version.';
-    return;
-  }
-  control(id, 'light', imageFile(file, api.defaults.baseURL));
+  try { control(id, 'light', imageFile(file, api.defaults.baseURL)); }
+  catch (cause) { error.value = cause.message; }
+}
+// Add provenance without interfering with Directus's ordinary clipboard formats.
+function copy(event) {
+  const selected = [...event.currentTarget.querySelectorAll('.ce-block--selected')].map(node => node.dataset.id);
+  const blocks = current.value?.blocks.filter(block => selected.includes(block.id)) ?? [];
+  if (blocks.some(block => block.type === 'image')) event.clipboardData?.setData(clipboardType, JSON.stringify(blocks));
+}
+function paste(event) {
+  const raw = event.clipboardData?.getData(clipboardType);
+  if (!raw || props.disabled || unavailable) return;
+  try {
+    const blocks = JSON.parse(raw);
+    if (!Array.isArray(blocks) || !blocks.every(block => typeof block.type === 'string' && block.data && typeof block.data === 'object')) return;
+    const afterId = event.target.closest('.ce-block')?.dataset.id;
+    event.preventDefault();
+    event.stopPropagation();
+    publish(pasteBlocks(current.value, blocks, afterId));
+    editorKey.value++;
+  } catch { error.value = 'Could not paste article blocks. Copy them again.'; }
 }
 </script>
 
 <template>
-  <div>
-    <component :is="editor" v-bind="$attrs" :value="current" :disabled="disabled" :folder="folder" @input="save" />
+  <div @copy.capture="copy" @paste.capture="paste">
+    <p v-if="unavailable" role="alert">{{ unavailable }}</p>
+    <template v-else>
+    <component :key="editorKey" :is="editor" v-bind="$attrs" :value="current" :disabled="disabled" :folder="folder" @input="save" />
     <fieldset v-for="(image, index) in images" :key="image.id" :disabled="disabled" class="image-controls">
       <legend>Image {{ index + 1 }}: {{ image.data.file?.title || image.data.file?.name || 'Image options' }}</legend>
       <label>Layout
@@ -57,6 +81,7 @@ function selectLight(id, file) {
         :disabled="disabled || !image.data.variants?.light"
         @change="control(image.id, 'showBothThemes', $event.target.checked)" /> Show both themes</label>
     </fieldset>
+    </template>
     <p v-if="error" role="alert">{{ error }}</p>
   </div>
 </template>

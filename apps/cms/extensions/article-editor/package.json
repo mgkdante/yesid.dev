@@ -14,6 +14,6 @@
     "type": "interface",
     "path": "dist/index.js",
     "source": "src/index.js",
-    "host": "~12.5.1"
+    "host": "12.5.1"
   }
 }

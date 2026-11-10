@@ -107,7 +107,10 @@ published content. Edits never rebuild the site by themselves.
 - Save the item, then run **Publish site** when ready. Portrait captures size automatically from their stored dimensions.
 
 The Article Block Editor wraps Directus's built-in editor and preserves image
-metadata by block ID. All other tools and their output stay with Directus.
+metadata by block ID. Duplicate IDs are normalized before editing. Image block
+copies carry their own metadata through the clipboard, including when the same
+file has different settings. Light selections require raster images with valid
+dimensions; unusable files show an error. All other tools stay with Directus.
 Project descriptions, project sections, blog bodies and legal bodies use it.
 
 ### Deploying the editor extension

@@ -2,20 +2,19 @@
 // CMS_LOCAL_PASSWORD=... bun apps/cms/scripts/check-article-editor.mjs [--stock]
 import assert from 'node:assert/strict';
 import { chromium } from '@playwright/test';
+import { localOrigin, localFetch, allowsRequest } from './lib/article-editor-local.mjs';
 
-const base = process.env.CMS_LOCAL_URL || 'http://localhost:8055';
-const origin = new URL(base);
-assert(['localhost', '127.0.0.1'].includes(origin.hostname), 'Local CMS only');
+const base = localOrigin(process.env.CMS_LOCAL_URL || 'http://localhost:8055');
 const email = process.env.CMS_LOCAL_EMAIL || 'editor@example.com';
 const password = process.env.CMS_LOCAL_PASSWORD;
 assert(password, 'Set CMS_LOCAL_PASSWORD for the disposable local admin');
 const stock = process.argv.includes('--stock');
-const auth = await fetch(`${base}/auth/login`, {
+const auth = await localFetch(base, '/auth/login', {
   method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }),
 }).then(r => r.json());
 assert(auth.data?.access_token, 'Local login failed');
 async function request(path, method = 'GET', body) {
-  const response = await fetch(base + path, { method,
+  const response = await localFetch(base, path, { method,
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${auth.data.access_token}` },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
@@ -37,8 +36,20 @@ await request(`/items/${collection}`, 'POST', { body: { blocks: [
   { id: 'paragraph1', type: 'paragraph', data: { text: 'Before' } },
 ] } });
 const browser = await chromium.launch({ headless: true });
+let page;
 try {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  await page.route('**/*', async route => {
+    if (!allowsRequest(base, route.request().url())) return route.abort('blockedbyclient');
+    try {
+      const response = await route.fetch({ maxRedirects: 0 });
+      if (response.status() >= 300 && response.status() < 400) return route.abort('blockedbyclient');
+      await route.fulfill({ response });
+    } catch {
+      // Abort failed requests without logging Playwright's credential-bearing call details.
+      await route.abort('failed').catch(() => {});
+    }
+  });
   await page.goto(`${base}/admin/login`);
   await page.getByRole('textbox').first().fill(email);
   await page.locator('input[type=password]').fill(password);
@@ -91,8 +102,60 @@ try {
     assert.equal(updated.variants.light.width, 1);
     assert.deepEqual(updated.future, extras.future);
     console.log('Controls: row, light upload, show both themes persisted');
+    await page.locator('input[type=file]').last().setInputFiles({ name: 'invalid.light.svg', mimeType: 'image/svg+xml',
+      buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0"/></svg>') });
+    await page.getByRole('alert').filter({ hasText: 'Select a PNG, JPEG, WebP, GIF or AVIF image' }).waitFor();
+    console.log('Picker: SVG refused with visible error');
+
+    const secondExtras = { ...extras, layout: 'row', showBothThemes: false,
+      variants: { light: { ...file, fileId: '33333333-3333-4333-8333-333333333333' } } };
+    await request(`/items/${collection}/1`, 'PATCH', { body: { blocks: [
+      { id: 'dup', type: 'image', data: { file, caption: 'First', ...extras } },
+      { id: 'dup', type: 'image', data: { file, caption: 'Second', ...secondExtras } },
+      { id: 'paragraph1', type: 'paragraph', data: { text: 'Duplicate probe' } },
+    ] } });
+    await page.reload();
+    await page.getByText('Duplicate probe', { exact: true }).fill('Duplicate edit');
+    await page.waitForTimeout(800);
+    await Promise.all([
+      page.waitForResponse(r => new URL(r.url()).pathname === `/items/${collection}/1` && r.request().method() === 'PATCH'),
+      page.keyboard.press('Control+s'),
+    ]);
+    const duplicates = (await request(`/items/${collection}/1`)).data.body.blocks.filter(b => b.type === 'image');
+    assert.notEqual(duplicates[0].id, duplicates[1].id);
+    assert.deepEqual(duplicates[0].data.variants, extras.variants);
+    assert.deepEqual(duplicates[1].data.variants, secondExtras.variants);
+    assert.equal(duplicates[0].data.layout, 'beside');
+    assert.equal(duplicates[1].data.layout, 'row');
+    console.log('Duplicate IDs: unique IDs and separate metadata SURVIVE');
+    await page.getByLabel('Layout', { exact: true }).nth(1).selectOption('beside');
+    await page.waitForTimeout(800);
+    await page.evaluate(() => {
+      const blocks = document.querySelectorAll('.ce-block');
+      blocks[1].classList.add('ce-block--selected');
+      const clipboardData = new DataTransfer();
+      blocks[1].dispatchEvent(new ClipboardEvent('copy', { bubbles: true, cancelable: true, clipboardData }));
+      blocks[1].classList.remove('ce-block--selected');
+      blocks[2].querySelector('[contenteditable]').dispatchEvent(new ClipboardEvent('paste', { bubbles: true, cancelable: true, clipboardData }));
+    });
+    await page.getByLabel('Layout', { exact: true }).nth(2).waitFor();
+    await page.waitForTimeout(800);
+    await Promise.all([
+      page.waitForResponse(r => new URL(r.url()).pathname === `/items/${collection}/1` && r.request().method() === 'PATCH'),
+      page.keyboard.press('Control+s'),
+    ]);
+    const copies = (await request(`/items/${collection}/1`)).data.body.blocks.filter(b => b.type === 'image');
+    assert.equal(copies.length, 3);
+    assert.equal(new Set(copies.map(b => b.id)).size, 3);
+    assert.deepEqual(copies[2].data.variants, secondExtras.variants);
+    assert.equal(copies[2].data.layout, 'beside');
+    assert.equal(copies[2].data.showBothThemes, false);
+    assert.equal(copies[0].data.layout, 'beside');
+    console.log('Copy/paste: unique ID, source pair, layout, showBothThemes SURVIVE (same file, different settings)');
+
   }
 } finally {
+  await page?.unrouteAll({ behavior: 'wait' });
   await browser.close();
   await request(`/collections/${collection}`, 'DELETE');
 }
