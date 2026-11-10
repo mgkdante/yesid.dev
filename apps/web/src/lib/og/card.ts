@@ -32,6 +32,8 @@ export interface OgCard {
 	/** A closing period becomes the orange dot; one is added when the title has no closing mark. */
 	title: string;
 	subtitle?: string;
+	/** Keep the CMS project summary complete, allowing smaller type and more lines. */
+	fullSubtitle?: boolean;
 	cta: string;
 	ctaTone: OgCtaTone;
 	art?: OgCardArt;
@@ -169,8 +171,18 @@ function subtitleBlock(subtitle: string, width: number, size: number, measure: M
 	return { lines, size, height: lines.length * size * SUBTITLE_LEADING };
 }
 
-function fitSubtitle(subtitle: string | undefined, width: number, measure: MeasureText): TextBlock | undefined {
+function fitSubtitle(subtitle: string | undefined, width: number, measure: MeasureText, full = false): TextBlock | undefined {
 	if (!subtitle) return undefined;
+	if (full) {
+		// Greedy wrapping avoids repeatedly shaping balanced paragraphs at every size.
+		for (let size = SUBTITLE_SIZE.min; size >= 18; size -= 2) {
+			const lines = subtitle.split('\n').flatMap((part) =>
+				wrapGreedy(part, width / size, (line) => measure(line, SUBTITLE_FONT)));
+			if (lines.length * size * SUBTITLE_LEADING <= 124) {
+				return { lines, size, height: lines.length * size * SUBTITLE_LEADING };
+			}
+		}
+	}
 	// One clean line beats two slightly bigger ones.
 	for (let size = SUBTITLE_SIZE.max; size >= SUBTITLE_SIZE.oneLineMin; size -= 2) {
 		const wrapped = wrapParagraphs(subtitle, width / size, (line) => measure(line, SUBTITLE_FONT));
@@ -178,7 +190,9 @@ function fitSubtitle(subtitle: string | undefined, width: number, measure: Measu
 	}
 	for (let size = SUBTITLE_SIZE.max; size > SUBTITLE_SIZE.min; size -= 2) {
 		const wrapped = wrapParagraphs(subtitle, width / size, (line) => measure(line, SUBTITLE_FONT));
-		if (wrapped.length <= SUBTITLE_MAX_LINES) return subtitleBlock(subtitle, width, size, measure);
+		if (wrapped.length <= SUBTITLE_MAX_LINES) {
+			return subtitleBlock(subtitle, width, size, measure);
+		}
 	}
 	return subtitleBlock(subtitle, width, SUBTITLE_SIZE.min, measure);
 }
@@ -281,7 +295,7 @@ function gridSvg(): string {
 export function buildOgCardSvg(card: OgCard, measure: MeasureText): string {
 	const width = card.art?.contentWidth ?? OG_CARD_WIDTH - 2 * MARGIN;
 	const { body, mark } = splitClosingMark(card.title);
-	const subtitle = fitSubtitle(card.subtitle, width, measure);
+	const subtitle = fitSubtitle(card.subtitle, width, measure, card.fullSubtitle);
 	const subtitleSpace = subtitle ? subtitle.height + BLOCK_GAP : 0;
 	const title = fitTitle(body, mark, width, COPY_BOTTOM - COPY_TOP - subtitleSpace, measure);
 	const copyHeight = title.height + subtitleSpace;

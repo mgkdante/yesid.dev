@@ -86,6 +86,20 @@ Regenerate both binary icons from `favicon.svg` if the mark changes.
 | `static/images/**` | Raster + CMS-mirrored assets (metro map, about art, work shots) | Static; CMS mirror via `media-assets.ts` (GENERATED) + `assets-id-map.json` |
 | `static/og/**.png` | 27 committed OG share cards, 1200x630 <150KB, minted by `scripts/generate-og-cards.ts`: `default.{en,fr,es}` (home + locale fallback), localized `routes/{services,contact,about,projects}`, localized `services/<id>` | Static; blog/project cards share the layout in `src/lib/og/card.ts` and prerender at build into deployment-static `/og/{blog,project}/` files |
 
+Project share copy comes from `projects_translations.one_liner` through the exported
+catalog, shared by search metadata and the generated card subtitle. Missing
+translations resolve to English; copy outside the 50–200 search-description band
+(after the optional generic CTA) falls back to the full CMS description, then the
+site default. Project cards allow smaller type and more subtitle lines to preserve
+the selected text. Editing Directus takes effect on the next live-content build.
+
+To regenerate project cards, run `bun run build` (fixture locally by default).
+The prerendered `/og/project/<slug>{,.fr,.es}.png` files are deployment output,
+not committed assets. `scripts/generate-og-cards.ts` only mints generic route and
+service cards; their committed PNGs and manifest digests do not change when
+project copy changes. Historical OG screenshots under `static/images/work/` are
+case-study media, not the cards served by project metadata.
+
 ### Rules
 
 - Dead art gets deleted, not parked. If a file has zero references, it goes.

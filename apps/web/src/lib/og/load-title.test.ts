@@ -3,7 +3,7 @@ import { projects } from '#lib/content/projects.ts';
 import { blogPosts } from '#lib/content/blog.ts';
 import { loadOgTitle } from './load-title';
 
-const project = { ...projects[0]!, slug: 'fixture-project', title: { en: 'English project', fr: 'Projet français' }, oneLiner: { en: 'A short line.', fr: 'Une ligne courte.' } };
+const project = { ...projects[0]!, slug: 'fixture-project', title: { en: 'English project', fr: 'Projet français' }, oneLiner: { en: 'A CMS summary long enough for the search description.', fr: 'Une ligne du CMS assez longue pour la description de recherche.' } };
 const post = { ...blogPosts[0]!, slug: 'fixture-post', title: 'Article français', lang: 'fr' as const };
 
 describe('OG titles from catalog fixtures', () => {
@@ -15,7 +15,7 @@ describe('OG titles from catalog fixtures', () => {
 		expect(await loadOgTitle('project', 'missing', 'en', { projects: [] })).toBeNull();
 	});
 	it('localizes project titles and eyebrows', async () => {
-		expect(await loadOgTitle('project', project.slug, 'fr', { projects: [project] })).toEqual({ eyebrow: 'PROJET', title: 'Projet français', subtitle: 'Une ligne courte.', cta: 'Voir l’étude de cas', ctaTone: 'action' });
+		expect(await loadOgTitle('project', project.slug, 'fr', { projects: [project] })).toEqual({ eyebrow: 'PROJET', title: 'Projet français', subtitle: project.oneLiner.fr, fullSubtitle: true, cta: 'Voir l’étude de cas', ctaTone: 'action' });
 	});
 	it.each([undefined, '', '   '])('falls back to English for missing French copy %s', async (fr) => {
 		expect(await loadOgTitle('project', project.slug, 'fr', { projects: [{ ...project, title: { en: 'English project', fr } }] })).toMatchObject({ eyebrow: 'PROJET', title: 'English project' });
@@ -27,15 +27,6 @@ describe('OG titles from catalog fixtures', () => {
 	});
 	it('keeps wip project cards available without a marker', async () => {
 		expect(await loadOgTitle('project', project.slug, 'en', { projects: [{ ...project, status: 'wip' }] })).toMatchObject({ eyebrow: 'PROJECT', title: 'English project' });
-	});
-	it('prefers the short project line and drops a one-liner too long for a card', async () => {
-		const long = { en: 'word '.repeat(30).trim() };
-		const card = await loadOgTitle('project', project.slug, 'en', { projects: [{ ...project, oneLiner: long }] });
-		expect(card).not.toHaveProperty('subtitle');
-		const known = await loadOgTitle('project', 'transit-data-pipeline', 'fr', {
-			projects: [{ ...project, slug: 'transit-data-pipeline', oneLiner: long }],
-		});
-		expect(known?.subtitle).toBe('Position des autobus en direct et historique de fiabilité à Montréal et Ottawa.');
 	});
 	it('returns null for empty titles so the endpoint can stop the build', async () => {
 		expect(await loadOgTitle('project', project.slug, 'en', { projects: [{ ...project, title: { en: '' } }] })).toBeNull();

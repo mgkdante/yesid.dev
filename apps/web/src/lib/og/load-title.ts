@@ -3,14 +3,12 @@ import { createContentCatalog } from '#lib/catalog/index.ts';
 import type { Locale } from '#lib/types.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 import type { OgCard } from './card';
-import { SHARE_CTA, projectTagline } from './share-copy';
+import { SHARE_CTA } from './share-copy';
+import { projectCopy } from './project-copy';
 
 export type OgType = 'blog' | 'project';
 
 const PROJECT_EYEBROW: Record<Locale, string> = { en: 'PROJECT', fr: 'PROJET', es: 'PROYECTO' };
-
-// Longer one-liners read as prose on a card, so they only stand in up to this length.
-const SUBTITLE_MAX_LENGTH = 90;
 
 // Pulls the card copy for a (type, slug) pair from the content catalog.
 // Returns null on miss, empty title, or any catalog error. The endpoint
@@ -38,13 +36,11 @@ export async function loadOgTitle(
     // "not translated yet" and falls back to en (guaranteed by schema).
     const resolved = resolveLocale(project.title, locale);
     if (!resolved) return null;
-    const oneLiner = project.oneLiner ? resolveLocale(project.oneLiner, locale) : '';
-    const subtitle =
-      projectTagline(project.slug, locale) ?? (oneLiner.length <= SUBTITLE_MAX_LENGTH ? oneLiner : '');
+    const { line: subtitle } = projectCopy(project, locale, catalog.meta.siteSeoDefaults().defaultDescription);
     return {
       eyebrow: PROJECT_EYEBROW[locale],
       title: resolved,
-      ...(subtitle && { subtitle }),
+      ...(subtitle && { subtitle, fullSubtitle: true }),
       cta: SHARE_CTA.project.label[locale],
       ctaTone: SHARE_CTA.project.tone,
     };

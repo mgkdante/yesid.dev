@@ -73,6 +73,14 @@ describe('share card', () => {
 		expect(inlinedOgFontFiles()).toBe(files);
 	});
 
+	it('renders a full CMS summary near the description limit without cutting sentences', () => {
+		const subtitle = 'This project brings together complete information for people making decisions about their daily work. It keeps the useful context available in one place and explains the limits of the published results.';
+		const svg = renderer.svg(card({ title: 'CMS project', subtitle, fullSubtitle: true }));
+		const text = Array.from(svg.matchAll(/<text[^>]*>(.*?)<\/text>/g), (match) => match[1]).join(' ');
+		expect(text).toContain(subtitle);
+		expect(renderer.png(card({ title: 'CMS project', subtitle, fullSubtitle: true })).byteLength).toBeLessThan(150_000);
+	});
+
 	it('honours a manual line break in code-owned titles', () => {
 		const svg = renderer.svg(card({ title: 'Websites &\nOnline Stores' }));
 		expect(svg).toContain('>Websites &amp;<');
