@@ -1,0 +1,37 @@
+{
+  "app": "apps/web",
+  "rules": [
+    {
+      "specs": [
+        "contact.spec.ts"
+      ],
+      "prefix": "apps/web/src/lib/components/contact/"
+    },
+    {
+      "specs": [
+        "hero-layout.spec.ts",
+        "hero-intro-scroll.spec.ts",
+        "hero-intro-replay.spec.ts",
+        "hero-intro-reload.spec.ts"
+      ],
+      "prefix": "apps/web/src/lib/components/home/"
+    }
+  ],
+  "browserGroups": [
+    {
+      "match": ".*",
+      "allProjects": [
+        "*"
+      ],
+      "projects": [
+        "phone",
+        "desktop"
+      ]
+    }
+  ],
+  "playwright": "playwright.changed.config.ts",
+  "unitEnv": {
+    "EXPORT_FALLBACKS_SOURCE": "fixture"
+  },
+  "specDir": "apps/web/tests"
+}
