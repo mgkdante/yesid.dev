@@ -200,6 +200,18 @@ jobs:
       # The runner image already ships Chromium's system libraries. --with-deps
       # only added extra fonts and package upgrades through apt, which a slow
       # Ubuntu mirror stalled for up to 10 minutes. The browser download takes seconds.
+      - name: Resolve Playwright version
+        id: playwright
+        working-directory: apps/web
+        run: bun -p '"version=" + require("@playwright/test/package.json").version' >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright Chromium
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: chromium-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
+
+      # Keep the idempotent install on cache hits to validate the required revision.
       - name: Install Playwright Chromium
         working-directory: apps/web
         run: bun x playwright install chromium
