@@ -91,7 +91,9 @@ catalog, shared by search metadata and the generated card subtitle. Missing
 translations resolve to English; copy outside the 50–200 search-description band
 (after the optional generic CTA) falls back to the full CMS description, then the
 site default. Project cards allow smaller type and more subtitle lines to preserve
-the selected text. Editing Directus takes effect on the next live-content build.
+the selected text at 18px or larger. OG lines have no separate 200-character
+limit: export uses the same fit and bundled-font coverage checks as rendering.
+Editing Directus takes effect on the next live-content build.
 
 To regenerate project cards, run `bun run build` (fixture locally by default).
 The prerendered `/og/project/<slug>{,.fr,.es}.png` files are deployment output,

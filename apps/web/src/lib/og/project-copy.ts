@@ -3,12 +3,12 @@ import type { Locale, Project, LocalizedString } from '#lib/types.ts';
 import { resolveLocale } from '#lib/utils/locale.ts';
 import { SHARE_CTA, withShareCta } from './share-copy';
 
-const normalize = (text: string) => text.replace(/\s+/gu, ' ').trim();
+const normalize = (text: string) => text.normalize('NFC').replace(/\s+/gu, ' ').trim();
 const inBounds = (text: string) => text.length >= 50 && text.length <= 200;
 
 /** Abbreviations and initials can close only at the end of the text. */
 function insideAbbreviation(text: string, period: number, end: number): boolean {
-	const abbreviations = /\b(?:p\.\s*(?:ex|ej)|e\.g|i\.e|(?:[A-Z]\.)+[A-Z]|Mr|Mrs|Ms|Dr|Prof|Sr|Sra|Srta|Mme|Mlle|M|St|vs|etc|núm|env|[A-Z])\./gu;
+	const abbreviations = /\b(?:p\.\s*(?:ex|ej)|e\.g|i\.e|(?:[A-Z]\.)+[A-Z]|Mr|Mrs|Ms|Dr|Dre|Dra|Inc|Ltd|Co|Corp|Mmes|Sres|Lic|Ing|av|p|Prof|Sr|Sra|Srta|Mme|Mlle|M|St|vs|etc|núm|env|[A-Z])\./gu;
 	for (const match of text.matchAll(abbreviations)) {
 		const lastPeriod = match.index + match[0].length - 1;
 		if (period < match.index || period > lastPeriod) continue;

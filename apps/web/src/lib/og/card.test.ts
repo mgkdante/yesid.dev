@@ -90,6 +90,9 @@ describe('share card', () => {
 	});
 
 	it.each([
+		'Île de Montréal : des données fiables pour mieux planifier les transports.',
+		'j’aide les équipes à publier des données fiables pour mieux planifier les transports.',
+		'A bilingual publishing platform that helps local teams manage their websites, share useful information with customers, automate repetitive updates, and keep their content accessible across English, French, and Spanish.',
 		Array(6).fill('W'.repeat(32)).join(' '),
 		Array(6).fill('W'.repeat(32)).join(' ') + ' WW',
 		'WM'.repeat(100),

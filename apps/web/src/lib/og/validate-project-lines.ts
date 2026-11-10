@@ -13,7 +13,7 @@ export function validateProjectLines(projects: readonly Project[]): void {
 			try {
 				fitFullSubtitle(text, OG_CARD_WIDTH - 160, measure);
 			} catch (cause) {
-				throw new Error(`Project ${project.slug}, locale ${locale}, field one_liner: cannot render fully at 18px or larger. Shorten or simplify this one-liner before exporting.`, { cause });
+				throw new Error(`Project ${project.slug}, locale ${locale}, field one_liner: ${cause instanceof Error ? cause.message : 'cannot render fully at 18px or larger.'}`, { cause });
 			}
 		}
 	}

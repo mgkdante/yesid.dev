@@ -48,6 +48,7 @@ export interface OgFontSpec {
 
 /** Ink width of one line, in em. */
 export type MeasureText = ((text: string, font: OgFontSpec) => number) & {
+	unsupported?: (text: string) => string[];
 	bounds?: (text: string, font: OgFontSpec) => { left: number; right: number; ascent: number; descent: number };
 };
 type MeasureLine = (line: string) => number;
@@ -164,6 +165,7 @@ function clipLines(lines: readonly string[], maxLines: number, maxEm: number, me
 }
 
 interface TextBlock {
+	xOffsets?: number[];
 	lines: string[];
 	size: number;
 	height: number;
@@ -175,11 +177,21 @@ function subtitleBlock(subtitle: string, width: number, size: number, measure: M
 	return { lines, size, height: lines.length * size * SUBTITLE_LEADING };
 }
 
+function subtitleWidth(line: string, measure: MeasureText): number {
+	const box = measure.bounds?.(line, SUBTITLE_FONT);
+	return box ? box.right - Math.min(0, box.left) : measure(line, SUBTITLE_FONT);
+}
+
+function fullSubtitleBlock(lines: string[], size: number, measure: MeasureText): TextBlock {
+	const xOffsets = lines.map((line) => -Math.min(0, measure.bounds?.(line, SUBTITLE_FONT).left ?? 0) * size);
+	return { lines, size, height: lines.length * size * SUBTITLE_LEADING, xOffsets };
+}
+
 function subtitleFits(lines: string[], width: number, size: number, measure: MeasureText): boolean {
 	return lines.length * size * SUBTITLE_LEADING <= 124 && lines.every((line) => {
 		const box = measure.bounds?.(line, SUBTITLE_FONT);
-		return measure(line, SUBTITLE_FONT) * size <= width && (!box || (
-			box.left >= 0 && box.right * size <= width && box.ascent <= 0.98 && box.descent <= SUBTITLE_LEADING - 0.98
+		return subtitleWidth(line, measure) * size <= width && (!box || (
+			(box.right - Math.min(0, box.left)) * size <= width && box.ascent <= 0.98 && box.descent <= SUBTITLE_LEADING - 0.98
 		));
 	});
 }
@@ -189,19 +201,20 @@ export function fitFullSubtitle(subtitle: string, width: number, measure: Measur
 	// CMS whitespace is not an authored layout. Never clip a full subtitle.
 	if (/\p{M}{3}/u.test(subtitle.normalize('NFC'))) throw new Error('Remove stacked combining marks from one_liner.');
 	const text = subtitle.normalize('NFC').replace(/\s+/gu, ' ').trim();
+	const unsupported = measure.unsupported?.(text) ?? [];
+	if (unsupported.length) throw new Error(`unsupported graphemes ${unsupported.join(' ')}`);
 	for (let size = SUBTITLE_SIZE.min; size >= 18; size -= 2) {
-		const lines = wrapGreedy(text, width / size, (line) => measure(line, SUBTITLE_FONT));
+		const lines = wrapGreedy(text, width / size, (line) => subtitleWidth(line, measure));
 		if (subtitleFits(lines, width, size, measure)) {
-			return { lines, size, height: lines.length * size * SUBTITLE_LEADING };
+			return fullSubtitleBlock(lines, size, measure);
 		}
 	}
 	// Word boundaries can waste almost half of every line. Only after prose
 	// wrapping fails at every size, fill lines even across fitting words.
 	const size = 18;
-	const lines = breakLongWord(text, width / size, (line) => measure(line, SUBTITLE_FONT));
-	const height = lines.length * size * SUBTITLE_LEADING;
-	if (subtitleFits(lines, width, size, measure)) return { lines, size, height };
-	throw new Error('OG full subtitle cannot fit at 18px or larger; shorten the project one-liner (maximum 200 characters).');
+	const lines = breakLongWord(text, width / size, (line) => subtitleWidth(line, measure));
+	if (subtitleFits(lines, width, size, measure)) return fullSubtitleBlock(lines, size, measure);
+	throw new Error('OG full subtitle cannot fit at 18px or larger; shorten the project one-liner.');
 }
 
 function fitSubtitle(subtitle: string | undefined, width: number, measure: MeasureText, full = false): TextBlock | undefined {
@@ -270,7 +283,7 @@ function subtitleSvg(block: TextBlock, top: number): string {
 	return block.lines
 		.map(
 			(line, index) =>
-				`<text x="${MARGIN}" y="${(top + block.size * 0.98 + index * leading).toFixed(1)}" ${fontAttrs(SUBTITLE_FONT, block.size)} fill="${MUTED}">${escapeXml(line)}</text>`,
+				`<text x="${MARGIN + (block.xOffsets?.[index] ?? 0)}" y="${(top + block.size * 0.98 + index * leading).toFixed(1)}" ${fontAttrs(SUBTITLE_FONT, block.size)} fill="${MUTED}">${escapeXml(line)}</text>`,
 		)
 		.join('');
 }

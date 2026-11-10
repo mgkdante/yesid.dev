@@ -15,7 +15,7 @@ export const ProjectSchema = z.object({
 	/** URL-safe, globally unique identity; never localized. */
 	slug: z.string().min(1),
 	title: LocalizedStringSchema,
-	// Preliminary editorial limits; export also checks the actual OG layout with bundled fonts.
+	// Normalize authored copy; export checks the actual OG layout with bundled fonts.
 	oneLiner: LocalizedStringSchema.transform((copy) => ({
 		...copy,
 		en: copy.en.normalize('NFC'),
@@ -25,9 +25,6 @@ export const ProjectSchema = z.object({
 		for (const [locale, text] of Object.entries(copy)) {
 			if (text && /\p{M}{3}/u.test(text)) {
 				ctx.addIssue({ code: 'custom', path: [locale], message: 'Project one_liner has more than 2 consecutive combining marks. Remove stacked accents before exporting.' });
-			}
-			if (text && text.replace(/\s+/gu, ' ').trim().length > 200) {
-				ctx.addIssue({ code: 'custom', path: [locale], message: 'Project one-liner exceeds the OG card maximum of 200 characters (after whitespace normalization). Shorten one_liner before exporting.' });
 			}
 		}
 	}),

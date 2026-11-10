@@ -283,15 +283,16 @@ credential change.
 
 ## Project share copy
 
-Project `one_liner` is evergreen display copy. The export validator limits it to
-**200 characters after collapsing whitespace**, even though the CMS field permits
-500. One-liners are normalized to NFC and reject more than two consecutive
+Project `one_liner` is evergreen display copy. The CMS field permits 500
+characters; OG acceptance depends on the shared fit check, with no separate
+200-character limit. One-liners are normalized to NFC and reject more than two consecutive
 combining marks. Before writing any content module, export uses the same fit
 routine and bundled fonts as the 1200×630 project OG card, checking width and
 glyph ascent/descent in its 124px subtitle area at 18px or larger. Impossible
 layouts fail export with the project, locale and `one_liner` field named. Full
 subtitles never use ellipsis clipping; the renderer retains its final guard.
-CMS newlines become spaces.
+CMS newlines become spaces. Export rejects unsupported graphemes using the same
+bundled fonts as rendering and names the characters in the field error.
 
 The OG image always uses the localized one-liner, falling back to English when
 missing, empty or switched off. Without a one-liner it uses leading complete

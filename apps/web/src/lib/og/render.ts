@@ -2,6 +2,7 @@
 // so callers pass them: Bun scripts use the package files, the prerender route
 // writes the inlined fonts to disk once (font-files.ts).
 
+import { createGlyphCoverage } from './glyph-coverage';
 import { Resvg } from '@resvg/resvg-js';
 import { buildOgCardSvg, escapeXml, OG_CARD_WIDTH, type MeasureText, type OgCard } from './card';
 
@@ -29,7 +30,8 @@ export function createOgCardRenderer(fontFiles: readonly string[]): OgCardRender
 		return width;
 	};
 
-	const measure: MeasureText = Object.assign((text: string, spec: Parameters<MeasureText>[1]) => bounds(text, spec).right, { bounds });
+	const unsupported = createGlyphCoverage(fontFiles);
+	const measure: MeasureText = Object.assign((text: string, spec: Parameters<MeasureText>[1]) => bounds(text, spec).right, { bounds, unsupported });
 	const svg = (card: OgCard) => buildOgCardSvg(card, measure);
 	return {
 		measure,

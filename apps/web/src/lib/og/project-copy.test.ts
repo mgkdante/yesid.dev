@@ -57,6 +57,16 @@ describe('CMS project share copy', () => {
 			expect(renderer.png(card!).byteLength).toBeLessThan(150_000);
 		}
 	}, 30_000);
+	it('keeps a fitting 218-character OG line and falls back to complete overview metadata', async () => {
+		const line = 'A bilingual publishing platform that helps local teams manage their websites, share useful information with customers, automate repetitive updates, and keep their content accessible across English, French, and Spanish.';
+		const overview = 'This platform helps local teams publish useful information in three languages.';
+		const project = { ...projectFactory.build(), oneLiner: { en: line }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph' as const, data: { text: overview } }] } } };
+		for (const locale of locales) {
+			const { seo, card } = await outputs(project, locale);
+			expect(card?.subtitle).toBe(line);
+			expect(seo.description[locale]).toBe(withShareCta(overview, SHARE_CTA.project.label[locale]));
+		}
+	});
 	it('uses the site default for metadata when neither CMS candidate fits', async () => {
 		const project = { ...projectFactory.build(), oneLiner: { en: 'x'.repeat(201) }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'long-description', type: 'paragraph' as const, data: { text: 'y'.repeat(201) } }] } } };
 		for (const locale of locales) {
@@ -94,6 +104,8 @@ describe('CMS project share copy', () => {
 	});
 
 	it.each([
+		['fr', 'Ce projet accompagne les équipes et les clients de la Dre. Tremblay'],
+		['es', 'Este proyecto acompaña a los equipos y a los pacientes en la consulta de la Dra. García'],
 		['en', 'This project lets every team share useful reports and dashboards, e.g.'],
 		['fr', 'Ce projet permet à toutes les équipes de partager des données utiles, p. ex.'],
 		['es', 'Este proyecto permite a todos los equipos compartir datos importantes, p. ej.'],
@@ -105,7 +117,7 @@ describe('CMS project share copy', () => {
 		expect(projectCopy(project, locale, { en: 'Site default' }).description).toBe('Site default');
 	});
 
-	it.each(['e.g.', 'i.e.', 'p. ex.', 'p. ej.', 'Dr.', 'M.', 'Mme.', 'Sr.', 'Sra.', 'núm.', 'env.'])(
+	it.each(['e.g.', 'i.e.', 'p. ex.', 'p. ej.', 'Dr.', 'M.', 'Mme.', 'Sr.', 'Sra.', 'núm.', 'env.', 'Dre.', 'Dra.', 'Inc.', 'Ltd.', 'Co.', 'Corp.', 'Mmes.', 'Mlle.', 'Sres.', 'Lic.', 'Ing.', 'av.', 'p.'])(
 		'keeps %s attached to an over-budget continuation after a complete sentence', (abbreviation) => {
 			const first = 'This project gives every website a consistent visual language.';
 			const text = `${first} Teams share useful reports and dashboards with ${abbreviation} ${'Continuation '.repeat(30)}.`;
