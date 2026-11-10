@@ -44,14 +44,15 @@ export async function reuseVariant(
 	const widths = pickVariantWidths(meta.width, config.widths);
 	const variants = entry.data.variants;
 	if (!Array.isArray(variants) || !variants.length || variants.length > widths.length) return undefined;
-	const fallback = variants.at(-1)?.path === `/${legacyPath}`;
-	if (!fallback && variants.length !== widths.length) return undefined;
-	if (Object.keys(entry.outputs).length !== variants.length - Number(fallback)) return undefined;
+	// A receipt cannot prove that encoding a rung would exceed the original size.
+	// Regenerate any claimed original fallback through the normal encoding path.
+	if (variants.some((variant) => variant.path === `/${legacyPath}`)) return undefined;
+	if (variants.length !== widths.length) return undefined;
+	if (Object.keys(entry.outputs).length !== variants.length) return undefined;
 	try {
 		for (const [index, variant] of variants.entries()) {
 			const width = widths[index]!;
 			if (variant.width !== width) return undefined;
-			if (fallback && index === variants.length - 1) continue;
 			if (variant.path !== `/${variantPathFor(legacyPath, width)}`) return undefined;
 			const digest = entry.outputs[variant.path];
 			if (!digest) return undefined;

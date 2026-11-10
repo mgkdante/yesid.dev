@@ -2,10 +2,44 @@ import { describe, expect, it } from 'bun:test';
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync, unlinkSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import manifest from '../../fixtures/assets-manifest.json';
 import { prepareMediaVariants, writeMediaVariants } from './media-variants';
-import { createVariantReceipt, fileDigest } from './variant-receipt';
+import { createVariantReceipt, fileDigest, readVariantReceipt } from './variant-receipt';
 
 describe('verified variant reuse', () => {
+	it.each([0, 1])('regenerates an invented original fallback after %i valid rungs', async (prefixLength) => {
+		const root = fileURLToPath(new URL('../../../../', import.meta.url));
+		const legacyPath = 'images/about/headshot.webp';
+		const input = { ...manifest, assets: [{ legacyPath }] };
+		const receipt = structuredClone((await readVariantReceipt(root))!);
+		const entry = receipt.assets[legacyPath]!;
+		const prefix = entry.data.variants.slice(0, prefixLength);
+		entry.data.variants = [...prefix, { width: prefixLength ? 600 : 240, path: `/${legacyPath}` }];
+		entry.outputs = Object.fromEntries(prefix.map(({ path }) => [path, entry.outputs[path]!]));
+		const forced = await prepareMediaVariants(input, root, { reuse: false });
+		expect(forced.data[`/${legacyPath}`]!.variants.map(({ width }) => width)).toEqual([240, 600, 800]);
+		expect(forced.writes).toHaveLength(3);
+		expect(await prepareMediaVariants(input, root, { receipt })).toEqual(forced);
+	});
+
+	it('regenerates genuine original fallbacks with the same metadata and bytes as forced generation', async () => {
+		const root = fileURLToPath(new URL('../../../../', import.meta.url));
+		const receipt = (await readVariantReceipt(root))!;
+		const assets = manifest.assets.filter(({ legacyPath }) =>
+			receipt.assets[legacyPath]?.data.variants.some(({ path }) => path === `/${legacyPath}`));
+		expect(assets.length).toBeGreaterThan(0);
+		const input = { ...manifest, assets };
+		const forced = await prepareMediaVariants(input, root, { reuse: false });
+		for (const { legacyPath } of assets) {
+			expect(forced.data[`/${legacyPath}`]).toEqual(receipt.assets[legacyPath]!.data);
+		}
+		for (const { filePath, content } of forced.writes) {
+			expect(Buffer.from(content)).toEqual(readFileSync(filePath));
+		}
+		expect(await prepareMediaVariants(input, root, { receipt })).toEqual(forced);
+	});
+
 	it('repairs receipt-only metadata and incomplete ladders', async () => {
 		const root = mkdtempSync(join(tmpdir(), 'variant-metadata-'));
 		const manifest = { sourceRoot: 'static', assets: [{ legacyPath: 'sample.png' }] };
