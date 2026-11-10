@@ -410,3 +410,41 @@ describe('BlockRenderer.svelte (Editor.js block dispatch)', () => {
 		expect(container.querySelector('p')?.textContent).toBe('after unknown');
 	});
 });
+
+describe('image article layouts', () => {
+	const image = (id: string, layout?: 'row' | 'beside', both = false): BlockEditorDoc['blocks'][number] => ({
+		id, type: 'image', data: { file: { fileId: id, fileURL: '', url: '', width: 390, height: 844 },
+			caption: id, withBorder: false, withBackground: false, stretched: true,
+			...(layout ? { layout } : {}), ...(both ? { showBothThemes: true, variants: { light: { fileId: 'light', fileURL: '', url: '' } } } : {}) },
+	});
+	const doc = (blocks: BlockEditorDoc['blocks']): BlockEditorDoc => ({ time: 0, version: '2', blocks });
+	it('groups consecutive row images, preserving captions and breaking at prose', () => {
+		const { container } = render(BlockRenderer, { doc: doc([image('one', 'row'), image('two', 'row'), image('three', 'row'), image('four', 'row'), { id: 'p', type: 'paragraph', data: { text: 'Break' } }, image('five', 'row')]) });
+		const lists = container.querySelectorAll('[role="list"]');
+		expect(lists).toHaveLength(2);
+		expect(lists[0].querySelectorAll('[role="listitem"]')).toHaveLength(4);
+		expect([...container.querySelectorAll('figcaption')].map(n => n.textContent)).toEqual(['one', 'two', 'three', 'four', 'five']);
+	});
+	it.each(['paragraph', 'table', 'nestedlist'] as const)('pairs beside with following %s only', (type) => {
+		const content = type === 'paragraph' ? { id: 'text', type, data: { text: 'Details' } } : type === 'table' ? { id: 'text', type, data: { withHeadings: false, content: [['Details']] } } : { id: 'text', type, data: { style: 'unordered' as const, items: [{ content: 'Details', items: [] }] } };
+		const { container } = render(BlockRenderer, { doc: doc([image('phone', 'beside'), content, image('last', 'beside')]) });
+		const pair = container.querySelector('[data-image-layout="beside"]');
+		expect(pair?.querySelector('img')?.alt).toBe('phone');
+		expect(pair?.textContent).toContain('Details');
+		expect(container.querySelectorAll('img')).toHaveLength(2);
+	});
+	it('leaves unflagged blocks as direct siblings without layout wrappers', () => {
+		const { container } = render(BlockRenderer, { doc: doc([image('one'), image('two'), { id: 'p', type: 'paragraph', data: { text: 'Details' } }]) });
+		expect([...container.children].map(n => n.tagName)).toEqual(['FIGURE', 'FIGURE', 'P']);
+	});
+	it('shows labelled dark and light captures when requested', () => {
+		const { container } = render(BlockRenderer, { doc: doc([image('dark', undefined, true)]) });
+		expect([...container.querySelectorAll('img')].map(n => n.getAttribute('src'))).toEqual(['/test-assets/dark', '/test-assets/light']);
+		expect([...container.querySelectorAll('figcaption')].map(n => n.textContent)).toEqual(['dark · Dark', 'dark · Light']);
+	});
+	it('reserves the stored aspect ratio when responsive metadata is unavailable', () => {
+		const { container } = render(BlockRenderer, { doc: doc([image('phone')]) });
+		expect(container.querySelector('img')).toHaveAttribute('width', '390');
+		expect(container.querySelector('img')).toHaveAttribute('height', '844');
+	});
+});

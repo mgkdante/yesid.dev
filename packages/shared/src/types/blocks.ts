@@ -90,6 +90,8 @@ export interface ImageBlock {
 	type: 'image';
 	data: {
 		file: ImageBlockFile;
+		layout?: 'row' | 'beside';
+		showBothThemes?: boolean;
 		variants?: {
 			light?: ImageBlockFile;
 		};
@@ -217,6 +219,8 @@ export const ImageBlockSchema: z.ZodType<ImageBlock> = z.object({
 	type: z.literal('image'),
 	data: z.object({
 		file: ImageBlockFileSchema,
+		layout: z.enum(['row', 'beside']).optional(),
+		showBothThemes: z.boolean().optional(),
 		variants: z.object({
 			light: ImageBlockFileSchema.optional(),
 		}).optional(),

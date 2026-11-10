@@ -95,6 +95,12 @@ Publishing is a manual action. After editing, an operator runs the Directus
 **Publish site** flow, which requests one Vercel production build of the
 published content. Edits never rebuild the site by themselves.
 
+### Case-study image layouts
+
+In image block `data`, omit `layout` for normal flow, use `layout: "row"` on consecutive images or `layout: "beside"` before a paragraph, table or list.
+Set `showBothThemes: true` to show `variants.light` alongside the dark capture; omit it or use `false` for theme swapping. Stored `file.width` and `file.height` size portrait captures automatically.
+These fields currently require updating the document JSON via the Directus Items API: the built-in image tool exposes only its fixed tunes, so UI controls need a custom interface extension. Re-saving images in the built-in editor may discard extra fields; reapply through the API before publishing.
+
 ### Publishing images
 
 Upload in Directus, reference the file in published content, then run **Publish
