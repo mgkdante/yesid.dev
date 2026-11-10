@@ -182,6 +182,12 @@ function fitSubtitle(subtitle: string | undefined, width: number, measure: Measu
 				return { lines, size, height: lines.length * size * SUBTITLE_LEADING };
 			}
 		}
+		// Word boundaries can waste almost half of every line. Only after prose
+		// wrapping fails at every size, fill lines even across fitting words.
+		const size = 18;
+		const lines = breakLongWord(text, width / size, (line) => measure(line, SUBTITLE_FONT));
+		const height = lines.length * size * SUBTITLE_LEADING;
+		if (height <= 124) return { lines, size, height };
 		throw new Error('OG full subtitle cannot fit at 18px or larger; shorten the project one-liner (maximum 200 characters).');
 	}
 	// One clean line beats two slightly bigger ones.
