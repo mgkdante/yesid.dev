@@ -93,10 +93,58 @@ build time. Vite development alone may fall back to CMS assets.
 
 Publishing is a manual action. After editing, an operator runs the Directus
 **Publish site** flow, which requests one Vercel production build of the
-published content. Edits never rebuild the site by themselves. Committed image
-mirrors change only through a reviewed source release, using
-`scripts/mirror-asset.ts`. Step-by-step operator procedures are maintained
-outside the repository by the maintainer.
+published content. Edits never rebuild the site by themselves.
+
+### Publishing images
+
+Upload in Directus, reference the file in published content, then run **Publish
+site**. No registry, ID-map, manifest or repository PR is needed for new raster
+images. Articles, sections and projects may
+have no image. A single image works as-is in both themes and appears once in
+the gallery. An optional pair follows the theme inline and shows both captures
+in the gallery. The existing editor contract still requires `about_languages.image`.
+
+For a Block Editor pair, upload files named `example.dark.png` and
+`example.light.png` (same stem and extension), then select only the dark file
+in the image block. Selecting both files as separate blocks creates duplicate
+gallery entries. The exporter finds the unique light filename, fills
+`data.variants.light`, and exports both. Without a light sibling the selected
+image remains a single image, without warning. Ordinary filenames work for
+single images. Keep pair filenames unique across files visible to Build Bot;
+duplicate light matches fail publishing because the intended file is ambiguous.
+An already-authored `data.variants.light` takes precedence. Project heroes use
+their existing primary/secondary and optional light image selectors.
+The pinned Directus 12.5.1 [image tool](https://github.com/directus/directus/blob/v12.5.1/app/src/interfaces/input-block-editor/plugins.ts)
+does not expose a light selector, so this convention needs no custom extension
+or CMS schema changes. Existing pinned mirrors retain their explicit pairs;
+the filename convention applies to newly uploaded, unpinned block images.
+
+Live export reads referenced originals with the existing Build Bot credential,
+checks the actual decoded format and dimensions, and prepares same-origin
+`/images/cms/<file-uuid>/<sha256>.<extension>` files and responsive WebP
+variants before emitting content. PNG, JPEG, WebP, GIF and AVIF are accepted,
+with a 20 MiB original limit, 16,000 pixels per axis and 40 million total pixels.
+Animated/multipage files and new SVGs are refused; SVGs still require the
+reviewed committed-mirror and raw-SVG allowlist path. Missing, forbidden,
+corrupt or out-of-limit referenced images fail the production build; the last
+successful site stays live. External image URLs are not downloaded.
+
+Variants use the existing width ladder, encoder recipe and byte-verifying
+receipts. The disposable `apps/web/.cache/cms-media/` cache is keyed by source
+hash and checks encoder versions, source bytes, output hashes and dimensions
+before reuse. Cache loss only costs encoding time. Originals are fetched on
+every live export, so caching cannot hide a deleted or unreadable CMS file.
+Fixtures/previews never read the CMS: pinned mirrors stay real, and unpinned
+references get a visibly labelled **FIXTURE IMAGE PLACEHOLDER**. They cannot
+preview a new upload's appearance by refreshing fixture JSON alone: its bytes
+must also be mirrored, or a live build must be used. Visitors use static files
+on yesid.dev; CSP is unchanged.
+
+Committed mirrors are optional pinning for reviewed source releases, using
+`scripts/mirror-asset.ts`; their digests, registry contracts and reuse receipts
+remain enforced. Upload-only publishing trades code review per image for
+editorial review at **Publish site**. Review file contents, placement and any
+optional pair before publishing. No production CMS writes occur during builds.
 
 ## Locale contract
 

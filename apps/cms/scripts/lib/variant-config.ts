@@ -1,5 +1,5 @@
 /** Bump for changes to resizing, naming or fallback behaviour not expressed by options. */
-export const VARIANT_ALGORITHM_REVISION = 1;
+export const VARIANT_ALGORITHM_REVISION = 2;
 
 export interface VariantConfig {
 	readonly widths: readonly number[];

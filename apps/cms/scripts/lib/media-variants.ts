@@ -20,8 +20,8 @@
  */
 
 import { dirname, resolve } from 'node:path';
-import { existsSync, statSync } from 'node:fs';
-import { writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import type { MediaVariantEntry, MediaVariantSource } from '@repo/shared';
 import { VARIANT_CONFIG, pickVariantWidths, variantPathFor, type VariantConfig } from './variant-config';
@@ -34,7 +34,7 @@ const DEFAULT_REPO_ROOT = resolve(SCRIPT_DIR, '../../../..');
 /** Preset widths + lightbox rung. Keep ascending. */
 export const VARIANT_WIDTHS = VARIANT_CONFIG.widths;
 
-const RASTER_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'webp']);
+const RASTER_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'webp', 'gif', 'avif']);
 
 
 export interface MediaVariantsManifestInput {
@@ -90,17 +90,21 @@ export async function prepareMediaVariants(
 		const reused = await reuseVariant(receipt, staticRoot, legacyPath, config);
 		if (reused) return { legacyPath, data: reused, writes: assetWrites };
 
-		const source = sharp(sourcePath);
+		// Buffer inputs release file handles immediately, including on Windows.
+		const sourceBytes = await readFile(sourcePath);
+		const source = sharp(sourceBytes);
 		const meta = await source.metadata();
 		if (!meta.width || !meta.height) {
 			throw new Error(`[media-variants] could not read dimensions of ${legacyPath}`);
 		}
+		const { width, height } = meta.autoOrient;
 
-		const originalBytes = statSync(sourcePath).size;
+		const originalBytes = sourceBytes.length;
 		const variants: MediaVariantSource[] = [];
-		const widths = pickVariantWidths(meta.width, config.widths);
+		const widths = pickVariantWidths(width, config.widths);
 		// Bound parallel work to one source's width ladder and consume it in order.
-		const encodedVariants = await Promise.all(widths.map((width) => sharp(sourcePath)
+		const encodedVariants = await Promise.all(widths.map((width) => sharp(sourceBytes)
+				.autoOrient()
 				.resize({ width })
 				.webp(config.webp)
 				.toBuffer()));
@@ -123,7 +127,7 @@ export async function prepareMediaVariants(
 			variants.push({ width, path: `/${variantRelPath}` });
 		}
 
-		return { legacyPath, data: { width: meta.width, height: meta.height, variants }, writes: assetWrites };
+		return { legacyPath, data: { width, height, variants }, writes: assetWrites };
 	};
 
 	// Keep encoding bounded while another source fills idle width-encoding slots.
@@ -141,6 +145,7 @@ export async function prepareMediaVariants(
 /** Commit a fully prepared plan in its deterministic asset/width order. */
 export async function writeMediaVariants(prepared: PreparedMediaVariants): Promise<void> {
 	for (const write of prepared.writes) {
+		await mkdir(dirname(write.filePath), { recursive: true });
 		await writeFile(write.filePath, write.content);
 	}
 }

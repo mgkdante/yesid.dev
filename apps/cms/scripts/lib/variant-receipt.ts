@@ -40,8 +40,9 @@ export async function reuseVariant(
 	if (createHash('sha256').update(sourceBytes).digest('hex') !== entry.sourceSha256) return undefined;
 	const { default: sharp } = await import('sharp');
 	const meta = await sharp(sourceBytes).metadata();
-	if (!meta.width || !meta.height || entry.data.width !== meta.width || entry.data.height !== meta.height) return undefined;
-	const widths = pickVariantWidths(meta.width, config.widths);
+	const { width: sourceWidth, height: sourceHeight } = meta.autoOrient;
+	if (!sourceWidth || !sourceHeight || entry.data.width !== sourceWidth || entry.data.height !== sourceHeight) return undefined;
+	const widths = pickVariantWidths(sourceWidth, config.widths);
 	const variants = entry.data.variants;
 	if (!Array.isArray(variants) || !variants.length || variants.length > widths.length) return undefined;
 	// A receipt cannot prove that encoding a rung would exceed the original size.
@@ -61,7 +62,7 @@ export async function reuseVariant(
 			// JPEG shrink-on-load can round the scaled height by one pixel.
 			const output = await sharp(outputBytes).metadata();
 			if (output.format !== 'webp' || output.width !== width ||
-				!output.height || Math.abs(output.height - Math.max(1, Math.round(meta.height * width / meta.width))) > 1) return undefined;
+				!output.height || Math.abs(output.height - Math.max(1, Math.round(sourceHeight * width / sourceWidth))) > 1) return undefined;
 		}
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;

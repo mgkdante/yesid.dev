@@ -13,7 +13,7 @@ import { dirname, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, rm } from 'node:fs/promises';
 import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
@@ -31,6 +31,8 @@ import {
 } from './lib/media-variants';
 import assetIdMap from '../fixtures/assets-id-map.json' with { type: 'json' };
 import assetManifest from '../fixtures/assets-manifest.json' with { type: 'json' };
+import { prepareBuildMedia, type BuildMediaOptions } from './lib/build-media';
+import { fixtureMedia } from './lib/content-media';
 
 const log = createLogger('export-fallbacks');
 
@@ -40,6 +42,13 @@ const log = createLogger('export-fallbacks');
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_WEB_CONTENT_DIR = resolve(SCRIPT_DIR, '../../web/src/lib/content');
 const EXPORT_FIXTURE_PATH = resolve(SCRIPT_DIR, '../../../packages/shared/fixtures/export-data.json');
+
+/** This directory contains generated media only, never committed mirrors. */
+async function clearGeneratedMedia(opts: RunOptions): Promise<void> {
+	const staticRoot = opts.mediaOptions?.staticRoot ?? resolve(SCRIPT_DIR, '../../web/static');
+	const generatedRoot = resolve(staticRoot, 'images/cms');
+	await rm(generatedRoot, { recursive: true, force: true });
+}
 
 export interface RunOptions {
 	directusUrl: string;
@@ -52,6 +61,8 @@ export interface RunOptions {
 	policy?: FallbackPolicy;
 	/** Injectable source adapter for exercising the live export without CMS access. */
 	contentSource?: ExportSource;
+	/** Isolated media roots and transport for offline integration tests. */
+	mediaOptions?: Pick<BuildMediaOptions, 'staticRoot' | 'cacheRoot' | 'fetcher'>;
 }
 
 /**
@@ -242,7 +253,17 @@ async function fetchAll(opts: RunOptions): Promise<FetchedExport> {
 
 	// Local image encoding is deliberately outside the CMS network stall budget.
 	const local = await readExport(source, EXPORT_MODULES.filter(module => module.fetchKind === 'local'));
-	return { data: { ...out, ...local }, preparedMediaVariants };
+	const data = { ...out, ...local };
+	try { validateExport(data, { source: 'live', warn: message => log.warn(message) }); }
+	catch (error) { throw new ExportValidationError((error as Error).message); }
+	const generated = await prepareBuildMedia(data, {
+		directusUrl: opts.directusUrl, token: opts.token,
+		staticRoot: resolve(SCRIPT_DIR, '../../web/static'),
+		cacheRoot: resolve(SCRIPT_DIR, '../../web/.cache/cms-media'),
+		...opts.mediaOptions,
+	});
+	return { data, preparedMediaVariants: { data: generated.data,
+		writes: [...(preparedMediaVariants?.writes ?? []), ...generated.writes] } };
 }
 
 /** Emit only after the complete registry and live-content validators pass. */
@@ -286,9 +307,11 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 		const prepared = await prepareMediaVariants(assetManifest as MediaMirrorManifest);
 		snapshot.mediaVariants = prepared.data;
 		const data = await readExport(opts.contentSource ?? createFixtureSource(snapshot));
+		fixtureMedia(data);
 		validateExport(data);
 		const configs = buildEmitConfigs(data, opts.emitDir ?? DEFAULT_WEB_CONTENT_DIR);
 		if (opts.dryRun) return { source: 'fixture', emitted: 0 };
+		await clearGeneratedMedia(opts);
 		await writeMediaVariants(prepared);
 		log.info(`fixture media-variants: wrote ${prepared.writes.length} file(s).`);
 		return { source: 'fixture', emitted: await emitAll(configs, opts) };
@@ -344,6 +367,7 @@ export async function run(opts: RunOptions): Promise<RunOutcome> {
 		throw error;
 	}
 	const configs = buildEmitConfigs(data, emitDir);
+	if (!dataFromCache) await clearGeneratedMedia(opts);
 	if (preparedMediaVariants) {
 		await writeMediaVariants(preparedMediaVariants);
 		log.info(`media-variants: wrote ${preparedMediaVariants.writes.length} file(s).`);
