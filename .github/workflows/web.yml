@@ -1,10 +1,10 @@
 name: web
 
-# CI runs on every PR and manual dispatch. ci-work keeps all existing checks.
+# CI runs on every PR, merge queue group and manual dispatch. ci-work keeps all existing checks.
 # classify selects e2e unless a PR changes only audited root documentation;
 # manual runs select all.
-# Deliberately no push trigger (Q28): strict up-to-date branch protection and
-# squash merges mean the last PR run tested exactly what lands on main.
+# Deliberately no push trigger (Q28): the main merge queue reruns these checks on
+# each merge_group, so the combined change that lands on main has been tested.
 # Policy CLI/env changes require a two-step migration: this PR runs base policy;
 # later PRs run the policy landed on main through their own workflow.
 # A shared build artifact serves E2E; the aggregate gate requires both lanes.

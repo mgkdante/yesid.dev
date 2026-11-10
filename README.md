@@ -57,7 +57,7 @@ Set Actions secret `VERCEL_TOKEN`, variables `VERCEL_ORG_ID` and
 `VERCEL_PROJECT_ID` for web; set secret `RAILWAY_TOKEN` for CMS.
 Choose `web` (default), `cms`, or `both`; each target queues independently.
 The run summary records the checked-out SHA and deployment receipt.
-The deployment tokens are not provisioned yet; dispatch fails early until they are.
+All four are set. Without one of them, dispatch fails early.
 
 ```bash
 gh workflow run deploy-now.yml -R yesid-dev/yesid.dev --ref main -f ref=<sha> -f target=web
