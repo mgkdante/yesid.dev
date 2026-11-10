@@ -1,0 +1,19 @@
+{
+  "name": "directus-extension-article-editor",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "directus-extension build"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "18.1.1",
+    "vue": "3.5.45"
+  },
+  "directus:extension": {
+    "type": "interface",
+    "path": "dist/index.js",
+    "source": "src/index.js",
+    "host": "~12.5.1"
+  }
+}

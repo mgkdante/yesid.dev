@@ -10,7 +10,7 @@
     "field": "body",
     "group": null,
     "hidden": false,
-    "interface": "input-block-editor",
+    "interface": "article-block-editor",
     "note": "The full page: headings, paragraphs and lists. The first long paragraph is also the search description.",
     "options": null,
     "readonly": false,

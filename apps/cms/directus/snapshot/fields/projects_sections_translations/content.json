@@ -10,7 +10,7 @@
     "field": "content",
     "group": null,
     "hidden": false,
-    "interface": "input-block-editor",
+    "interface": "article-block-editor",
     "note": "Text, images, code and diagrams. Images here also join the page gallery.",
     "options": null,
     "readonly": false,

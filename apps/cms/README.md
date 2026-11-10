@@ -97,9 +97,56 @@ published content. Edits never rebuild the site by themselves.
 
 ### Case-study image layouts
 
-In image block `data`, omit `layout` for normal flow, use `layout: "row"` on consecutive images or `layout: "beside"` before a paragraph, table or list.
-Set `showBothThemes: true` to show `variants.light` alongside the dark capture; omit it or use `false` for theme swapping. Stored `file.width` and `file.height` size portrait captures automatically.
-These fields currently require updating the document JSON via the Directus Items API: the built-in image tool exposes only its fixed tunes, so UI controls need a custom interface extension. Re-saving images in the built-in editor may discard extra fields; reapply through the API before publishing.
+- Add or move images with the usual Block Editor tools.
+- Find each image's numbered controls below the editor, in document order.
+- Choose **Layout: Row** for consecutive images that should share a row.
+- Choose **Beside next block** before a table, paragraph or list. Choose **Normal** to restore normal flow.
+- Under **Light version**, upload an image or choose one from the file library. The configured upload folder still applies.
+- Enable **Show both themes** to display both captures together. Leave it off for theme swapping.
+- Remove the light version to clear the explicit pair. This also switches off **Show both themes**; filename pairing can still apply during export.
+- Save the item, then run **Publish site** when ready. Portrait captures size automatically from their stored dimensions.
+
+The Article Block Editor wraps Directus's built-in editor and preserves image
+metadata by block ID. All other tools and their output stay with Directus.
+Project descriptions, project sections, blog bodies and legal bodies use it.
+
+### Deploying the editor extension
+
+1. Rebuild the CMS image from `apps/cms/Dockerfile` and redeploy the CMS service. No environment changes are required.
+2. Confirm `directus-extension-article-editor` appears in startup logs and is enabled in Settings > Extensions.
+3. Preview the committed snapshot diff with `bun run sync:diff` from `apps/cms` using the authorized operator credentials.
+4. Apply the four reviewed interface changes through the authorized configuration workflow, then read back and diff again.
+5. Reload the admin app and check an image pair, layout and paragraph edit before publishing content.
+
+The snapshot changes only each field's interface ID. Keep its existing tool,
+folder and other options. Production configuration writes require the operator
+path described under Schema workflow; deploying the image alone does not apply
+the snapshot. Roll back the interface configuration before removing the extension.
+
+The reviewed configuration packet is `PATCH /fields/{collection}/{field}` with
+`{"meta":{"interface":"article-block-editor"}}` for these four targets:
+
+- `projects_sections_translations/content`
+- `projects_translations/description`
+- `blog_posts_translations/body`
+- `legal_pages_translations/body`
+
+Capture each field's preimage first. Apply through the owner's authenticated
+operator session only after the extension loads, then verify the interface ID
+and unchanged options for each field. No content rows need migration.
+
+For a disposable local Directus 12.5.1, set `CMS_LOCAL_PASSWORD` and optionally
+`CMS_LOCAL_EMAIL` and `CMS_LOCAL_URL`, then run:
+
+```bash
+bun apps/cms/scripts/check-article-editor.mjs --stock
+bun apps/cms/scripts/check-article-editor.mjs
+```
+
+The check refuses remote hosts, creates and removes its own probe collection,
+edits a paragraph through the admin, saves and reads the stored JSON. The
+extension check also uploads a light image and saves layout and theme controls.
+Use a dedicated local database; uploaded probe images remain in its library.
 
 ### Publishing images
 
@@ -120,10 +167,9 @@ single images. Keep pair filenames unique across files visible to Build Bot;
 duplicate light matches fail publishing because the intended file is ambiguous.
 An already-authored `data.variants.light` takes precedence. Project heroes use
 their existing primary/secondary and optional light image selectors.
-The pinned Directus 12.5.1 [image tool](https://github.com/directus/directus/blob/v12.5.1/app/src/interfaces/input-block-editor/plugins.ts)
-does not expose a light selector, so this convention needs no custom extension
-or CMS schema changes. Existing pinned mirrors retain their explicit pairs;
-the filename convention applies to newly uploaded, unpinned block images.
+The **Light version** picker sets the explicit pair without requiring matching
+filenames. Filename pairing remains a fallback for unpaired block images.
+Existing pinned mirrors retain their explicit pairs.
 
 Live export reads referenced originals with the existing Build Bot credential,
 checks the actual decoded format and dimensions, and prepares same-origin
