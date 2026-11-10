@@ -7,7 +7,7 @@ name: web
 # squash merges mean the last PR run tested exactly what lands on main.
 # Policy CLI/env changes require a two-step migration: this PR runs base policy;
 # later PRs run the policy landed on main through their own workflow.
-# Three Playwright shards wait for ci-work to replay its Turbo build cache.
+# Playwright shards run alongside ci-work; the aggregate gate requires both.
 # The always-run required ci gate includes classification, prerelease-guard, ci-work and e2e.
 
 on:
@@ -140,9 +140,8 @@ jobs:
   e2e:
     if: >-
       ${{ needs.classify.outputs.e2e != 'false' }}
-    # Gate the 3 shards on the ci-work job: its build populates the Turbo remote
-    # cache, so shards replay it instead of running 4 identical builds.
-    needs: [classify, ci-work]
+    # Only classification gates scheduling. ci-work remains required by ci.
+    needs: [classify]
     # Pinned: ubuntu-latest moved to 26.04, where Playwright 1.59 refuses to install Chromium.
     runs-on: ubuntu-24.04
     # Shards split by test count and run serially on one worker each.
@@ -164,8 +163,8 @@ jobs:
         working-directory: apps/web
         run: bun x playwright install chromium
 
-      # Replays the ci-work build from the Turbo cache, so the Playwright webServer only
-      # previews it (E2E_PREBUILT). Keep this env identical to the ci-work build step.
+      # Reuse an available Turbo build, or build while ci-work runs in parallel.
+      # Keep this env identical to the ci-work build step.
       - name: Build (turbo, cache-eligible)
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
