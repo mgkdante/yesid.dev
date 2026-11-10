@@ -107,7 +107,7 @@ jobs:
       - uses: ./.github/actions/setup
 
       - name: Test CI decisions
-        run: bun test ./.github/scripts/web-ci*.test.ts
+        run: bun test ./.github/scripts/web-ci*.test.ts ./.github/scripts/e2e-shards.test.ts
 
       # One Turbo run so check, test and build share the runner in parallel. The
       # build env matches the e2e shards' build, so they replay this cache entry
@@ -145,13 +145,13 @@ jobs:
     needs: [classify, ci-work]
     # Pinned: ubuntu-latest moved to 26.04, where Playwright 1.59 refuses to install Chromium.
     runs-on: ubuntu-24.04
-    # Shards split by test count and run serially on one worker each.
+    # Four duration-balanced file groups retain the configured two workers per runner.
     timeout-minutes: 30
-    # Shard across 3 runners; each replays the ci-work build and runs ~1/3 of the suite.
+    # The assignment includes every discovered spec, including files without timing history.
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -174,13 +174,12 @@ jobs:
           PUBLIC_PLAUSIBLE_DOMAIN: "yesid.dev"
         run: bun x turbo run build --filter=@repo/web
 
-      - name: Playwright e2e (shard ${{ matrix.shard }}/3, local hermetic preview)
+      - name: Playwright e2e (shard ${{ matrix.shard }}/4, local hermetic preview)
         working-directory: apps/web
         env:
           E2E_PREBUILT: "1"
         run: >-
-          bun x playwright test
-          --shard=${{ matrix.shard }}/3
+          bun ../../.github/scripts/e2e-shards.ts ${{ matrix.shard }}
           --reporter=blob
 
       - name: Upload blob report
