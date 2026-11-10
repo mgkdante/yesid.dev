@@ -53,6 +53,13 @@
         "src/tests/sitemap-coverage.test.ts"
       ],
       "workspace": "apps/web"
+    },
+    {
+      "tests": [
+        "src/tests/asset-guards.test.ts"
+      ],
+      "workspace": "apps/web",
+      "prefix": "apps/web/src/"
     }
   ]
 }

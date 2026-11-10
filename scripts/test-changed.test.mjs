@@ -128,3 +128,8 @@ test('new route modules retain the filesystem sitemap coverage check', () => {
     const jobs = selectUnitFileTests(['apps/web/src/routes/new/+page.svelte'], config.unitFileTests);
     assert.ok(jobs.some(job => job.tests.includes('src/tests/sitemap-coverage.test.ts')));
 });
+test('component and route edits retain filesystem asset and injection guards', () => {
+    for (const path of ['apps/web/src/lib/components/home/HomePage.svelte', 'apps/web/src/routes/new/+page.svelte']) {
+        assert.ok(selectUnitFileTests([path], config.unitFileTests).some(rule => rule.tests.includes('src/tests/asset-guards.test.ts')), path);
+    }
+});
