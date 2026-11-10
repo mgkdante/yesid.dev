@@ -174,14 +174,15 @@ function subtitleBlock(subtitle: string, width: number, size: number, measure: M
 function fitSubtitle(subtitle: string | undefined, width: number, measure: MeasureText, full = false): TextBlock | undefined {
 	if (!subtitle) return undefined;
 	if (full) {
-		// Greedy wrapping avoids repeatedly shaping balanced paragraphs at every size.
+		// CMS whitespace is not an authored layout. Never clip a full subtitle.
+		const text = subtitle.replace(/\s+/gu, ' ').trim();
 		for (let size = SUBTITLE_SIZE.min; size >= 18; size -= 2) {
-			const lines = subtitle.split('\n').flatMap((part) =>
-				wrapGreedy(part, width / size, (line) => measure(line, SUBTITLE_FONT)));
+			const lines = wrapGreedy(text, width / size, (line) => measure(line, SUBTITLE_FONT));
 			if (lines.length * size * SUBTITLE_LEADING <= 124) {
 				return { lines, size, height: lines.length * size * SUBTITLE_LEADING };
 			}
 		}
+		throw new Error('OG full subtitle cannot fit at 18px or larger; shorten the project one-liner (maximum 200 characters).');
 	}
 	// One clean line beats two slightly bigger ones.
 	for (let size = SUBTITLE_SIZE.max; size >= SUBTITLE_SIZE.oneLineMin; size -= 2) {

@@ -81,6 +81,13 @@ describe('share card', () => {
 		expect(renderer.png(card({ title: 'CMS project', subtitle, fullSubtitle: true })).byteLength).toBeLessThan(150_000);
 	});
 
+	it.each(['One\nlook\nfor\nevery\nsite.', 'W'.repeat(200), 'Wide words '.repeat(18).trim()])('renders the complete normalized CMS line: %s', (subtitle) => {
+		const svg = renderer.svg(card({ title: 'CMS project', subtitle, fullSubtitle: true }));
+		const text = Array.from(svg.matchAll(/<text[^>]*>(.*?)<\/text>/g), (match) => match[1]).join(' ');
+		expect(text.replaceAll(' ', '')).toContain(subtitle.replace(/\s+/gu, ''));
+		expect(svg).not.toContain('…');
+	});
+
 	it('honours a manual line break in code-owned titles', () => {
 		const svg = renderer.svg(card({ title: 'Websites &\nOnline Stores' }));
 		expect(svg).toContain('>Websites &amp;<');

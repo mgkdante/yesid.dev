@@ -15,7 +15,15 @@ export const ProjectSchema = z.object({
 	/** URL-safe, globally unique identity; never localized. */
 	slug: z.string().min(1),
 	title: LocalizedStringSchema,
-	oneLiner: LocalizedStringSchema,
+	// The CMS field allows 500, but the 1200×630 card supports at most 200
+	// normalized characters at a legible 18px minimum. Fail export, never clip.
+	oneLiner: LocalizedStringSchema.superRefine((copy, ctx) => {
+		for (const [locale, text] of Object.entries(copy)) {
+			if (text && text.replace(/\s+/gu, ' ').trim().length > 200) {
+				ctx.addIssue({ code: 'custom', path: [locale], message: 'Project one-liner exceeds the OG card maximum of 200 characters (after whitespace normalization). Shorten one_liner before exporting.' });
+			}
+		}
+	}),
 	description: LocalizedBlockEditorDocSchema,
 	/** Technology names are not localized. */
 	stack: z.array(z.string()),

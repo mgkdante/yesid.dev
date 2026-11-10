@@ -1,3 +1,4 @@
+import type { Project } from '#lib/types.ts';
 import { describe, expect, it } from 'vitest';
 import { createContentCatalog } from '#lib/catalog/index.ts';
 import { projectsSlugSeoFactory } from '#lib/adapters/route-seo-factories.ts';
@@ -7,6 +8,10 @@ import { createOgCardRenderer } from './render';
 import { inlinedOgFontFiles } from './font-files';
 import { escapeXml } from './card';
 import { loadOgTitle } from './load-title';
+import { render } from 'svelte/server';
+import { SeoHead } from '@yesid/ui/head';
+import { seoHeadProps } from '#lib/utils/seo-defaults.ts';
+import { projectCopy } from './project-copy';
 import { SHARE_CTA, withShareCta } from './share-copy';
 
 const slugs = ['transit-data-pipeline', 'cafe-arona', 'yesid-design', 'yesid-dev', 'new-project'];
@@ -36,23 +41,56 @@ describe('CMS project share copy', () => {
 	it.each(projects)('renders $slug summaries completely in each locale', async (project) => {
 		const renderer = createOgCardRenderer(inlinedOgFontFiles());
 		for (const locale of locales) {
-				const { seo, card } = await outputs(project, locale);
-				expect(card).not.toBeNull();
-				expect(seo.description[locale]).toBe(withShareCta(project.oneLiner[locale] ?? project.oneLiner.en, SHARE_CTA.project.label[locale]));
-				const svg = renderer.svg(card!);
-				const text = Array.from(svg.matchAll(/<text[^>]*>(.*?)<\/text>/g), (match) => match[1]).join(' ');
-				expect(text).toContain(escapeXml(card!.subtitle!));
-				expect(renderer.png(card!).byteLength).toBeLessThan(150_000);
+			const { seo, card } = await outputs(project, locale);
+			expect(card).not.toBeNull();
+			const fallback = createContentCatalog().meta.siteSeoDefaults().defaultDescription;
+			expect(seo.description[locale]).toBe(projectCopy(project, locale, fallback).description);
+			const head = render(SeoHead, { props: seoHeadProps(seo, locale) }).head;
+			const meta = /<meta name="description" content="([^"]*)"/.exec(head)?.[1];
+			const og = /<meta property="og:description" content="([^"]*)"/.exec(head)?.[1];
+			expect(meta).toBe(escapeXml(projectCopy(project, locale, fallback).description).replaceAll('"', '&quot;'));
+			expect(og).toBe(meta);
+			expect(card?.subtitle).toBe((project.oneLiner[locale]?.trim() || project.oneLiner.en).replace(/\s+/gu, ' ').trim());
+			const svg = renderer.svg(card!);
+			const text = Array.from(svg.matchAll(/<text[^>]*>(.*?)<\/text>/g), (match) => match[1]).join(' ');
+			expect(text).toContain(escapeXml(card!.subtitle!));
+			expect(renderer.png(card!).byteLength).toBeLessThan(150_000);
 		}
 	}, 30_000);
-	it('uses the site default when neither CMS candidate fits', async () => {
+	it('uses the site default for metadata when neither CMS candidate fits', async () => {
 		const project = { ...projectFactory.build(), oneLiner: { en: 'x'.repeat(201) }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'long-description', type: 'paragraph' as const, data: { text: 'y'.repeat(201) } }] } } };
 		for (const locale of locales) {
 			const { seo, card } = await outputs(project, locale);
 			const fallback = createContentCatalog().meta.siteSeoDefaults().defaultDescription;
 			expect(seo.description[locale]).toBe(fallback[locale] ?? fallback.en);
-			expect(card?.subtitle).toBe(seo.description[locale]);
+			expect(card?.subtitle).toBe('x'.repeat(201));
 		}
+	});
+	it('keeps a short one-liner on the card and uses leading whole description sentences for metadata', async () => {
+		const text = 'This project gives every website a consistent visual language. It keeps familiar controls together.';
+		const project = projectFactory.build({ oneLiner: { en: 'One look for every site.' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text: text + ' ' + 'A very long sentence '.repeat(30) + '.' } }] } } });
+		const { seo, card } = await outputs(project, 'en');
+		expect(card?.subtitle).toBe('One look for every site.');
+		expect(seo.description.en).toBe(withShareCta(text, SHARE_CTA.project.label.en));
+	});
+	it.each([
+		['fr', '« Un projet utile pour toutes les équipes. » Il simplifie le travail quotidien !'],
+		['es', '¿Quieres un sitio coherente para todo tu equipo? ¡Este proyecto lo hace posible!'],
+		['en', 'Dr. Smith builds tools for teams, e.g. a shared website. They simplify daily work.'],
+	] as const)('keeps complete %s sentences and punctuation', (locale, text) => {
+		const project: Project = { ...projectFactory.build(), oneLiner: { en: '' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text: text + ' ' + 'Too long '.repeat(50) + '.' } }] } } };
+		const copy = projectCopy(project, locale, { en: 'Fallback' });
+		expect(copy.line).toBe(text);
+		expect(copy.description).toBe(withShareCta(text, SHARE_CTA.project.label[locale]));
+	});
+	it('uses a valid one-liner alone when the CTA would exceed 200 characters', () => {
+		const line = 'Useful project context '.repeat(8).trim() + ' for teams.';
+		const project = { ...projectFactory.build(), oneLiner: { en: line } };
+		expect(projectCopy(project, 'en', { en: 'Fallback' })).toEqual({ line, description: line });
+	});
+	it('uses the site default when all project copy is empty or unfinished', () => {
+		const project: Project = { ...projectFactory.build(), oneLiner: { en: '' }, description: { en: { time: 1, version: '2.31.2', blocks: [{ id: 'overview', type: 'paragraph', data: { text: 'An unfinished overview' } }] } } };
+		expect(projectCopy(project, 'en', { en: 'Site default' })).toEqual({ line: 'Site default', description: 'Site default' });
 	});
 	it.each([undefined, '', '   '])('uses English for missing translated one-liners (%s)', async (missing) => {
 		const project = { ...projectFactory.build(), oneLiner: { en: oneLiner.en, fr: missing, es: missing } };
@@ -62,13 +100,13 @@ describe('CMS project share copy', () => {
 			expect(card?.subtitle).toBe(oneLiner.en);
 		}
 	});
-	it('falls back to complete description text for an overly long one-liner', async () => {
+	it('uses complete description text for metadata while retaining the long OG one-liner', async () => {
 		for (const locale of locales) {
 			const description = { time: 1, version: '2.31.2', blocks: [{ id: 'cms-description', type: 'paragraph' as const, data: { text: oneLiner[locale] } }] };
 			const project = { ...projectFactory.build(), oneLiner: { en: 'Long sentence. '.repeat(20) }, description: { en: description, fr: description, es: description } };
 			const { seo, card } = await outputs(project, locale);
 			expect(seo.description[locale]).toBe(withShareCta(oneLiner[locale], SHARE_CTA.project.label[locale]));
-			expect(card?.subtitle).toBe(oneLiner[locale]);
+			expect(card?.subtitle).toBe('Long sentence. '.repeat(20).trim());
 		}
 	});
 });

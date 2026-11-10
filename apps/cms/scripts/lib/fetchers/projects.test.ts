@@ -82,6 +82,12 @@ describe('statusFromDirectus mapping', () => {
 });
 
 describe('projects fetcher transform', () => {
+	it('rejects one-liners beyond the legible OG limit during export', async () => {
+		const row = { ...FIXTURE, translations: [{ ...FIXTURE.translations![0]!, one_liner: 'W'.repeat(201) }] };
+		await expect(fetchProjects({ client: cmsClientDouble(() => [row]) })).rejects.toThrow('OG card maximum of 200 characters');
+		const accepted = { ...row, translations: [{ ...row.translations[0]!, one_liner: 'W'.repeat(100) + '\n   ' + 'W'.repeat(99) }] };
+		expect(await fetchProjects({ client: cmsClientDouble(() => [accepted]) })).toHaveLength(1);
+	});
 	it('maps status from Directus to legacy enum', () => {
 		const result = toProject(FIXTURE);
 		expect(result.status).toBe('public');

@@ -232,3 +232,21 @@ credential change.
 - [Shared content interfaces](../../packages/shared/src/types/content.ts)
 - [Asset-registry interface](../../packages/shared/src/asset-registry.ts)
 - [Security reporting](../../SECURITY.md)
+
+## Project share copy
+
+Project `one_liner` is evergreen display copy. The export validator limits it to
+**200 characters after collapsing whitespace**, even though the CMS field permits
+500. This fits the 1200×630 project OG card at a minimum 18px font in its 124px
+subtitle area. Full subtitles never use ellipsis clipping; an impossible layout
+fails the build with an explicit error. CMS newlines become spaces.
+
+The OG image always uses the localized one-liner, falling back to English when
+missing, empty or switched off. Without a one-liner it uses leading complete
+sentences from overview paragraphs, within 200 characters, then the site default.
+Metadata tries the one-liner with the localized CTA, then the one-liner alone,
+then leading complete overview sentences with a CTA if it fits. Metadata must
+be 50–200 characters; otherwise it uses the site default. Sentence extraction
+recognizes EN/FR/ES punctuation and closing quotes, preserves common titles,
+initials, decimals and e.g./i.e./p.ex., and discards unfinished tails. Unknown
+abbreviations follow normal punctuation rules. Generic CTA helpers are unchanged.
