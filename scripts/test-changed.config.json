@@ -33,23 +33,26 @@
   "specDir": "apps/web/tests",
   "generatedInputs": [
     {
-      "prefix": "apps/cms/scripts/",
       "workspaces": [
         "apps/web"
-      ]
+      ],
+      "prefix": "apps/cms/"
     },
     {
-      "prefix": "apps/cms/fixtures/",
       "workspaces": [
         "apps/web"
-      ]
-    },
-    {
-      "prefix": "packages/shared/fixtures/",
-      "workspaces": [
-        "apps/web"
-      ]
+      ],
+      "prefix": "packages/shared/fixtures/"
     }
   ],
-  "fullPlaywright": "playwright.config.ts"
+  "fullPlaywright": "playwright.config.ts",
+  "unitFileTests": [
+    {
+      "prefix": "apps/web/src/routes/",
+      "tests": [
+        "src/tests/sitemap-coverage.test.ts"
+      ],
+      "workspace": "apps/web"
+    }
+  ]
 }
