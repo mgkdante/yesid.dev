@@ -13,7 +13,7 @@
     "interface": "list-m2m",
     "note": null,
     "options": {
-      "template": "{{services_id}}"
+      "template": "{{services_id.translations}}"
     },
     "readonly": false,
     "required": false,

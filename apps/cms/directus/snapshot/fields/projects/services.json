@@ -13,7 +13,7 @@
     "interface": "list-m2m",
     "note": "Shown on cards and the project page, used by the Services filter, and lists this project on each service page.",
     "options": {
-      "template": "{{service_id}}"
+      "template": "{{service_id.translations}}"
     },
     "readonly": false,
     "required": false,

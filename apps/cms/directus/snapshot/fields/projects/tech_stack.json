@@ -13,7 +13,7 @@
     "interface": "list-m2m",
     "note": "Shown in the Stack panel and on cards, in this order. Used by the Tech Stack filter.",
     "options": {
-      "template": "{{tech_stack_id}}"
+      "template": "{{tech_stack_id.name}}"
     },
     "readonly": false,
     "required": false,
