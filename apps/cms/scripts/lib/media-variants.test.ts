@@ -10,6 +10,27 @@ import {
 	VARIANT_WIDTHS,
 	writeMediaVariants,
 } from './media-variants';
+import { createVariantReceipt, reuseVariant } from './variant-receipt';
+
+it('uses oriented JPEG geometry for encoding and receipt verification', async () => {
+	const root = mkdtempSync(join(tmpdir(), 'oriented-media-'));
+	const manifest = { sourceRoot: '.', assets: [{ legacyPath: 'portrait.jpg' }] };
+	try {
+		const { default: sharp } = await import('sharp');
+		await sharp({ create: { width: 800, height: 600, channels: 3, background: 'red' } })
+			.withMetadata({ orientation: 6 }).jpeg({ quality: 100 }).toFile(join(root, 'portrait.jpg'));
+		const first = await prepareMediaVariants(manifest, root);
+		expect(first.data['/portrait.jpg']).toMatchObject({ width: 600, height: 800 });
+		expect(first.data['/portrait.jpg']!.variants.map(row => row.width)).toEqual([240, 600]);
+		await writeMediaVariants(first);
+		const receipt = await createVariantReceipt(manifest, first, root);
+		expect(await reuseVariant(receipt, root, 'portrait.jpg')).toEqual(first.data['/portrait.jpg']);
+		const stale = structuredClone(receipt);
+		stale.assets['portrait.jpg']!.data.width = 800;
+		stale.assets['portrait.jpg']!.data.height = 600;
+		expect(await reuseVariant(stale, root, 'portrait.jpg')).toBeUndefined();
+	} finally { rmSync(root, { recursive: true, force: true }); }
+});
 
 describe('media variant write boundary', () => {
 	it('prepares encoded variants without writing until explicit commit', async () => {
@@ -53,12 +74,13 @@ describe('media variant write boundary', () => {
 });
 
 describe('isRasterAsset', () => {
-	it('accepts png/jpg/jpeg/webp and rejects svg/gif', () => {
+	it('accepts supported raster formats and rejects SVG', () => {
 		expect(isRasterAsset('images/work/a.png')).toBe(true);
 		expect(isRasterAsset('images/about/b.webp')).toBe(true);
 		expect(isRasterAsset('images/c.JPG')).toBe(true);
 		expect(isRasterAsset('images/flags/d.svg')).toBe(false);
-		expect(isRasterAsset('images/e.gif')).toBe(false);
+		expect(isRasterAsset('images/e.gif')).toBe(true);
+		expect(isRasterAsset('images/f.avif')).toBe(true);
 	});
 });
 

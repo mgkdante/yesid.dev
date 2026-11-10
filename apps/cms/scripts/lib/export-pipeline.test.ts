@@ -5,7 +5,7 @@ import {
 	createLiveSource,
 	loadExport,
 } from './export-pipeline';
-import { run } from '../export-fallbacks';
+import { buildMirroredMediaAssets, run } from '../export-fallbacks';
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -214,7 +214,7 @@ describe('export source checks', () => {
 		const emitDir = await mkdtemp(join(tmpdir(), 'deepen-export-valid-'));
 		const snapshot = {
 			...structuredClone(fixture.data),
-			mediaAssets: {},
+			mediaAssets: buildMirroredMediaAssets(),
 			mediaVariants: {},
 		};
 		// English-only live copy must still build under the production fail policy.

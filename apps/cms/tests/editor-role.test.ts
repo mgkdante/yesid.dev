@@ -177,7 +177,7 @@ describe('Editor role wiring (go2-t1d)', () => {
 
 	it('preserves every unrelated permission and preset row while adding registry configuration', () => {
 		const unrelatedPermissions = (permissions as Array<{ collection: string; _syncId: string }>).filter(
-			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection) && !IMPACT_PROOF_PERMISSION_IDS.includes(row._syncId),
+			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection) && !IMPACT_PROOF_PERMISSION_IDS.includes(row._syncId) && row._syncId !== '_sync_perm_build_files_read_delivery',
 		);
 		const unrelatedPresets = (presets as Array<{ collection: string; _syncId: string }>).filter(
 			(row) => !(ASSET_REGISTRY_COLLECTIONS as readonly string[]).includes(row.collection) && !BLOG_LANGUAGE_PRESET_IDS.includes(row._syncId) && !DEFAULT_LIST_VIEW_PRESET_IDS.includes(row._syncId),
