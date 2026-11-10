@@ -47,4 +47,18 @@ describe('ProjectListingPage cards', () => {
 		expect(screen.queryByText('01')).toBeNull();
 		expect(screen.queryByText('02')).toBeNull();
 	});
+
+	it('keeps the global click ripple off the project cards', () => {
+		render(ProjectListingPage, {
+			props: {
+				projects: [projectFactory.build({ slug: 'first-project' })],
+				serviceIds: [],
+				services: [],
+				serviceSvgContents: {},
+				projectsPage,
+			},
+		});
+
+		expect(screen.getByTestId('project-card').closest('[data-ripple-exempt]')).not.toBeNull();
+	});
 });

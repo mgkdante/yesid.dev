@@ -54,6 +54,23 @@ describe('BlogListingPage rows', () => {
 		expect(container.querySelector('[data-metro-line]')).toBeNull();
 		expect(screen.queryByText('01')).toBeNull();
 	});
+
+	it('keeps the global click ripple off the post rows', () => {
+		persisted<string | null>('blog-lang', null).value = null;
+		render(BlogListingPage, {
+			props: {
+				posts: [englishPost],
+				allTags: ['test'],
+				languages: ['en'],
+				heading: 'Blog',
+				subtitle: 'Notes',
+				emptyState: 'No posts match.',
+				emptyStateNoPosts: 'No posts yet.',
+			},
+		});
+
+		expect(screen.getByText('English article').closest('[data-ripple-exempt]')).not.toBeNull();
+	});
 });
 
 describe('BlogListingPage language filter', () => {

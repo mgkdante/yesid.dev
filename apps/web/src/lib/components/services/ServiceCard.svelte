@@ -65,6 +65,7 @@
 	class={cn('service-viewport', index === 0 && 'service-viewport-first', className)}
 	data-testid="service-card-{service.id}"
 	id="service-{service.id}"
+	data-ripple-exempt
 	{...rest}
 >
 	<div class="viewport-inner">

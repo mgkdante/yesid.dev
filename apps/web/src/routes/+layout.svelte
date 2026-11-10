@@ -95,7 +95,8 @@
 		if (!browser) return;
 		startAnalytics();
 
-		return initGlobalRipple();
+		// Reading surfaces (cards, article bodies, metrics, graphics) carry data-ripple-exempt.
+		return initGlobalRipple({ exclude: '[data-ripple-exempt]' });
 	});
 
 	// Registered after the mount above, so the tracker exists when the first navigation reports.

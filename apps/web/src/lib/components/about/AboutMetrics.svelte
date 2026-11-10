@@ -19,6 +19,7 @@
 <div
 	class="group h-full"
 	use:cursorGlow
+	data-ripple-exempt
 >
 <Card class="h-full p-3" data-testid="about-metrics">
 	<div class="metrics-shell relative flex h-full flex-col">
