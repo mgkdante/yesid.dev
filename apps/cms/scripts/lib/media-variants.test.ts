@@ -53,12 +53,13 @@ describe('media variant write boundary', () => {
 });
 
 describe('isRasterAsset', () => {
-	it('accepts png/jpg/jpeg/webp and rejects svg/gif', () => {
+	it('accepts supported raster formats and rejects SVG', () => {
 		expect(isRasterAsset('images/work/a.png')).toBe(true);
 		expect(isRasterAsset('images/about/b.webp')).toBe(true);
 		expect(isRasterAsset('images/c.JPG')).toBe(true);
 		expect(isRasterAsset('images/flags/d.svg')).toBe(false);
-		expect(isRasterAsset('images/e.gif')).toBe(false);
+		expect(isRasterAsset('images/e.gif')).toBe(true);
+		expect(isRasterAsset('images/f.avif')).toBe(true);
 	});
 });
 
