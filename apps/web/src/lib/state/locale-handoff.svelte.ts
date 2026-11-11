@@ -5,6 +5,7 @@ import { onMount, tick } from 'svelte';
 import { delocalizePath, isLocaleSwitch, pathLocale } from '#lib/utils/locale-routing.ts';
 import { getLenis } from '@yesid/motion/utils/lenis';
 import type { FocusSnapshot } from './handoff-blob';
+import { takeEarlyLocalePosition } from './early-locale-position';
 import { createReadingSession, type NavigationIntent, type ScrollContext, type SessionPorts } from './reading-session';
 export type { ScrollContext } from './reading-session';
 
@@ -138,6 +139,7 @@ const session = createReadingSession({
 	stableIdentity: () => stableIdentity(),
 	setRestoring: (value) => { restoringState = value; },
 	routing: { key: localeHandoffKey, isHandoff: isLocaleHandoffNavigation, isSwitch: isLocaleSwitch },
+	initialScroll: () => takeEarlyLocalePosition(() => sessionStorage, window.location.href, Date.now()),
 });
 
 type KitIntent = {
