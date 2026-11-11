@@ -9,6 +9,8 @@ async function progress(section: Locator): Promise<number> {
 }
 
 async function readMiddle(page: Page, section: Locator): Promise<void> {
+	// A click before Kit's router starts is a full page load, which never hands off.
+	await expect(page.locator('html')).toHaveAttribute('data-hydrated', '');
 	await expect(page.getByTestId('sections-toggle').filter({ visible: true }).first()).toBeVisible();
 	await page.evaluate(() => document.fonts.ready);
 	await expect(section.locator('.mermaid-diagram__fallback')).toHaveCount(0);
