@@ -91,6 +91,13 @@
 	// lazily per-consumer at mount.
 	if (browser) initScrollTriggerConfig();
 
+	// Kit attaches its link router once hydration resolves, after every onMount.
+	// A task later client navigation is live; tests wait for this before acting.
+	onMount(() => {
+		const marked = setTimeout(() => { document.documentElement.dataset.hydrated = ''; });
+		return () => clearTimeout(marked);
+	});
+
 	onMount(() => {
 		if (!browser) return;
 		startAnalytics();
