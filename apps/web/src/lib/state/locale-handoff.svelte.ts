@@ -5,7 +5,7 @@ import { onMount, tick } from 'svelte';
 import { delocalizePath, isLocaleSwitch, pathLocale } from '#lib/utils/locale-routing.ts';
 import { getLenis } from '@yesid/motion/utils/lenis';
 import type { FocusSnapshot } from './handoff-blob';
-import { takeEarlyLocalePosition } from './early-locale-position';
+import { clearEarlyLocalePosition, takeEarlyLocalePosition } from './early-locale-position';
 import { createReadingSession, type NavigationIntent, type ScrollContext, type SessionPorts } from './reading-session';
 export type { ScrollContext } from './reading-session';
 
@@ -169,6 +169,9 @@ export function attachLocaleHandoff(getStableIdentity: () => string | undefined 
 			session.dispose();
 		};
 	});
-	beforeNavigate((nav) => session.before(navigationIntent(nav)));
+	beforeNavigate((nav) => {
+		if (!nav.willUnload) clearEarlyLocalePosition(() => sessionStorage);
+		session.before(navigationIntent(nav));
+	});
 	afterNavigate((nav) => session.after(navigationIntent(nav)));
 }

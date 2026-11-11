@@ -20,7 +20,7 @@
 		}).filter((box) => box.height > 0 && box.width > 0);
 		try {
 			sessionStorage.setItem('yesid:early-locale', JSON.stringify({
-				v: 1, to: destination.href, ts: Date.now(),
+				v: 1, from: location.href, to: destination.href, ts: Date.now(),
 				measurement: { sections, viewportHeight: innerHeight, y: scrollY,
 					bulkExpanded: document.documentElement.dataset.sectionsChoice === 'expanded' },
 			}));
