@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
 import { loadWebConfig } from './load-web-config';
@@ -11,9 +12,11 @@ vi.stubEnv('VERCEL_ENV', undefined);
 const config = await loadWebConfig().finally(() => vi.unstubAllEnvs());
 
 const themeScriptHash = boot.hash as `sha256-${string}`;
+const localeScriptHash = `sha256-${createHash('sha256')
+	.update(readFileSync(new URL('../lib/state/locale-boot.js', import.meta.url))).digest('base64')}` as const;
 const productionDirectives = {
 	'default-src': ['self'],
-	'script-src': ['self', themeScriptHash, 'https://static.cloudflareinsights.com'],
+	'script-src': ['self', themeScriptHash, localeScriptHash, 'https://static.cloudflareinsights.com'],
 	'style-src': ['self', 'unsafe-inline'],
 	'img-src': ['self', 'data:', 'blob:', 'https://i.ytimg.com'],
 	'font-src': ['self', 'data:'],
@@ -32,14 +35,14 @@ describe('CSP deployment policy', () => {
 	it.each([undefined, 'production', 'development', 'ci', 'Preview'])(
 		'uses exactly the production directives for VERCEL_ENV=%s',
 		(vercelEnv) => {
-			expect(createCspDirectives({ themeScriptHash, vercelEnv })).toEqual(productionDirectives);
+			expect(createCspDirectives({ themeScriptHash, localeScriptHash, vercelEnv })).toEqual(productionDirectives);
 		},
 	);
 
 	it('appends only the preview toolbar sources to the same YouTube policy', () => {
-		expect(createCspDirectives({ themeScriptHash, vercelEnv: 'preview' })).toEqual({
+		expect(createCspDirectives({ themeScriptHash, localeScriptHash, vercelEnv: 'preview' })).toEqual({
 			...productionDirectives,
-			'script-src': ['self', themeScriptHash, 'https://static.cloudflareinsights.com', 'https://vercel.live'],
+			'script-src': ['self', themeScriptHash, localeScriptHash, 'https://static.cloudflareinsights.com', 'https://vercel.live'],
 			'style-src': ['self', 'unsafe-inline', 'https://vercel.live'],
 			'img-src': ['self', 'data:', 'blob:', 'https://i.ytimg.com', 'https://vercel.live', 'https://vercel.com'],
 			'font-src': ['self', 'data:', 'https://vercel.live', 'https://assets.vercel.com'],

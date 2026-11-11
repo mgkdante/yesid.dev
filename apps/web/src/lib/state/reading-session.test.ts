@@ -37,6 +37,37 @@ function setup() {
 }
 
 describe('reading session', () => {
+	it.each(['navigation', 'dispose', 'reader input'])('cancels an early restore after %s', async (reason) => {
+		const { session, ports, paint, state } = setup();
+		let input = () => {};
+		ports.history.onReaderInput = (callback) => { input = callback; return () => {}; };
+		ports.initialScroll = () => ({ kind: 'offset', y: 900 });
+		const pending = session.after({ type: 'enter', toPath: '/fr/projects', shallow: false, willUnload: false });
+		if (reason === 'navigation') session.before({ ...switchNav, toPath: '/other' });
+		else if (reason === 'dispose') session.dispose();
+		else input();
+		const restored: unknown[] = [];
+		session.register({ capture: () => null, restore: (value) => { restored.push(value); } });
+		paint.resolve();
+		await pending;
+		expect(restored).toEqual([]);
+		expect(state.mask).toBe(false);
+	});
+
+	it('restores an early native locale switch after the destination context mounts', async () => {
+		const { session, ports, paint, state } = setup();
+		const initial = { kind: 'detail-section', index: 1, progress: 0.5 };
+		ports.initialScroll = () => initial;
+		const restore = session.after({ type: 'enter', toPath: '/fr/projects', shallow: false, willUnload: false });
+		let received: unknown;
+		session.register({ capture: () => null, restore: (value) => { received = value; } });
+		expect(state.mask).toBe(true);
+		paint.resolve();
+		await restore;
+		expect(received).toEqual(initial);
+		expect(state.mask).toBe(false);
+	});
+
 	it('keeps the activation offset when layout moves before navigation (6757fc2)', async () => {
 		const { session, state } = setup();
 		const event = {};

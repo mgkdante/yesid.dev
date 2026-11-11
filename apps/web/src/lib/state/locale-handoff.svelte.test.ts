@@ -15,6 +15,18 @@ import { detailReadingPosition } from './detail-reading-position';
 
 afterEach(() => { hooks.unmount(); vi.unstubAllGlobals(); });
 
+it('retains an early departure during native unload and discards it when client navigation supersedes it', () => {
+	attachLocaleHandoff();
+	sessionStorage.setItem('yesid:early-locale', 'outgoing');
+	const nav = { type: 'link', from: { url: new URL('https://yesid.dev/projects') },
+		to: { url: new URL('https://yesid.dev/fr/projects') }, shallow: false,
+		willUnload: true, event: new MouseEvent('click'), complete: Promise.resolve() };
+	hooks.before(nav);
+	expect(sessionStorage.getItem('yesid:early-locale')).toBe('outgoing');
+	hooks.before({ ...nav, willUnload: false });
+	expect(sessionStorage.getItem('yesid:early-locale')).toBeNull();
+});
+
 describe('locale-handoff stable route identity', () => {
 	it('uses a translation-group identity instead of a locale-specific slug', () => {
 		expect(localeHandoffKey('/blog/english-slug', 'blog:article-one')).toBe(

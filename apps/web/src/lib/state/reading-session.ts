@@ -29,6 +29,7 @@ export interface SessionPorts {
 	now(): number;
 	stableIdentity(): string | undefined;
 	setRestoring(value: boolean): void;
+	initialScroll?(): unknown | null;
 	/** Application routing policy stays in the browser adapter. */
 	routing: {
 		key(path: string, identity?: string): string;
@@ -93,6 +94,7 @@ class Session implements ReadingSession {
 	private activeSwitchKey: string | null = null;
 	private activeStableIdentity: string | null = null;
 	private restoringState = false;
+	private cancelInitial = () => {};
 
 	constructor(private ports: SessionPorts) {}
 	get restoring(): boolean { return this.restoringState; }
@@ -141,7 +143,12 @@ class Session implements ReadingSession {
 	async after(nav: NavigationIntent): Promise<void> {
 		this.historyLease?.after();
 		if (nav.shallow && nav.type === 'goto') return;
-		if (nav.type === 'enter') return;
+		if (nav.type === 'enter') {
+			const initial = this.ports.initialScroll?.();
+			if (initial == null) return;
+			await this.restoreInitial(initial);
+			return;
+		}
 		if (nav.fromPath === undefined || nav.toPath === undefined) return;
 		if (!this.activeSwitchKey && !this.ports.routing.isSwitch(nav.fromPath, nav.toPath)) {
 			if (this.restoringState) this.setRestoring(false);
@@ -162,8 +169,25 @@ class Session implements ReadingSession {
 		this.finish();
 	}
 	dispose(): void {
+		this.cancelInitial();
 		this.historyLease?.finish();
 		this.historyLease = undefined;
+	}
+	private async restoreInitial(initial: unknown): Promise<void> {
+		let active = true;
+		const stopInput = this.ports.history.onReaderInput(() => cancel());
+		const cancel = () => {
+			if (!active) return;
+			active = false;
+			stopInput();
+			this.finish();
+		};
+		this.cancelInitial = cancel;
+		this.setRestoring(true);
+		try {
+			await this.ports.afterPaint();
+			if (active) await this.restoreScroll(initial);
+		} finally { cancel(); }
 	}
 	private finish(): void {
 		this.activeSwitchKey = null;
