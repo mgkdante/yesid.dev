@@ -111,9 +111,54 @@ describe('MediaHarness keyboard access', () => {
 		}
 		await waitFor(() => expect(document.body.style.overflow).not.toBe('hidden'));
 	});
-	it.each(['image', 'video'] as const)('navigates %s siblings with buttons, arrows and horizontal swipes without wrapping', async (kind) => {
+	it('wraps images repeatedly with buttons, keyboard arrows and horizontal swipes', async () => {
+		render(MediaHarness, { props: { doc } });
+		const trigger = screen.getAllByTestId('project-image-gallery-trigger')[0]!;
+		trigger.focus();
+		await fireEvent.click(trigger);
+		const dialog = screen.getByRole('dialog');
+		const previous = within(dialog).getByRole('button', { name: 'Previous' });
+		const next = within(dialog).getByRole('button', { name: 'Next' });
+		const counter = within(dialog).getByRole('status', { name: 'Position' });
+		const swipe = async (dx: number) => {
+			await fireEvent.touchStart(dialog, { touches: [{ clientX: 150, clientY: 150 }] });
+			await fireEvent.touchEnd(dialog, { changedTouches: [{ clientX: 150 + dx, clientY: 150 }] });
+		};
+		for (const navigate of [
+			(offset: number) => fireEvent.click(offset < 0 ? previous : next),
+			(offset: number) => fireEvent.keyDown(dialog, { key: offset < 0 ? 'ArrowLeft' : 'ArrowRight' }),
+			(offset: number) => swipe(-offset * 60),
+		]) {
+			for (const offset of [-1, 1]) {
+				for (const caption of ['Mobile', 'Desktop', 'Mobile', 'Desktop']) {
+					expect(previous).toBeEnabled();
+					expect(next).toBeEnabled();
+					await navigate(offset);
+					expect(within(dialog).getByRole('img')).toHaveAttribute('alt', caption);
+					expect(counter).toHaveTextContent(caption === 'Mobile' ? '2 / 2' : '1 / 2');
+				}
+			}
+		}
+		await fireEvent.keyDown(dialog, { key: 'Escape' });
+		await waitFor(() => expect(trigger).toHaveFocus());
+	});
+
+	it('keeps a single image stable with disabled navigation controls', async () => {
+		render(MediaHarness, { props: { doc: { ...doc, blocks: doc.blocks.slice(0, 1) } } });
+		await fireEvent.click(screen.getByTestId('project-image-gallery-trigger'));
+		const dialog = screen.getByRole('dialog');
+		expect(within(dialog).getByRole('button', { name: 'Previous' })).toBeDisabled();
+		expect(within(dialog).getByRole('button', { name: 'Next' })).toBeDisabled();
+		for (const key of ['ArrowLeft', 'ArrowRight']) {
+			await fireEvent.keyDown(dialog, { key });
+			expect(within(dialog).getByRole('img')).toHaveAttribute('alt', 'Desktop');
+		}
+		await fireEvent.keyDown(dialog, { key: 'Escape' });
+	});
+
+	it('navigates video siblings with buttons, arrows and horizontal swipes without wrapping', async () => {
 		render(MediaHarness, { props: { doc, videos: [{ id: 'M7lc1UVf-VE', caption: 'First video' }, { id: 'dQw4w9WgXcQ', caption: 'Second video' }] } });
-		const triggers = screen.getAllByTestId(kind === 'image' ? 'project-image-gallery-trigger' : 'project-video-gallery-trigger');
+		const triggers = screen.getAllByTestId('project-video-gallery-trigger');
 		await fireEvent.click(triggers[0]!);
 		const dialog = screen.getByRole('dialog');
 		const previous = within(dialog).getByRole('button', { name: 'Previous' });
@@ -127,8 +172,7 @@ describe('MediaHarness keyboard access', () => {
 		expect(counter).toHaveTextContent('2 / 2');
 		expect(next).toBeDisabled();
 		expect(previous).toBeEnabled();
-		if (kind === 'image') expect(within(dialog).getByRole('img')).toHaveAttribute('alt', 'Mobile');
-		else expect(within(dialog).getByTitle('Second video')).toHaveAttribute('src', expect.stringContaining('dQw4w9WgXcQ'));
+		expect(within(dialog).getByTitle('Second video')).toHaveAttribute('src', expect.stringContaining('dQw4w9WgXcQ'));
 		await fireEvent.keyDown(dialog, { key: 'ArrowRight' });
 		expect(counter).toHaveTextContent('2 / 2');
 		await fireEvent.click(previous);
@@ -150,7 +194,7 @@ describe('MediaHarness keyboard access', () => {
 		expect(counter).toHaveTextContent('2 / 2');
 		await swipe(50);
 		expect(counter).toHaveTextContent('1 / 2');
-		await fireEvent.click(within(dialog).getByRole('button', { name: kind === 'image' ? siteLabels.a11y.projectImageClose.en : 'Close video' }));
+		await fireEvent.click(within(dialog).getByRole('button', { name: 'Close video' }));
 	});
 
 });

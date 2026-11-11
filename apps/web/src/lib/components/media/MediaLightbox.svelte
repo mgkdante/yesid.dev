@@ -97,9 +97,9 @@
 						</button>
 						{#if media.selection?.kind !== 'diagram'}
 							<div class="article-media-navigation" data-card-interactive>
-								<SliderButton direction="previous" aria-label={labels.previous} disabled={media.index === 0} onclick={() => media.move(-1)} />
+								<SliderButton direction="previous" aria-label={labels.previous} disabled={media.count <= 1 || (media.selection?.kind === 'video' && media.index === 0)} onclick={() => media.move(-1)} />
 								<span role="status" aria-label={labels.position}>{media.index + 1} / {media.count}</span>
-								<SliderButton direction="next" aria-label={labels.next} disabled={media.index === media.count - 1} onclick={() => media.move(1)} />
+								<SliderButton direction="next" aria-label={labels.next} disabled={media.count <= 1 || (media.selection?.kind === 'video' && media.index === media.count - 1)} onclick={() => media.move(1)} />
 							</div>
 						{/if}
 						{#if activeDiagram}

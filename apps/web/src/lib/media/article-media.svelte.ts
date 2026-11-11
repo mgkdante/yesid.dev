@@ -46,8 +46,11 @@ export function setArticleMedia(images: () => readonly GalleryImage[], videos: (
 			selection = { kind: 'diagram', svg, label };
 		},
 		move(offset: number) {
-			if (!selection || selection.kind === 'diagram') return;
-			selection = { ...selection, index: Math.max(0, Math.min(media.count - 1, selection.index + offset)) };
+			if (!selection || selection.kind === 'diagram' || media.count <= 1) return;
+			const index = selection.index + offset;
+			selection = { ...selection, index: selection.kind === 'image'
+				? ((index % media.count) + media.count) % media.count
+				: Math.max(0, Math.min(media.count - 1, index)) };
 		},
 		close() { selection = null; },
 		restoreOpener(event: Event) {

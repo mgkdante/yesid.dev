@@ -61,10 +61,13 @@ test('project gallery follows the reader flow and supports native browsing and k
 	await expect(dialog.getByRole('status')).toHaveText(`2 / ${count}`);
 	await dialog.getByRole('button', { name: 'Previous' }).click();
 	await expect(dialog.getByRole('status')).toHaveText(`1 / ${count}`);
-	await expect(dialog.getByRole('button', { name: 'Previous' })).toBeDisabled();
+	await expect(dialog.getByRole('button', { name: 'Previous' })).toBeEnabled();
 	await page.keyboard.press('ArrowLeft');
-	await expect(dialog.getByRole('status')).toHaveText(`1 / ${count}`);
+	await expect(dialog.getByRole('status')).toHaveText(`${count} / ${count}`);
+	await expect(dialog.getByRole('button', { name: 'Next' })).toBeEnabled();
 	await page.keyboard.press('ArrowRight');
+	await expect(dialog.getByRole('status')).toHaveText(`1 / ${count}`);
+	await dialog.getByRole('button', { name: 'Next' }).click();
 	await expect(dialog.getByRole('status')).toHaveText(`2 / ${count}`);
 	// Swipe on the dialog chrome also works when the active media is an iframe.
 	await dialog.evaluate((element) => {
