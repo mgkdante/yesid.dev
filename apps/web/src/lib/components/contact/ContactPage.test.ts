@@ -88,6 +88,12 @@ async function clickWithoutNavigating(link: HTMLElement) {
 }
 
 describe('ContactPage', () => {
+	it('focuses the error summary after empty submission', async () => {
+		render(ContactPage, { props: { contactPage: contactContent } });
+		await submitForm(screen.getAllByTestId('contact-submit')[0]);
+		await waitFor(() => expect(document.activeElement).toBe(screen.getAllByTestId('contact-error-summary')[0]));
+	});
+
 	it('renders with data-testid page-contact', () => {
 		render(ContactPage, { props: { contactPage: contactContent } });
 		expect(screen.getByTestId('page-contact')).toBeTruthy();
@@ -324,7 +330,7 @@ describe('ContactPage', () => {
 		expect(analyticsMocks.trackAnalyticsEvent).not.toHaveBeenCalled();
 
 		// Resolve → the success sequence takes over.
-		resolveFetch({ json: async () => ({ success: true }) });
+		resolveFetch({ ok: true, json: async () => ({ success: true }) });
 		await waitFor(
 			() => expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1),
 			{ timeout: 4000 },
