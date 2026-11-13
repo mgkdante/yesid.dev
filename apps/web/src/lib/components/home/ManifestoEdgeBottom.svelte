@@ -25,7 +25,6 @@
 {/each}
 
 <div data-testid="manifesto-edge-bottom" class="manifesto__edge-bottom">
-	<span class="manifesto__status-dot"></span>
 	<span>{connected}</span>
 	<span class="manifesto__separator"></span>
 	<span>{line}</span>
@@ -97,15 +96,6 @@
 		white-space: nowrap;
 	}
 
-	.manifesto__status-dot {
-		width: 5px;
-		height: 5px;
-		border-radius: 50%;
-		background: color-mix(in srgb, var(--primary) 30%, transparent);
-		flex-shrink: 0;
-
-		animation: pulse-glow 2s ease-in-out infinite;
-	}
 
 	.manifesto__separator {
 		width: 1px;
@@ -117,6 +107,5 @@
 	@media (prefers-reduced-motion: reduce) {
 		.manifesto__flow-line, .manifesto__flow-line-v { display: none; }
 		.manifesto__edge-bottom { opacity: 1; transform: translateX(-50%); translate: none; }
-		.manifesto__status-dot { animation: none; opacity: 1; }
 	}
 </style>

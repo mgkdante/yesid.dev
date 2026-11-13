@@ -29,7 +29,6 @@
 		live = false,
 		replayEnabled = false,
 		beaconSettled = false,
-		beaconPulsing = beaconSettled,
 		replayAriaLabel = 'Replay intro',
 		onReplay,
 	}: {
@@ -48,8 +47,6 @@
 		replayEnabled?: boolean;
 		/** Final geometry enables annotation positioning and redraw. */
 		beaconSettled?: boolean;
-		/** Pulse only when settled or approaching at small scale, never at full-screen zoom. */
-		beaconPulsing?: boolean;
 		/** aria-label for the armed dot (site_labels a11y.replayIntro). */
 		replayAriaLabel?: string;
 		/** Fired when the armed dot is clicked — HeroBanner replays the intro. */
@@ -140,9 +137,7 @@
 		>
 			<span data-hero-stagger="1" aria-hidden="true">{finalLineLead}</span><span class="hero-dot-word"><span data-hero-stagger="1" data-testid="hero-line2-last" aria-hidden="true">{finalWord}</span><span class="hero-dot-anchor"><button
 				type="button"
-				class="hero-dot-btn {replayEnabled ? 'hero-dot-armed' : ''} {beaconPulsing && replayEnabled
-					? 'hero-dot-settled'
-					: ''}"
+				class="hero-dot-btn {replayEnabled ? 'hero-dot-armed' : ''}"
 				data-testid="hero-dot-replay"
 				disabled={!replayEnabled}
 				aria-hidden={replayEnabled ? undefined : 'true'}
@@ -239,51 +234,6 @@
 		outline: 2px solid var(--ring);
 		outline-offset: 6px;
 		border-radius: 50%;
-	}
-
-	/* Transform-only pulses avoid layout shift; playback stays unavailable under reduced motion. */
-	/* Resume the heartbeat during the final small-scale approach. It stays
-	   off during the large metro zoom and is cleared before every rewind. */
-	.hero-dot-settled .hero-dot {
-		animation: hero-dot-pulse 1.5s ease-in-out infinite;
-		transform-origin: center;
-		will-change: transform;
-		filter: drop-shadow(0 0 0.09em color-mix(in srgb, var(--glow) 95%, transparent))
-			drop-shadow(0 0 0.28em color-mix(in srgb, var(--glow) 55%, transparent));
-	}
-
-	@keyframes hero-dot-pulse {
-		0%,
-		56%,
-		100% {
-			transform: scale(1);
-		}
-
-		14% {
-			transform: scale(1.8);
-		}
-		28% {
-			transform: scale(1);
-		}
-		42% {
-			transform: scale(1.5);
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.hero-dot-settled .hero-dot {
-			animation: hero-dot-pulse-reduce 1.8s ease-in-out infinite;
-		}
-	}
-
-	@keyframes hero-dot-pulse-reduce {
-		0%,
-		100% {
-			opacity: 1;
-		}
-		50% {
-			opacity: 0.35;
-		}
 	}
 
 	.hero-viewport-text { width: 100%; container-type: inline-size; }

@@ -43,7 +43,7 @@ describe('HeroMetrics', () => {
     render(HeroMetrics, { props: { metrics } });
     expect(screen.getAllByText(siteLabels.heroDashboard.vehiclesLabel.en).length).toBeGreaterThan(0);
     expect(screen.getAllByText(siteLabels.heroDashboard.delayLabel.en).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(siteLabels.heroDashboard.routesLabel.en).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.routesSub.en.replace('{total}', String(metrics.find(m => m.key === 'routes')!.total))).length).toBeGreaterThan(0);
   });
 
   it('renders sub-labels for each metric (CMS templates, EN, {coverage}/{total} filled)', () => {
@@ -71,7 +71,7 @@ describe('HeroMetrics — fr locale (CMS truth)', () => {
     render(HeroMetrics, { props: { metrics }, context: frContext });
     expect(screen.getAllByText(siteLabels.heroDashboard.vehiclesLabel.fr!).length).toBeGreaterThan(0);
     expect(screen.getAllByText(siteLabels.heroDashboard.delayLabel.fr!).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(siteLabels.heroDashboard.routesLabel.fr!).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.routesSub.fr!.replace('{total}', String(metrics.find(m => m.key === 'routes')!.total))).length).toBeGreaterThan(0);
   });
 
   it('renders French subs with {coverage}/{total} substituted', () => {

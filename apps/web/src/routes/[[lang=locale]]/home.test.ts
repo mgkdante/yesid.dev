@@ -69,7 +69,7 @@ describe('Home page', () => {
 		expect(screen.getByTestId('metro-network-container')).toBeInTheDocument();
 	});
 
-	it('renders the hero scroll prompt in its initial typewriter frame', () => {
+	it('renders the hero scroll prompt without a blinking cursor', () => {
 		const { container } = renderPage();
 		const scrollPrompt = container.querySelector('.scroll-prompt');
 		const scrollText = scrollPrompt?.querySelector('span:first-child');
@@ -77,7 +77,7 @@ describe('Home page', () => {
 
 		expect(scrollPrompt).toBeInTheDocument();
 		expect(scrollText?.textContent).toBe('');
-		expect(cursor).toHaveClass('typewriter-cursor');
+		expect(cursor).toBeNull();
 	});
 
 	it('renders the hero headline', () => {

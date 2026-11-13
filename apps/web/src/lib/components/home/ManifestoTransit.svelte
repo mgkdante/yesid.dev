@@ -1,17 +1,11 @@
 <script lang="ts">
 	let {
-		arrivalLabel, countdownDisplay,
 		platformBadge, directionBadge,
 	}: {
-		arrivalLabel: string; countdownDisplay: string;
 		platformBadge: string; directionBadge: string;
 	} = $props();
 </script>
 
-<div data-testid="manifesto-arrival" class="manifesto__arrival">
-	<span class="manifesto__arr-label">{arrivalLabel}</span>
-	<span class="manifesto__arr-time">{countdownDisplay}</span>
-</div>
 
 <div class="manifesto__chevrons manifesto__chevrons--right">
 	<div class="manifesto__chevron"></div>
@@ -29,31 +23,8 @@
 
 <style>
 
-	.manifesto__arrival {
-		position: absolute;
-		left: 60px;
-		bottom: 80px;
-		z-index: calc(var(--z-content) + 2);
-		font-family: var(--font-mono);
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
 
-	.manifesto__arr-label {
-		font-size: 7px;
-		letter-spacing: 2px;
-		color: var(--accent-text);
-		text-transform: uppercase;
-	}
 
-	.manifesto__arr-time {
-		font-size: 18px;
-		font-weight: 600;
-		color: var(--accent-text);
-		letter-spacing: 2px;
-		font-variant-numeric: tabular-nums;
-	}
 
 	.manifesto__chevrons {
 		position: absolute;
@@ -92,18 +63,12 @@
 	.manifesto__badge--platform { right: 50px; bottom: 60px; }
 	.manifesto__badge--direction { left: 50px; top: 55px; }
 
-	@media (max-width: 640px) {
-		.manifesto__arrival { left: 12px; bottom: 50px; }
-		.manifesto__arrival .manifesto__arr-time { font-size: var(--text-mono); }
-	}
-
 	@media (--tablet-max) {
 		.manifesto__chevrons { opacity: var(--opacity-faint); }
 		.manifesto__badge { font-size: 6px; padding: 2px 6px; }
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.manifesto__arrival,
 		.manifesto__chevrons,
 		.manifesto__badge {
 			opacity: 1;

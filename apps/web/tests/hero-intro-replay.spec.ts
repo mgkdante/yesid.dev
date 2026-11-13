@@ -139,7 +139,7 @@ test('first visit stays idle; dot activation plays and completion collapses the 
 					.evaluate((el) => el.getAnimations({ subtree: true }).some(animation => animation.playState === 'running')),
 			{ timeout: 2000 },
 		)
-		.toBe(true);
+		.toBe(false);
 });
 
 test('keyboard activation rewinds without an orange wall and supports repeated playback', async ({
@@ -178,7 +178,7 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 	const bannerHeight = await banner.evaluate((el) => el.getBoundingClientRect().height);
 	expect(bannerHeight).toBeLessThan(viewport.height * 3);
 
-	// The dot heartbeats (scale keyframes), reads as clickable, aria-labelled,
+	// The still dot reads as clickable, is aria-labelled,
 	// and renders as a true '.': a real box, never clipped away.
 	const dot = page.locator('[data-testid="hero-dot-replay"]');
 	await expect(dot).toBeEnabled();
@@ -186,7 +186,7 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 	const dotGlyph = dot.locator('[data-testid="hero-dot"]');
 	await expect
 		.poll(() => dotGlyph.evaluate((el) => el.getAnimations({ subtree: true }).some(animation => animation.playState === 'running')), { timeout: 2000 })
-		.toBe(true);
+		.toBe(false);
 	const dotBox = await dotGlyph.evaluate((el) => {
 		const r = el.getBoundingClientRect();
 		return { width: r.width, height: r.height };

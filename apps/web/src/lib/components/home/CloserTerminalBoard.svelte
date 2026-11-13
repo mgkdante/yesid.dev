@@ -3,7 +3,7 @@
   Data-driven rows: each row links to a destination (contact, GitHub, blog, about).
 -->
 <script lang="ts">
-	import { TerminalPanel, TerminalCursor } from '@yesid/ui/brand';
+	import { TerminalPanel } from '@yesid/ui/brand';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
 
@@ -68,10 +68,9 @@
 			</span>
 		</a>
 	{/each}
-	<!-- Blinking cursor -->
+	<!-- Preserve the board spacing. -->
 	<div class="terminal-cursor-line">
 		<span class="terminal-line-num">&nbsp;</span>
-		<TerminalCursor />
 	</div>
 </TerminalPanel>
 
