@@ -36,6 +36,11 @@ for (const locale of ['', '/fr', '/es']) {
       const summary = terminal.getByTestId('contact-error-summary');
       await expect(summary).toBeFocused();
       await expect(terminal.locator('[aria-invalid="true"]')).toHaveCount(3);
+      for (const link of await summary.getByRole('link').all()) {
+        const box = await link.boundingBox();
+        expect(box!.height).toBeGreaterThanOrEqual(44);
+        expect(box!.width).toBeGreaterThanOrEqual(44);
+      }
       await summary.getByRole('link').first().press('Enter');
       await expect(inputs.nth(0)).toBeFocused();
       await page.keyboard.type('Fixture Reader');
@@ -93,7 +98,6 @@ for (const theme of ['dark', 'light']) {
     expect((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toBeGreaterThanOrEqual(3);
     expect(colors.outline).toBe('solid');
     expect(parseFloat(colors.width)).toBeGreaterThanOrEqual(2);
-    await page.screenshot({ path: `../../contact-after-${theme}.png`, fullPage: true });
   });
 }
 
@@ -103,7 +107,7 @@ test('contact without JavaScript offers direct email', async ({ browser, baseURL
   await page.route('https://**/*', route => route.abort());
   await page.goto(`${baseURL}/fr/contact`);
   await expect(visibleContactTerminal(page).getByRole('link', { name: 'contact@yesid.dev', exact: true })).toBeVisible();
-  expect(await visibleContactTerminal(page).getByRole('link', { name: 'contact@yesid.dev', exact: true }).evaluate(el => el.parentElement?.textContent)).toContain('Ce formulaire a besoin de JavaScript.');
+  expect(await visibleContactTerminal(page).getByRole('link', { name: 'contact@yesid.dev', exact: true }).evaluate(el => el.parentElement?.textContent)).toContain('Ce formulaire nécessite JavaScript.');
   await expect(visibleContactTerminal(page).getByTestId('contact-submit')).toBeDisabled();
   await context.close();
 });

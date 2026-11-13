@@ -159,7 +159,7 @@
 	let announcement = $state('');
 	let activeForm: HTMLFormElement | undefined;
 	const requiredGuidance = { en: 'All fields are required.', fr: 'Tous les champs sont obligatoires.', es: 'Todos los campos son obligatorios.' };
-	const noScript = { en: 'This form needs JavaScript. You can also email', fr: 'Ce formulaire a besoin de JavaScript. Vous pouvez aussi écrire à', es: 'Este formulario necesita JavaScript. También puedes escribir a' };
+	const noScript = { en: 'This form needs JavaScript. You can also email', fr: 'Ce formulaire nécessite JavaScript. Vous pouvez aussi écrire à', es: 'Este formulario necesita JavaScript. También puedes escribir a' };
 
 	async function focusErrors() {
 		await tick();
@@ -255,7 +255,6 @@
 
 		rebuildSuccessLines();
 		showSuccess = true;
-
 	}
 
 	// --- Reset ---
@@ -481,10 +480,10 @@
 									✗ {errors.form}
 								{:else}
 									{resolveLocale(contactPage.validation.errorSummary, locale).replace('{count}', String(errorCount()))}
-									<ul>
+									<ul class="space-y-1">
 										{#each fields as { key }}
 											{#if errors[key]}
-												<li><a href={`#contact-${layout}-${key}`} onclick={(event) => { event.preventDefault(); document.getElementById(`contact-${layout}-${key}`)?.focus(); }}>{errors[key]}</a></li>
+												<li><a class="flex min-h-11 items-center rounded px-1 py-2" href={`#contact-${layout}-${key}`} onclick={(event) => { event.preventDefault(); document.getElementById(`contact-${layout}-${key}`)?.focus(); }}>{errors[key]}</a></li>
 											{/if}
 										{/each}
 									</ul>
