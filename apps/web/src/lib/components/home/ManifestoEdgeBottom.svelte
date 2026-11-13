@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { animationPaused } from '#lib/state/animation-pause.ts';
 	let {
 		connected, line, url, version, scrollHint,
 		hFlows, vFlows,
@@ -13,14 +14,14 @@
 {#each hFlows as flow}
 	<div
 		class="manifesto__flow-line"
-		style="top:{flow.y}px;width:{flow.w}px;left:-{flow.w}px;animation-duration:{flow.dur}s;animation-delay:{flow.delay}s;"
+		style="top:{flow.y}px;width:{flow.w}px;left:-{flow.w}px;animation-play-state:{$animationPaused ? 'paused' : 'running'};animation-duration:{flow.dur}s;animation-delay:{flow.delay}s;"
 	></div>
 {/each}
 
 {#each vFlows as flow}
 	<div
 		class="manifesto__flow-line-v"
-		style="left:{flow.x}px;height:{flow.h}px;top:-{flow.h}px;animation-duration:{flow.dur}s;animation-delay:{flow.delay}s;"
+		style="left:{flow.x}px;height:{flow.h}px;top:-{flow.h}px;animation-play-state:{$animationPaused ? 'paused' : 'running'};animation-duration:{flow.dur}s;animation-delay:{flow.delay}s;"
 	></div>
 {/each}
 

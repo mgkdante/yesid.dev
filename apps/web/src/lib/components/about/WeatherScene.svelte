@@ -1,5 +1,6 @@
 <!-- Reduced motion uses composed static positions for precipitation, lightning and fog. -->
 <script lang="ts">
+	import { animationPaused } from '#lib/state/animation-pause.ts';
 	import type { WeatherSceneId } from './weather-scene';
 
 	let { scene, night = false }: { scene: WeatherSceneId; night?: boolean } = $props();
@@ -46,6 +47,7 @@
 
 <div
 	class="weather-scene"
+ style="--ambient-play-state: {$animationPaused ? 'paused' : 'running'}"
 	class:night
 	data-scene={scene}
 	data-weather-night={night}
@@ -177,6 +179,7 @@
 </div>
 
 <style>
+	.weather-scene :global(*) { animation-play-state: var(--ambient-play-state, running) !important; }
 	/* ═══════════════ SCENE ROOT + PALETTE (dark theme = base) ═══════════════ */
 	.weather-scene {
 		position: absolute;

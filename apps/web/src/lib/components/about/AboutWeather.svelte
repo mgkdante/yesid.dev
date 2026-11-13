@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import AnimationPause from '#lib/components/brand/AnimationPause.svelte';
 	import type { AboutWeatherConfig } from '#lib/types.ts';
 	import type { WeatherData } from '#lib/utils/weather.ts';
 	import { fetchFreshWeather } from '#lib/utils/weather-refresh.ts';
@@ -15,11 +16,13 @@
 	import { resolveWeatherScene, isNightHour } from './weather-scene';
 
 	let {
+		showAnimationControl = true,
 		config,
 		weather,
 		stop,
 		label,
 	}: {
+		showAnimationControl?: boolean;
 		config: AboutWeatherConfig;
 		weather?: WeatherData | null;
 		stop: string;
@@ -60,6 +63,7 @@
 	<div class="relative flex h-full flex-col">
 		<!-- Stop label: ALWAYS top-left, normal flow -->
 		<StopLabel {stop} {label} as="h2" />
+		{#if showAnimationControl}<AnimationPause />{/if}
 
 		<!-- Centered content fills remaining space -->
 		<div class="flex flex-1 flex-col items-center justify-center text-center">

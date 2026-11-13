@@ -68,7 +68,7 @@
 					{:else if badge.area === 'education'}
 						<AboutEducation education={c.education} stop={badge.stop} label={badge.label} />
 					{:else if badge.area === 'weather'}
-						<AboutWeather config={c.weather} weather={null} stop={badge.stop} label={badge.label} />
+						<AboutWeather showAnimationControl={false} config={c.weather} weather={null} stop={badge.stop} label={badge.label} />
 					{:else}
 						<AboutInterests interests={c.interests} stop={badge.stop} label={badge.label} />
 					{/if}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import AnimationPause from '#lib/components/brand/AnimationPause.svelte';
 	import { browser } from '$app/env';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
@@ -126,6 +127,7 @@
 	<ManifestoTransit {...transit} />
 
 	<div class="manifesto__content">
+		<AnimationPause />
 
 		<div data-testid="manifesto-prompt" class="manifesto__prompt" aria-hidden="true">
 			<span class="manifesto__prompt-cmd">{terminalUser}</span>
