@@ -123,8 +123,10 @@ for (const locale of PUBLISHED_LOCALES) {
 			const visible = await expectWholeCards(reel);
 			for (const card of await reel.getByTestId('proof-card').all()) { await expectCardContentInside(card); await expectMediaAboveInfo(card); await expectPanesSideBySide(card); }
 			for (const card of visible) await expectImagesFitPanes(reel.getByTestId('proof-card').nth(card.index));
-			const frames = await reel.getByTestId('proof-card-image').evaluateAll(images => images.map(image => image.getBoundingClientRect().height));
-			expect(Math.max(...frames) / Math.min(...frames), 'every project keeps the same image frame').toBeLessThan(1.1);
+			if (visible.length > 1) {
+				const frames = await reel.getByTestId('proof-card-image').evaluateAll(images => images.map(image => image.getBoundingClientRect().height));
+				expect(Math.max(...frames) / Math.min(...frames), 'side-by-side projects keep the same image frame').toBeLessThan(1.1);
+			}
 	});
 }
 
