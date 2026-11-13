@@ -48,10 +48,10 @@ test('route /fr/contact form validation errors in French', async ({ page }) => {
 		expect(await requiredErrs.count()).toBe(Object.keys(contactContent.formTerminal.fields).length);
 
 		// Error summary reflects the count.
-		await expect(form.getByText('✗ ' + contactContent.validation.errorSummary.en.replace('{count}', String(Object.keys(contactContent.formTerminal.fields).length)))).toBeVisible();
+		await expect(form.getByTestId('contact-error-summary')).toContainText(contactContent.validation.errorSummary.en.replace('{count}', String(Object.keys(contactContent.formTerminal.fields).length)));
 	});
 
-	test('native email validation blocks malformed addresses before submission', async ({ page }) => {
+	test('malformed addresses focus the accessible error summary before submission', async ({ page }) => {
 		const { submittedEmails } = await mockWeb3Forms(page);
 		const form = visibleContactTerminal(page);
 		await form.getByLabel(new RegExp(`^(?:${Object.values(contactContent.formTerminal.fields.name.label).join('|')}):$`, 'i')).fill('Test User');
@@ -60,7 +60,8 @@ test('route /fr/contact form validation errors in French', async ({ page }) => {
 		await email.fill('not-an-email');
 		await form.getByTestId('contact-submit').click();
 		expect(await email.evaluate((input: HTMLInputElement) => input.validity.typeMismatch)).toBe(true);
-		await expect(email).toBeFocused();
+		await expect(form.getByTestId('contact-error-summary')).toBeFocused();
+		await expect(email).toHaveAttribute('aria-invalid', 'true');
 		expect(submittedEmails).toEqual([]);
 	});
 

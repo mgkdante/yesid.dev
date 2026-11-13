@@ -1,11 +1,11 @@
 <!--
-  Contact page — full-bleed Recipe 4 Edge Title Grid.
+  Contact page: full-bleed Recipe 4 Edge Title Grid.
   Rotated "Contact." edge title + accent line + resizable dual terminals.
   Info terminal (left): location, weather, local time, response time, social links.
-  Form terminal (right): name, email, message + typed success sequence.
+  Form terminal (right): name, email, message + success confirmation.
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, tick } from 'svelte';
 	import { computeRotatedTitleSize } from '#lib/utils/rotated-title-fit.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
@@ -13,7 +13,7 @@
 
 	const locale = getLocale();
 	import { fillTemplate } from '#lib/utils/labels.ts';
-	import { siteLabels } from '#lib/content/index.ts';
+	import { siteLabels, siteMeta } from '#lib/content/index.ts';
 	import { clock, persisted } from '@yesid/ui/state';
 	import type { ContactContent } from '#lib/types.ts';
 	import { TerminalPanel, TerminalCursor } from '@yesid/ui/brand';
@@ -48,7 +48,7 @@
 
 	// Hydration gate (consolidation-deploy-honesty): the page is prerendered,
 	// so the static HTML paints before handleSubmit is attached. A submit in
-	// that window would fall back to a NATIVE GET submit — full reload with the
+	// that window would fall back to a NATIVE GET submit: full reload with the
 	// form values dumped into the query string. The form requires JS to send
 	// (Web3Forms fetch), so the honest pre-hydration state is a disabled
 	// button; it enables the moment the handler exists.
@@ -154,22 +154,39 @@
 		return Object.keys(errors).length;
 	}
 
-	// --- Submit (client-side — Web3Forms free tier requires client calls) ---
+	// --- Submit (client-side: Web3Forms free tier requires client calls) ---
 	let sending = $state(false);
+	let announcement = $state('');
+	let activeForm: HTMLFormElement | undefined;
+	const requiredGuidance = { en: 'All fields are required.', fr: 'Tous les champs sont obligatoires.', es: 'Todos los campos son obligatorios.' };
+	const noScript = { en: 'This form needs JavaScript. You can also email', fr: 'Ce formulaire nécessite JavaScript. Vous pouvez aussi écrire à', es: 'Este formulario necesita JavaScript. También puedes escribir a' };
+
+	async function focusErrors() {
+		await tick();
+		activeForm?.querySelector<HTMLElement>('[data-testid="contact-error-summary"]')?.focus();
+	}
 
 	function failSend(): void {
 		errors = { form: sendErrorMessage };
 		sending = false;
+		announcement = '';
+		void focusErrors();
 		trackAnalyticsEvent('contact_form_error');
 	}
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
-		if (sending) return; // in-flight guard — no double submits
+		if (sending) return; // in-flight guard: no double submits
+		activeForm = e.currentTarget as HTMLFormElement;
 		submitted = true;
-		if (!validate()) return;
+		announcement = '';
+		if (!validate()) {
+			await focusErrors();
+			return;
+		}
 
 		sending = true;
+		announcement = resolveLocale(contactPage.success.sending, locale);
 		// A stalled provider must release the form without discarding the draft.
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), 15_000);
@@ -191,7 +208,7 @@
 			});
 			const result = await res.json();
 
-			if (!result.success) return failSend();
+			if (!res.ok || !result.success) return failSend();
 		} catch {
 			return failSend();
 		} finally {
@@ -201,12 +218,13 @@
 		trackAnalyticsEvent('contact_form_success');
 		sending = false;
 		await playSuccessSequence();
+		announcement = resolveLocale(contactPage.success.sent, locale);
 	}
 
-	// --- Success animation sequence ---
+	// --- Success confirmation ---
 	// The success lines are translated, so they are re-derived in the current locale,
 	// never persisted. rebuildSuccessLines() shows them at once on a later mount;
-	// playSuccessSequence() reveals them line by line after a real send.
+	// A successful send shows the confirmation immediately.
 	function buildSuccessLines() {
 		const okText = resolveLocale(contactPage.success.fieldOk, locale);
 		return [
@@ -235,13 +253,8 @@
 		message.value = '';
 		wasSuccessful.value = true;
 
-		successLines = buildSuccessLines().map((l) => ({ ...l, visible: false }));
+		rebuildSuccessLines();
 		showSuccess = true;
-
-		for (let i = 0; i < successLines.length; i++) {
-			await new Promise((r) => setTimeout(r, 150));
-			successLines[i] = { ...successLines[i], visible: true };
-		}
 	}
 
 	// --- Reset ---
@@ -254,15 +267,16 @@
 		wasSuccessful.value = false;
 		submitted = false;
 		errors = {};
+		announcement = '';
 		showSuccess = false;
 		successLines = [];
 	}
 
 	// --- Helpers ---
 	function fieldBorderClass(field: string): string {
-		if (!submitted) return 'border-[var(--border)]';
+		if (!submitted) return 'border-[var(--input)]';
 		if (errors[field]) return 'border-[var(--destructive)]';
-		return 'border-[var(--success)]';
+		return 'border-[var(--input)]';
 	}
 
 	function contactChannelLabel(label: ContactContent['socials'][number]['label']): string {
@@ -289,10 +303,12 @@
 
 </script>
 
+<div role="status" aria-atomic="true" class="sr-only">{announcement}</div>
+
 <div class="contact-grid" data-testid="page-contact">
 	<!-- ═══ EDGE TITLE (desktop only) ═══ -->
 	<div class="edge-title-column" bind:this={edgeColumnEl} style={edgeVar}>
-		<div class="edge-title">{pageTitle}<span class="edge-dot">.</span></div>
+		<h1 class="edge-title">{pageTitle}<span class="edge-dot">.</span></h1>
 	</div>
 
 	<!-- ═══ ACCENT LINE ═══ -->
@@ -342,7 +358,7 @@
 				<div class="text-[var(--secondary-foreground)]">{resolveLocale(contactPage.infoTerminal.location, locale)}</div>
 				{#if currentWeather}
 					<div class="mt-0.5 font-mono text-small text-[var(--accent-text)]">
-						{currentWeather.temp}°C — <span class="capitalize">{currentWeather.condition}</span>
+						{currentWeather.temp}°C · <span class="capitalize">{currentWeather.condition}</span>
 					</div>
 				{/if}
 				{#if localTime}
@@ -422,8 +438,11 @@
 				<!-- ─── FORM ─── -->
 				<form
 					onsubmit={handleSubmit}
+					novalidate
 					class="mt-3 space-y-3"
 				>
+					<p>{resolveLocale(requiredGuidance, locale)}</p>
+					<noscript><p>{resolveLocale(noScript, locale)} <a href={`mailto:${siteMeta.links.email}`}>{siteMeta.links.email}</a>.</p></noscript>
 					<div class="flex flex-col gap-4">
 
 						{#each fields as { key, state }}
@@ -432,11 +451,13 @@
 							{@const attributes = {
 								id,
 								name: key,
+								required: true,
+								autocomplete: key === 'message' ? undefined : key,
 								'data-handoff-focus': `contact-${key}`,
 								'aria-invalid': error ? true : undefined,
 								'aria-describedby': error ? `${id}-error` : undefined,
 								placeholder: resolveLocale(contactPage.formTerminal.fields[key].placeholder, locale),
-								class: `form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 ${key === 'message' ? 'resize-none' : 'min-h-11'} ${fieldBorderClass(key)}`,
+								class: `form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] transition-colors duration-200 ${key === 'message' ? 'resize-none' : 'min-h-11'} ${fieldBorderClass(key)}`,
 							}}
 							<div class="flex flex-col gap-1">
 								<label for={id} class="text-caption text-[var(--primary)]">
@@ -453,15 +474,20 @@
 							</div>
 						{/each}
 
-						<!-- Server-level error -->
-						{#if submitted && errors.form}
-							<div class="mt-0.5 text-caption text-[var(--destructive)]">✗ {errors.form}</div>
-						{/if}
-
-						<!-- Error summary -->
 						{#if submitted && errorCount() > 0}
-							<div data-testid="contact-error-summary" class="rounded border border-[var(--destructive)]/30 px-3 py-2 text-caption text-[var(--destructive)]">
-								✗ {resolveLocale(contactPage.validation.errorSummary, locale).replace('{count}', String(errorCount()))}
+							<div tabindex="-1" data-testid="contact-error-summary" class="rounded border border-[var(--destructive)] px-3 py-2 text-caption text-[var(--destructive)]">
+								{#if errors.form}
+									✗ {errors.form}
+								{:else}
+									{resolveLocale(contactPage.validation.errorSummary, locale).replace('{count}', String(errorCount()))}
+									<ul class="space-y-1">
+										{#each fields as { key }}
+											{#if errors[key]}
+												<li><a class="flex min-h-11 items-center rounded px-1 py-2" href={`#contact-${layout}-${key}`} onclick={(event) => { event.preventDefault(); document.getElementById(`contact-${layout}-${key}`)?.focus(); }}>{errors[key]}</a></li>
+											{/if}
+										{/each}
+									</ul>
+								{/if}
 							</div>
 						{/if}
 
@@ -481,7 +507,7 @@
 
 						<!-- In-flight transmission line (terminal voice) -->
 						{#if sending}
-							<div class="text-caption text-[var(--primary)]" role="status" data-testid="contact-sending-line">
+							<div class="text-caption text-[var(--primary)]" aria-hidden="true" data-testid="contact-sending-line">
 								→ {resolveLocale(contactPage.success.sending, locale)}
 							</div>
 						{/if}
@@ -599,6 +625,7 @@
 			padding: 0 1.5rem;
 		}
 		.edge-title {
+			margin: 0;
 			font-family: var(--font-heading);
 			/* The size variable is measured after hydration; its fallback covers first paint. */
 			font-size: var(--edge-title-size, min(clamp(6rem, 12vw, 13rem), 11dvh));
