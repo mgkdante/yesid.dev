@@ -1,6 +1,7 @@
+import { expectAccessible } from './_support/accessibility';
 import { localeCopy } from '../src/lib/locales';
 import { expect, test, type Page } from '@playwright/test';
-import { expectAccessible, expectNoHorizontalOverflow, expectTapTargets } from '@yesid/config/playwright';
+import { expectNoHorizontalOverflow, expectTapTargets } from '@yesid/config/playwright';
 
 import { contactContent } from '../src/lib/content/contact-page';
 import { menuItems } from '../src/lib/content/nav';

@@ -12,6 +12,7 @@
 	let { manifesto: manifestoContent }: { manifesto: ManifestoContent } = $props();
 	import { createCrescendoScrub } from '#lib/motion/scrubs/index.ts';
 	import { boop } from '@yesid/motion/actions';
+	import ManifestoEdgeRight from './ManifestoEdgeRight.svelte';
 	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';
 	import ManifestoEdgeTop from './ManifestoEdgeTop.svelte';
 	import ManifestoEdgeBottom from './ManifestoEdgeBottom.svelte';
@@ -39,6 +40,16 @@
 		sectionNumber: resolveLocale(manifestoContent.edgeLeft.sectionNumber, locale),
 		sectionName: resolveLocale(manifestoContent.edgeLeft.sectionName, locale),
 		location: resolveLocale(manifestoContent.edgeLeft.location, locale),
+	});
+
+	const edgeRight = $derived({
+		lat: resolveLocale(manifestoContent.edgeRight.lat, locale),
+		lng: resolveLocale(manifestoContent.edgeRight.lng, locale),
+		src: resolveLocale(manifestoContent.edgeRight.src, locale),
+		via: resolveLocale(manifestoContent.edgeRight.via, locale),
+		dst: resolveLocale(manifestoContent.edgeRight.dst, locale),
+		node: resolveLocale(manifestoContent.edgeRight.node, locale),
+		status: resolveLocale(manifestoContent.edgeRight.status, locale),
 	});
 
 	const edgeBottom = $derived({
@@ -97,6 +108,7 @@
 	<div class="manifesto__stripe manifesto__stripe--br"></div>
 	<div class="manifesto__stripe manifesto__stripe--tr"></div>
 	<div class="manifesto__stripe manifesto__stripe--bl"></div>
+	<ManifestoEdgeRight {...edgeRight} />
 	<ManifestoEdgeLeft {...edgeLeft} hiddenLines={hiddenLines} />
 	<ManifestoEdgeTop ticks={ticks} />
 	<ManifestoTransit {...transit} />
@@ -127,6 +139,7 @@
 <style>
 
 	.manifesto {
+		--manifesto-edge-quiet: 0.45;
 		position: relative;
 		min-height: 100dvh;
 		padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -139,6 +152,8 @@
 		background: var(--manifesto);
 		cursor: crosshair;
 	}
+
+	.manifesto :global([data-decorative-edge]) { opacity: var(--manifesto-edge-quiet); }
 
 	.manifesto__circuit-grid {
 		opacity: var(--manifesto-background-strength);

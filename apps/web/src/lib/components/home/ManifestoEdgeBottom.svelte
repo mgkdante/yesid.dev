@@ -7,7 +7,7 @@
 	} = $props();
 </script>
 
-<div data-testid="manifesto-edge-bottom" class="manifesto__edge-bottom" aria-hidden="true">
+<div data-testid="manifesto-edge-bottom" class="manifesto__edge-bottom" aria-hidden="true" data-decorative-edge>
 	<span>{connected}</span>
 	<span class="manifesto__separator"></span>
 	<span>{line}</span>

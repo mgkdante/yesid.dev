@@ -2,7 +2,7 @@
 	let { ticks }: { ticks: readonly string[] } = $props();
 </script>
 
-<div data-testid="manifesto-edge-top" class="manifesto__edge-top" aria-hidden="true">
+<div data-testid="manifesto-edge-top" class="manifesto__edge-top" aria-hidden="true" data-decorative-edge>
 	{#each ticks as tick}
 		<div class="manifesto__tick">
 			<div class="manifesto__tick-line"></div>
