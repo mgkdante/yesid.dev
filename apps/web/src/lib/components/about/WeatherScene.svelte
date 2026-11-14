@@ -47,7 +47,7 @@
 
 <div
 	class="weather-scene"
- style="--ambient-play-state: {$animationPaused ? 'paused' : 'running'}"
+	style="--ambient-play-state: {$animationPaused ? 'paused' : 'running'}"
 	class:night
 	data-scene={scene}
 	data-weather-night={night}

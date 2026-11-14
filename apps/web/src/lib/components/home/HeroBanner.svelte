@@ -88,21 +88,21 @@
 	);
 
 	const sceneWords = {
-  en: { name: 'Montréal metro scene', open: 'Open Montréal metro scene', close: 'Close Montréal metro scene' },
-  fr: { name: 'Scène du métro de Montréal', open: 'Ouvrir la scène du métro de Montréal', close: 'Fermer la scène du métro de Montréal' },
-  es: { name: 'Escena del metro de Montreal', open: 'Abrir la escena del metro de Montreal', close: 'Cerrar la escena del metro de Montreal' },
- }[locale];
- let reducedMotion = $state(false);
- let stillOpen = $state(false);
- let stillScene = $state<HTMLElement>();
- const replayAriaLabel = $derived(reducedMotion ? (stillOpen ? sceneWords.close : sceneWords.open) : resolveLocale(siteLabels.a11y.replayIntro, locale));
- async function toggleStillScene(): Promise<void> {
-  stillOpen = !stillOpen;
-  await tick();
-  const target = stillOpen ? stillScene : heroTextContainer.querySelector<HTMLButtonElement>('[data-testid="hero-dot-replay"]');
-  target?.scrollIntoView({ behavior: 'instant', block: 'center' });
-  target?.focus({ preventScroll: true });
- }
+		en: { name: 'Montréal metro scene', open: 'Open Montréal metro scene', close: 'Close Montréal metro scene' },
+		fr: { name: 'Scène du métro de Montréal', open: 'Ouvrir la scène du métro de Montréal', close: 'Fermer la scène du métro de Montréal' },
+		es: { name: 'Escena del metro de Montreal', open: 'Abrir la escena del metro de Montreal', close: 'Cerrar la escena del metro de Montreal' },
+	}[locale];
+	let reducedMotion = $state(false);
+	let stillOpen = $state(false);
+	let stillScene = $state<HTMLElement>();
+	const replayAriaLabel = $derived(reducedMotion ? (stillOpen ? sceneWords.close : sceneWords.open) : resolveLocale(siteLabels.a11y.replayIntro, locale));
+	async function toggleStillScene(): Promise<void> {
+		stillOpen = !stillOpen;
+		await tick();
+		const target = stillOpen ? stillScene : heroTextContainer.querySelector<HTMLButtonElement>('[data-testid="hero-dot-replay"]');
+		target?.scrollIntoView({ behavior: 'instant', block: 'center' });
+		target?.focus({ preventScroll: true });
+	}
 
 	const metroCaption = resolveLocale(siteLabels.ui.metroCaption, locale);
 
@@ -370,19 +370,19 @@
 
 	onMount(() => {
 		replayEnabled = true;
-  const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const update = () => {
-   reducedMotion = preference.matches;
-   if (stillOpen) {
-    stillOpen = false;
-    heroTextContainer.querySelector<HTMLButtonElement>('[data-testid="hero-dot-replay"]')?.focus({ preventScroll: true });
-   }
-   if (reducedMotion && !introCollapsed) void collapseIntroTrack();
-  };
-  update();
-  preference.addEventListener('change', update);
+		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const update = () => {
+			reducedMotion = preference.matches;
+			if (stillOpen) {
+				stillOpen = false;
+				heroTextContainer.querySelector<HTMLButtonElement>('[data-testid="hero-dot-replay"]')?.focus({ preventScroll: true });
+			}
+			if (reducedMotion && !introCollapsed) void collapseIntroTrack();
+		};
+		update();
+		preference.addEventListener('change', update);
 		homeIntroStore.settle();
-  return () => preference.removeEventListener('change', update);
+		return () => preference.removeEventListener('change', update);
 	});
 
 </script>
@@ -483,13 +483,13 @@
 		</p>
 	</div>
 
- {#if reducedMotion && stillOpen}
-  <section id="metro-still-scene" bind:this={stillScene} tabindex="-1" aria-label={sceneWords.name}
-   class="metro-still-scene mx-auto w-full max-w-5xl p-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-   <h2 class="text-center">{sceneWords.name}</h2>
-   <MetroNetwork svg={metroSvg} still />
-  </section>
- {/if}
+	{#if reducedMotion && stillOpen}
+		<section id="metro-still-scene" bind:this={stillScene} tabindex="-1" aria-label={sceneWords.name}
+			class="metro-still-scene mx-auto w-full max-w-5xl p-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+			<h2 class="text-center">{sceneWords.name}</h2>
+			<MetroNetwork svg={metroSvg} still />
+		</section>
+	{/if}
 
 	<HeroMobileSql
 		heroData={heroData}

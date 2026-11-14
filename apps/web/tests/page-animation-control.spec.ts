@@ -21,7 +21,8 @@ for (const locale of locales) for (const width of [390, 1440]) {
   await pause.focus();
   await page.keyboard.press('Enter');
   const play = page.getByRole('button', { name: locale.play, exact: true });
-  await expect(play).toHaveAttribute('aria-pressed', 'true');
+  await expect(play).toHaveAccessibleName(locale.play);
+  await expect(play).not.toHaveAttribute('aria-pressed');
   const keptRunning = () => page.evaluate(() => document.getAnimations().filter(a =>
    a.playState === 'running' && /flowRight|flowDown|weather-/.test((a as CSSAnimation).animationName)).length);
   await expect.poll(keptRunning).toBe(0);
