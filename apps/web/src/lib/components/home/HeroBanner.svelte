@@ -14,6 +14,7 @@
 	import { createHeroTimeline } from '#lib/motion/scrubs/index.ts';
 	import { isViewportAtMost } from '@yesid/motion/utils/device';
 	import { getLenis } from '@yesid/motion/utils/lenis';
+	import { heroRewindEase } from '#lib/motion/utils/heroRewind.ts';
 	import { siteLabels } from '#lib/content/index.ts';
 	import {
 		fetchLiveKpis,
@@ -198,6 +199,7 @@
 	let destroyed = false;
 	onDestroy(() => {
 		destroyed = true;
+		stopRewind();
 		cleanup?.();
 		homeIntroStore.reset();
 	});
@@ -244,6 +246,7 @@
 			skipDeferredRefresh: true,
 			// Defer teardown until outside the timeline update.
 			onIntroComplete: () => {
+				if (replayArming) return;
 				requestAnimationFrame(() => {
 					void collapseIntroTrack();
 				});
@@ -263,14 +266,53 @@
 		};
 	}
 
-	function scrollBackToTop(): void {
-		const lenis = getLenis();
-		if (lenis) {
-
-			lenis.scrollTo(0, { duration: 1.6, easing: (t: number) => 1 - Math.pow(1 - t, 3) });
-		} else {
-			window.scrollTo({ top: 0, behavior: 'smooth' });
+	let rewindFrame: number | undefined;
+	let rewindTrigger: ReturnType<typeof ScrollTrigger.getAll>[number] | undefined;
+	let finishRewind: (() => void) | undefined;
+	function stopRewind(): void {
+		if (rewindFrame !== undefined) cancelAnimationFrame(rewindFrame);
+		rewindFrame = undefined;
+		const trigger = rewindTrigger; rewindTrigger = undefined;
+		if (trigger?.animation && !destroyed) {
+			// Match the document to the already-painted frame before handing control back to scrolling.
+			const paintedProgress = trigger.animation.progress();
+			const top = trigger.start + paintedProgress * (trigger.end - trigger.start);
+			jumpTo(top);
+			trigger.enable(false, false);
+			ScrollTrigger.update();
+			const scrub = trigger.getTween();
+			if (scrub) scrub.pause();
+			trigger.animation.progress(paintedProgress);
 		}
+		if (trigger) gsap.set([heroTextContainer, svgWrapper], { force3D: 'auto', clearProps: 'willChange' });
+		const finish = finishRewind; finishRewind = undefined; finish?.();
+	}
+
+	function scrollBackToTop(): Promise<void> {
+		stopRewind();
+		const trigger = ScrollTrigger.getAll().find(t => t.trigger === pinContainer && Boolean(t.vars.pin));
+		if (!trigger?.animation) { jumpTo(0); return Promise.resolve(); }
+		const animation = trigger.animation;
+		// Touch scrubbing may still be catching up to the prepared end frame.
+		const scrub = trigger.getTween();
+		if (scrub) scrub.progress(1);
+		animation.progress(1);
+		rewindTrigger = trigger;
+		// Keep the pin's geometry, but avoid full-page scroll/layout work for every reverse frame.
+		trigger.disable(false);
+		gsap.set([heroTextContainer, svgWrapper], { force3D: true, willChange: 'transform, opacity' });
+		const startedAt = performance.now();
+		return new Promise(resolve => {
+			finishRewind = resolve;
+			const frame = () => {
+				// A busy touch frame can deliver an old RAF timestamp. Use the current clock so the final handoff cannot lag behind it.
+				const elapsed = Math.min(1, (performance.now() - startedAt) / 2000);
+				animation.progress(1 - heroRewindEase(elapsed));
+				if (elapsed < 1) rewindFrame = requestAnimationFrame(frame);
+				else stopRewind();
+			};
+			rewindFrame = requestAnimationFrame(frame);
+		});
 	}
 
 	// Clear all intro inline styles so replay starts from the same CSS baseline as a fresh mount.
@@ -361,7 +403,7 @@
 					ScrollTrigger.update();
 				}
 			}
-			scrollBackToTop();
+			await scrollBackToTop();
 		} finally {
 			replayArming = false;
 		}
@@ -372,6 +414,7 @@
 		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const update = () => {
 			reducedMotion = preference.matches;
+			if (reducedMotion) stopRewind();
 			if (stillOpen) {
 				stillOpen = false;
 				heroTextContainer.querySelector<HTMLButtonElement>('[data-testid="hero-dot-replay"]')?.focus({ preventScroll: true });
@@ -380,8 +423,14 @@
 		};
 		update();
 		preference.addEventListener('change', update);
+		window.addEventListener('wheel', stopRewind, { passive: true });
+		window.addEventListener('touchstart', stopRewind, { passive: true });
 		homeIntroStore.settle();
-		return () => preference.removeEventListener('change', update);
+		return () => {
+			preference.removeEventListener('change', update);
+			window.removeEventListener('wheel', stopRewind);
+			window.removeEventListener('touchstart', stopRewind);
+		};
 	});
 
 </script>

@@ -45,8 +45,8 @@
   data-testid="sql-panel"
   data-state={state}
 >
-  <!-- Header: prompt + live dot -->
-  <div class="mb-4 flex items-center justify-between">
+  <!-- Prompt and reading state -->
+  <div class="sql-panel-header mb-4 flex items-center justify-between">
     <span class="flex items-center gap-2 text-caption tracking-[1px] text-[var(--terminal-ink-muted)] md:text-mono" data-testid="sql-prompt">
       {prompt}<TransitInfoLink />
     </span>
@@ -99,3 +99,10 @@
 
 {#if state === 'live' || state === 'held'}<TransitSourceNote />{/if}
 
+
+<style>
+  @media (max-width: 430px) {
+    .sql-panel-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .sql-panel-header [data-testid="sql-prompt"] { white-space: nowrap; }
+  }
+</style>
