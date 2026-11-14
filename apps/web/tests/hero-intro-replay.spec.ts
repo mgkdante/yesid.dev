@@ -127,7 +127,7 @@ test('first visit stays idle; dot activation plays and completion collapses the 
 	).toBeGreaterThan(viewportHeight * 2);
 	await expect(page.locator('[data-testid="metro-network-container"]')).toBeHidden();
 
-	// …and the dot is armed: enabled, labelled, heartbeating.
+	// …and the dot is armed: enabled, labelled, still.
 	const dot = page.locator('[data-testid="hero-dot-replay"]');
 	await expect(dot).toBeEnabled();
 	await expect(dot).toHaveAccessibleName(/\S/);
