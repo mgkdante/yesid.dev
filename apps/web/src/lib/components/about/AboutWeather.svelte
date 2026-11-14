@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import AnimationPause from '#lib/components/brand/AnimationPause.svelte';
 	import type { AboutWeatherConfig } from '#lib/types.ts';
 	import type { WeatherData } from '#lib/utils/weather.ts';
 	import { fetchFreshWeather } from '#lib/utils/weather-refresh.ts';
@@ -86,6 +87,7 @@
 				<div class="mt-0.5 h-5" aria-hidden="true"></div>
 			{/if}
 		</div>
+		<AnimationPause />
 	</div>
 </Card>
 </div>

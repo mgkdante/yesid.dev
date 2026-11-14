@@ -5,7 +5,7 @@ import { sitePages } from '../src/lib/content/site-pages';
 
 const paths = ['/', '/about', '/services', `/services/${fixtureService.id}`, '/projects', `/projects/${fixtureProject.slug}`, '/blog', '/blog/personal', fixturePostPath('en'), '/contact', ...sitePages.filter(p => p.path.startsWith('/legal/')).map(p => p.path), '/dev-27-missing'];
 const routes = [...paths, ...(['fr', 'es'] as const).flatMap(locale => [`/${locale}`, `/${locale}/about`, `/${locale}/contact`, fixturePostPath(locale)])];
-// Shared components have no public opt-out in v0.41.0. Remove these allowances with DEV-7 and Y-22.
+// Shared-component loops remain pending upstream Y-30 and release adoption. No product overrides.
 const shared = /^(?:led-pulse|pulse-glow|blink-light|terminal-blink)(?:-|$)/;
 const normalize = (name: string) => name.replace(/^svelte-[^-]+-/, '');
 const weather = /^weather-(?:twinkle|glow|float|drift|fall|snow|zap|flash|haze)(?:-|$)/;
@@ -37,6 +37,7 @@ for (const width of [390, 1440]) for (const path of routes) {
   if (!process.env.DEV27_AUDIT_ONLY) {
    const unexpected = samples.flatMap(s => s.animations).filter(a => a.loop && !(shared.test(a.name) && a.shared) && !weather.test(a.name));
    expect(unexpected).toEqual([]);
+   await expect(page.locator('.manifesto__flow-line, .manifesto__flow-line-v')).toHaveCount(0);
    const cssLoops = samples.flatMap(s => s.css).filter(a => a.iterations.split(',').some(n => n.trim() === 'infinite'));
    expect(cssLoops.filter(a => !(weather.test(normalize(a.name)) && /weather-/.test(a.target))
     && !(shared.test(normalize(a.name)) && /stop-label|terminal-signal|status-dot|light-a|light-b|terminal-cursor/.test(a.target)))).toEqual([]);

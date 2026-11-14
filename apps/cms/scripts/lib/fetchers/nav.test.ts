@@ -143,7 +143,7 @@ describe('cascade contract — label + href resolution', () => {
 
 describe('cascade contract — visibility (isRenderableNavLink)', () => {
 	it('published link with null page renders', () => {
-		expect(isRenderableNavLink({ ...PAGE_LINKED_ROW, page: null })).toBe(true);
+		expect(isRenderableNavLink({ ...MENU_ROW, page: null })).toBe(true);
 	});
 
 	it('published link to a published page renders', () => {
@@ -193,5 +193,21 @@ describe('cascade contract — applyNavCascade (filter + sort order)', () => {
 		];
 		const out = applyNavCascade(rows);
 		expect(out.map((r) => r.id)).toEqual(['low-priority-first', 'high-priority-second']);
+	});
+});
+
+
+describe('page-less navigation content', () => {
+	it('hides empty destinations and labels until CMS content is ready', () => {
+		expect(applyNavCascade([
+			{ ...MENU_ROW, page: null, href: '' },
+			{ ...MENU_ROW, page: null, translations: [] },
+			{ ...MENU_ROW, page: null, translations: [{ languages_code: 'fr', label: 'Espace client' }] },
+			{ ...MENU_ROW, page: null, translations: [{ languages_code: 'en', label: '  ' }] },
+		])).toEqual([]);
+	});
+	it('keeps a translated external menu destination', () => {
+		const row = { ...MENU_ROW, page: null, href: 'https://login.yesid.dev' };
+		expect(applyNavCascade([row]).map(toNavLink)[0]?.href).toBe(row.href);
 	});
 });

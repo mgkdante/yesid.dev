@@ -14117,6 +14117,12 @@
 					"subtitle": {"en":"the operator","fr":"l'opérateur","es":"el operador"}
 				},
 				{
+					"label": {"en":"Client login","fr":"Espace client","es":"Acceso de clientes"},
+					"href": "https://login.yesid.dev",
+					"priority": 2,
+					"subtitle": {"en":"Sign in to edit your site","fr":"Connectez-vous pour modifier votre site","es":"Inicia sesión para editar tu sitio"}
+				},
+				{
 					"label": {"en":"Contact","fr":"Contact","es":"Contacto"},
 					"href": "/contact",
 					"priority": 1,
