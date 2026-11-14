@@ -29,7 +29,7 @@
 	"devDependencies": {
 		"@axe-core/playwright": "4.12.1",
 		"@playwright/test": "^1.58.2",
-		"@yesid/config": "https://github.com/yesid-dev/yesid.design/releases/download/v0.42.0-rc.2/yesid-config-0.42.0-rc.2.tgz",
+		"@yesid/config": "https://github.com/yesid-dev/yesid.design/releases/download/v0.42.0-rc.3/yesid-config-0.42.0-rc.3.tgz",
 		"turbo": "^2.5.0"
 	},
 	"overrides": {
