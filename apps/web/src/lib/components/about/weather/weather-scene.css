@@ -308,7 +308,7 @@
 .wx-paint-copper { fill: color-mix(in oklab, #5f9e83, var(--wx-ink) var(--wx-night-mix)); }
 .wx-paint-brick { fill: color-mix(in oklab, #9c4a32, var(--wx-ink) var(--wx-night-mix)); }
 .wx-paint-glass { fill: color-mix(in oklab, #5b86b0, var(--wx-ink) var(--wx-night-mix)); }
-.wx-paint-orange { fill: color-mix(in oklab, #e07800, var(--wx-ink) var(--wx-night-mix)); }
+.wx-paint-orange { fill: color-mix(in oklab, var(--primary), var(--wx-ink) var(--wx-night-mix)); }
 .wx-st.wx-paint-red { fill: none; stroke: color-mix(in oklab, #c8202e, var(--wx-ink) var(--wx-night-mix)); }
 .wx-st.wx-paint-yellow { fill: none; stroke: color-mix(in oklab, #f0c419, var(--wx-ink) var(--wx-night-mix)); }
 .wx-st.wx-paint-blue { fill: none; stroke: color-mix(in oklab, #2f6fc0, var(--wx-ink) var(--wx-night-mix)); }
@@ -316,7 +316,7 @@
 .wx-egg { display: var(--egg, none); }
 
 /* The TRV-7 balise: orange post, white reflective bands, black foot. */
-.wx-bo { fill: #e07800; }
+.wx-bo { fill: var(--primary); }
 .wx-bw { fill: #f4f4f4; }
 .wx-bk { fill: #222; }
 
