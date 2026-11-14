@@ -1,13 +1,15 @@
 import { test, expect } from '@playwright/test';
+import { siteLabels } from '../src/lib/content/site-labels';
 
 for (const width of [390, 1440]) {
-	test(`${width}px replay zoom advances continuously and returns control to scrolling`, async ({ page }) => {
+	test(`${width}px replay zoom advances continuously across refresh and returns control to scrolling`, async ({ page }) => {
 		await page.setViewportSize({ width, height: 900 });
 		await page.emulateMedia({ reducedMotion: 'no-preference' });
 		await page.route(/plausible|google-analytics|web3forms|cal\.com|\/api\/(?:contact|event)/, route => route.abort());
 		await page.goto('/');
 		const dot = page.getByTestId('hero-dot-replay');
 		await expect(dot).toBeEnabled();
+		await expect(dot).toHaveAccessibleName(siteLabels.a11y.replayIntro.en);
 		await expect.poll(() => page.getByTestId('hero-annotation-tip').evaluate(el => parseFloat(getComputedStyle(el).strokeDashoffset))).toBe(0);
 		await page.clock.install();
 		await page.clock.pauseAt(new Date(Date.now() + 100));
@@ -15,6 +17,8 @@ for (const width of [390, 1440]) {
 		await expect(page.locator('.pin-spacer')).toHaveCount(1);
 		const scales: number[] = [];
 		for (let time = 0; time < 3600; time += 50) {
+			if (time === 500) await page.setViewportSize({ width: width + 1, height: 900 });
+			if (time === 600) await page.setViewportSize({ width, height: 900 });
 			await page.clock.runFor(50);
 			if (time === 50) {
 				const glyph = await page.getByTestId('hero-dot').boundingBox();
@@ -29,9 +33,11 @@ for (const width of [390, 1440]) {
 		expect(scales[1] / maximum).toBeLessThan(.15);
 		await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(8);
 		await expect(page.getByTestId('hero-text-container')).toHaveCSS('opacity', '0');
-		await expect(page.getByTestId('hero-still-metro')).toHaveCount(0);
+		await expect(page.locator('#metro-still-scene')).toHaveCount(0);
+		await expect(dot).toHaveAccessibleName(siteLabels.a11y.replayIntro.en);
 		await expect(dot).not.toHaveAttribute('aria-expanded');
 		await expect(dot).not.toHaveAttribute('aria-controls');
+		await expect.poll(() => page.locator('.pin-spacer').evaluate(el => parseFloat(getComputedStyle(el).paddingBottom))).toBeGreaterThan(900);
 		await page.clock.resume();
 		// The existing scroll timeline must regain ownership after the rewind.
 		await page.evaluate(() => window.scrollTo({ top: innerHeight, behavior: 'instant' }));

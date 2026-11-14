@@ -269,7 +269,28 @@
 	let rewindFrame: number | undefined;
 	let rewindTrigger: ReturnType<typeof ScrollTrigger.getAll>[number] | undefined;
 	let finishRewind: (() => void) | undefined;
+	let refreshProgress: number | undefined;
+	function setRewindLayers(): void {
+		// Avoid retaining oversized compositor surfaces on narrow and touch viewports.
+		gsap.set([heroTextContainer, svgWrapper], { force3D: !isViewportAtMost(1023) && ScrollTrigger.isTouch === 0 });
+	}
+	function prepareRewindRefresh(): void {
+		if (!rewindTrigger?.animation) return;
+		refreshProgress = rewindTrigger.animation.progress();
+		// Global refresh reverts every pin, including disabled ones. Let it measure and restore ours too.
+		rewindTrigger.enable(false, false);
+	}
+	function restoreRewindRefresh(): void {
+		if (!rewindTrigger?.animation || refreshProgress === undefined) return;
+		rewindTrigger.disable(false);
+		rewindTrigger.animation.progress(refreshProgress);
+		setRewindLayers();
+		refreshProgress = undefined;
+	}
 	function stopRewind(): void {
+		ScrollTrigger.removeEventListener('refreshInit', prepareRewindRefresh);
+		ScrollTrigger.removeEventListener('refresh', restoreRewindRefresh);
+		refreshProgress = undefined;
 		if (rewindFrame !== undefined) cancelAnimationFrame(rewindFrame);
 		rewindFrame = undefined;
 		const trigger = rewindTrigger; rewindTrigger = undefined;
@@ -284,7 +305,7 @@
 			if (scrub) scrub.pause();
 			trigger.animation.progress(paintedProgress);
 		}
-		if (trigger) gsap.set([heroTextContainer, svgWrapper], { force3D: 'auto', clearProps: 'willChange' });
+		if (trigger) gsap.set([heroTextContainer, svgWrapper], { force3D: 'auto' });
 		const finish = finishRewind; finishRewind = undefined; finish?.();
 	}
 
@@ -300,7 +321,9 @@
 		rewindTrigger = trigger;
 		// Keep the pin's geometry, but avoid full-page scroll/layout work for every reverse frame.
 		trigger.disable(false);
-		gsap.set([heroTextContainer, svgWrapper], { force3D: true, willChange: 'transform, opacity' });
+		ScrollTrigger.addEventListener('refreshInit', prepareRewindRefresh);
+		ScrollTrigger.addEventListener('refresh', restoreRewindRefresh);
+		setRewindLayers();
 		const startedAt = performance.now();
 		return new Promise(resolve => {
 			finishRewind = resolve;
