@@ -123,6 +123,8 @@ vi.mock('gsap', () => {
 
 vi.mock('gsap/ScrollTrigger', () => ({
 	ScrollTrigger: {
+		addEventListener: vi.fn(),
+		removeEventListener: vi.fn(),
 		create: vi.fn(() => ({ kill: vi.fn() })),
 		refresh: vi.fn(),
 		getAll: vi.fn(() => []),
