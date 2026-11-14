@@ -50,8 +50,8 @@ export async function installMetricProofFixture(page: Page) {
 
 export async function navigateWithMetricFixture(page: Page, path: string) {
 	await page.goto('/contact', { waitUntil: 'domcontentloaded' });
-	// Contact's submit stays disabled until onMount, unlike SSR-visible links.
-	await expect(page.locator('button[type="submit"]').filter({ visible: true })).toBeEnabled();
+	// Kit attaches its link router after onMount; a full document load bypasses the fixture.
+	await expect(page.locator('html')).toHaveAttribute('data-hydrated', '');
 	// A normal same-origin link uses SvelteKit navigation and the intercepted data.
 	await page.evaluate(path => {
 		const link = document.createElement('a');
