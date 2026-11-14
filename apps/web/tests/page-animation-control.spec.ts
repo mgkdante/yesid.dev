@@ -38,8 +38,13 @@ for (const locale of locales) for (const width of [390, 1440]) {
   const card = await weather.boundingBox();
   const temperature = await weather.getByText('12°C', { exact: true }).boundingBox();
   const condition = await weather.getByText('Clouds', { exact: true }).boundingBox();
-  expect(target!.y).toBeGreaterThanOrEqual(temperature!.y + temperature!.height);
-  expect(target!.y).toBeGreaterThanOrEqual(condition!.y + condition!.height);
+  for (const text of [temperature!, condition!]) {
+   const overlapWidth = Math.min(target!.x + target!.width, text.x + text.width) - Math.max(target!.x, text.x);
+   const overlapHeight = Math.min(target!.y + target!.height, text.y + text.height) - Math.max(target!.y, text.y);
+   expect(overlapWidth <= 0 || overlapHeight <= 0, 'weather control does not cover text').toBe(true);
+  }
+  expect(target!.x).toBeGreaterThanOrEqual(card!.x);
+  expect(target!.y).toBeGreaterThanOrEqual(card!.y);
   expect(target!.x + target!.width).toBeLessThanOrEqual(card!.x + card!.width);
   expect(target!.y + target!.height).toBeLessThanOrEqual(card!.y + card!.height);
   await weather.screenshot({ path: test.info().outputPath('weather-playing.png') });
@@ -167,3 +172,33 @@ test('storm flash frequency is below three in every rolling second', async ({ pa
  expect(result.peaks.length).toBeGreaterThan(0);
  expect(result.maxPerSecond).toBeLessThan(3);
 });
+
+for (const width of [390, 820, 1440]) {
+ test(`weather control preserves home geometry at ${width}`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 900 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  const weather = page.getByTestId('about-weather');
+  await expect(weather.getByText('12°C', { exact: true })).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+  const measure = () => page.evaluate(() => {
+   const ids = ['hero-banner','services-section','manifesto-section','proof-reel-section','home-about-teaser','home-cta-band','closer-section'];
+   return { card: document.querySelector('[data-testid="about-weather"]')!.getBoundingClientRect().height,
+    sections: Object.fromEntries(ids.map(id => {
+     const node = document.querySelector(`[data-testid="${id}"]`)!;
+     return [id, (node.closest('.home-section') ?? node).getBoundingClientRect().height];
+    })), page: document.documentElement.scrollHeight };
+  });
+  await expect.poll(() => page.locator('.construction-extension').evaluate(el => el.getBoundingClientRect().height)).toBe(0);
+  const visible = await measure();
+  const control = weather.locator('.animation-control');
+  await control.evaluate(el => { (el as HTMLElement).style.display = 'none'; });
+  const hidden = await measure();
+  expect(visible).toEqual(hidden);
+  await control.evaluate(el => { (el as HTMLElement).style.display = ''; });
+  expect(await measure()).toEqual(hidden);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  expect(await weather.evaluate(el => el.getBoundingClientRect().height)).toBe(visible.card);
+  await writeFile(test.info().outputPath('weather-layout.json'), JSON.stringify({width,visible,hidden}, null, 2));
+ });
+}

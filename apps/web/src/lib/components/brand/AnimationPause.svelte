@@ -14,7 +14,7 @@
 	onMount(restoreAnimationPause);
 </script>
 
-<div class="animation-control mt-2 flex shrink-0 justify-end">
+<div class="animation-control absolute bottom-0 right-0">
 	<Button variant="ghost" size="icon-tap" class="p-0 text-muted-foreground"
 		aria-label={label} title={label}
 		onclick={() => setAnimationPaused(!$animationPaused)}>
