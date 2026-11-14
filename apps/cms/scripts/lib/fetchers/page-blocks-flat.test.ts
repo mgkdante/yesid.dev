@@ -347,7 +347,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 });
 
 describe('about terminal translations', () => {
-	const shared = [{ text: '> Original', color: 'orange' }, { text: '> Link', color: 'muted' }];
+	const shared = [{ text: '> Original', color: 'orange' as const }, { text: '> Link', color: 'muted' as const }];
 	it('uses each locale by position while preserving shared count, order and colours', () => {
 		const out = toAboutContent({ id: 1, cta_lines: shared, translations: [
 			{ languages_code: 'en', cta_lines: [{ text: '> Updated' }] },
