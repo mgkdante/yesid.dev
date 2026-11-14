@@ -169,6 +169,7 @@
 
 	.embla__container {
 		display: flex;
+		align-items: flex-start;
 		margin-left: calc(-1 * var(--proof-gap));
 		touch-action: pan-y pinch-zoom;
 	}
@@ -224,6 +225,7 @@
 	/* One whole card, then two, then three once each stays readable; never more, even on ultrawide. */
 	@container proof-reel (min-width: 45.25rem) {
 		.embla { --proof-columns: 2; }
+		.embla__container { align-items: stretch; }
 	}
 
 	@container proof-reel (min-width: 70rem) {

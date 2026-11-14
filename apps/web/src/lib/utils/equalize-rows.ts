@@ -1,7 +1,7 @@
 import type { Action } from 'svelte/action';
 
-/** Gives every match of each selector inside the node the height of the tallest match,
- *  so card rows line up across the whole grid, not only within one grid row. */
+/** Aligns card rows when multiple cards fit across the container.
+ * Single-column layouts keep their natural heights. */
 export const equalizeRows: Action<HTMLElement, readonly string[]> = (node, initial) => {
 	let selectors = initial;
 	let frame = 0;
@@ -10,9 +10,13 @@ export const equalizeRows: Action<HTMLElement, readonly string[]> = (node, initi
 	const run = () => {
 		cancelAnimationFrame(frame);
 		frame = requestAnimationFrame(() => {
+			const firstCard = node.firstElementChild;
+			const multipleColumns = firstCard !== null
+				&& firstCard.getBoundingClientRect().width * 2 <= node.getBoundingClientRect().width + 1;
 			for (const selector of selectors) {
 				const rows = [...node.querySelectorAll<HTMLElement>(selector)];
 				for (const row of rows) row.style.minHeight = '';
+				if (!multipleColumns) continue;
 				const tallest = Math.max(0, ...rows.map((row) => row.getBoundingClientRect().height));
 				for (const row of rows) row.style.minHeight = `${tallest}px`;
 			}
