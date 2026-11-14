@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import HeroMetrics from './HeroMetrics.svelte';
 import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
+import { intl } from '#lib/utils/locale-context.ts';
 // Note: HeroMetrics renders TWO variants — a single-card mobile variant
 // (data-testid="metric-card-mobile") and a 3-card desktop variant
 // (data-testid="metric-card"). Both are in the DOM at all times; CSS
@@ -10,6 +11,11 @@ import { INITIAL_HERO_DATA } from '#lib/live/index.ts';
 // getAllByText and assert ≥1 match (the text appears in both variants).
 
 describe('HeroMetrics', () => {
+	it.each(['fr', 'es'] as const)('formats decimal values and coverage in %s', locale => {
+		render(HeroMetrics, { props: { metrics: INITIAL_HERO_DATA.metrics }, context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]) });
+		expect(screen.getAllByText(/47,3s/).length).toBeGreaterThan(0);
+		expect(screen.getAllByText(/87,6/).length).toBeGreaterThan(0);
+	});
   const metrics = INITIAL_HERO_DATA.metrics;
 
   it('renders 3 desktop metric cards', () => {
@@ -77,7 +83,7 @@ describe('HeroMetrics — fr locale (CMS truth)', () => {
   it('renders French subs with {coverage}/{total} substituted', () => {
     render(HeroMetrics, { props: { metrics }, context: frContext });
     expect(screen.getAllByText(siteLabels.heroDashboard.vehiclesSub.fr!).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(siteLabels.heroDashboard.delaySub.fr!.replace('{coverage}', String(metrics.find(m => m.key === 'delay')!.coverage))).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(siteLabels.heroDashboard.delaySub.fr!.replace('{coverage}', intl.number('fr', { maximumFractionDigits: 1 }).format(metrics.find(m => m.key === 'delay')!.coverage!))).length).toBeGreaterThan(0);
     expect(screen.getAllByText(siteLabels.heroDashboard.routesSub.fr!.replace('{total}', String(metrics.find(m => m.key === 'routes')!.total))).length).toBeGreaterThan(0);
 
   });

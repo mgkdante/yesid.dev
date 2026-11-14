@@ -47,7 +47,7 @@
       case 'delay':
         return resolveLocale(dashboard.delaySub, locale).replace(
           '{coverage}',
-          String(metric.coverage ?? ''),
+          metric.coverage == null ? '' : intl.number(locale, { maximumFractionDigits: 1 }).format(metric.coverage),
         );
       case 'routes':
         return resolveLocale(dashboard.routesSub, locale).replace(
@@ -59,7 +59,7 @@
 
   function formatValue(metric: HeroMetric): string {
     if (metric.key === 'vehicles') return intl.number(locale).format(metric.value);
-    if (metric.key === 'delay') return metric.value.toFixed(1);
+    if (metric.key === 'delay') return intl.number(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(metric.value);
     return String(metric.value);
   }
 </script>

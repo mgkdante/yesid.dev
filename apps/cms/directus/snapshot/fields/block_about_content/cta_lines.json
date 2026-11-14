@@ -11,17 +11,20 @@
     "group": "grp_shared",
     "hidden": false,
     "interface": "list",
-    "note": "Lines printed in the terminal, each with a text and a color.",
+    "note": "Output lines. Text accepts an EN/FR/ES object; legacy strings display in English only.",
     "options": {
       "fields": [
         {
           "field": "text",
           "meta": {
-            "interface": "input",
-            "width": "half"
+            "interface": "input-code",
+            "options": {
+              "language": "json"
+            },
+            "width": "full"
           },
           "name": "text",
-          "type": "string"
+          "type": "json"
         },
         {
           "field": "color",

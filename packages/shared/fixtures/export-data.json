@@ -253,23 +253,23 @@
 				"command": "$ yesid --contact",
 				"lines": [
 					{
-						"text": "> Ready for new projects",
+						"text": {"en":"> Ready for new projects","fr":"> Prêt pour de nouveaux projets","es":"> Listo para nuevos proyectos"},
 						"color": "orange"
 					},
 					{
-						"text": "> AI-accelerated, human-owned",
+						"text": {"en":"> AI-accelerated, human-owned","fr":"> Développement assisté par l’IA, sous contrôle humain","es":"> Con ayuda de IA, bajo control humano"},
 						"color": "muted"
 					},
 					{
-						"text": "> Email: contact@yesid.dev",
+						"text": {"en":"> Email: contact@yesid.dev","fr":"> Courriel : contact@yesid.dev","es":"> Correo: contact@yesid.dev"},
 						"color": "muted"
 					},
 					{
-						"text": "> GitHub: https://github.com/mgkdante",
+						"text": {"en":"> GitHub: https://github.com/mgkdante","fr":"> GitHub: https://github.com/mgkdante","es":"> GitHub: https://github.com/mgkdante"},
 						"color": "muted"
 					},
 					{
-						"text": "> LinkedIn: https://www.linkedin.com/in/otaloray/",
+						"text": {"en":"> LinkedIn: https://www.linkedin.com/in/otaloray/","fr":"> LinkedIn: https://www.linkedin.com/in/otaloray/","es":"> LinkedIn: https://www.linkedin.com/in/otaloray/"},
 						"color": "muted"
 					}
 				],
@@ -14201,7 +14201,7 @@
 			},
 			"404": {
 				"label": {"en":"ROUTE NOT FOUND","fr":"ROUTE INTROUVABLE","es":"RUTA NO ENCONTRADA"},
-				"heading": {"en":"This station is under construction","fr":"Cette station est en construction","es":"Esta estación está en construcción"},
+				"heading": {"en":"Page not found","fr":"Page introuvable","es":"Página no encontrada"},
 				"description": {"en":"The route you requested doesn't exist or has been rerouted. Here are some active lines:","fr":"La route demandée n'existe pas ou a été redirigée. Voici quelques lignes actives :","es":"La ruta solicitada no existe o ha sido redirigida. Aquí hay algunas líneas activas:"},
 				"suggestions": [
 					{

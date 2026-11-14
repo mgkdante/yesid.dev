@@ -82,7 +82,7 @@
 				</div>
 			{:else}
 				<!-- Fallback -->
-				<div class="mt-1 flex h-8 items-center justify-center font-mono text-sm text-[var(--muted-foreground)]">-</div>
+				<div class="mt-1 h-8" aria-hidden="true"></div>
 				<div class="mt-0.5 h-5" aria-hidden="true"></div>
 			{/if}
 		</div>

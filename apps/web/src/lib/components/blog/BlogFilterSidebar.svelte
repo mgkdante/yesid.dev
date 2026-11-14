@@ -6,6 +6,7 @@
   because they are not button group patterns.
 -->
 <script lang="ts">
+	import { topicLabel } from "#lib/utils/blog-topics.ts";
 	import { onMount } from 'svelte';
 	import type { Locale } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
@@ -109,7 +110,7 @@
 	<FilterSection>
 		<FilterGroup
 			label={resolveLocale(labels.tags, locale)}
-			items={tags.map((tag) => ({ key: tag, label: tag }))}
+			items={tags.map((tag) => ({ key: tag, label: topicLabel(tag, locale) }))}
 			activeKey={activeTag}
 			{allLabel}
 			allowDeselect={false}
