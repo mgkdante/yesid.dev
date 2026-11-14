@@ -39,7 +39,7 @@
 		font-family: var(--font-mono);
 		font-size: 8px;
 		letter-spacing: 1px;
-		color: var(--primary); opacity: var(--chrome-ink-opacity);
+		color: var(--muted-foreground);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

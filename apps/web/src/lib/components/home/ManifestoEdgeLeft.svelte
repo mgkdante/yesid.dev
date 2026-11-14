@@ -26,7 +26,7 @@
 	<div
 		class="manifesto__roundel manifesto__roundel--transit manifesto__roundel--t{i}"
 		aria-hidden="true"
-		style="--line-color: {line.color}; --line-color-border: {line.color}40; --line-color-bg: {line.color}1A; --line-color-text: {line.color};"
+		style="--line-color: {line.color}; --line-color-border: {line.color}40; --line-color-bg: {line.color}1A;"
 	>
 		<span class="manifesto__roundel-dot"></span>
 		<span class="manifesto__roundel-name">{line.name}</span>
@@ -56,6 +56,7 @@
 	.manifesto__beck-d135 { height: 2px; transform-origin: left center; transform: rotate(45deg); }
 
 	.manifesto__roundel {
+		--line-color-text: color-mix(in srgb, var(--line-color) var(--line-text-weight, 100%), var(--foreground));
 		position: absolute;
 		display: flex;
 		align-items: center;
@@ -78,8 +79,21 @@
 		flex-shrink: 0;
 	}
 
-	/* The roundels carry line colors; their text uses the theme reading ink. */
-	.manifesto__roundel-name { color: var(--primary); opacity: var(--chrome-ink-opacity); }
+	/* Only failing line hues get a text-only tint; the roundel artwork keeps its source color. */
+	.manifesto__roundel-name { color: var(--line-color-text); }
+
+
+	.manifesto__roundel--t0 { --line-text-weight: 65%; }
+	.manifesto__roundel--t4, .manifesto__roundel--t8 { --line-text-weight: 85%; }
+	.manifesto__roundel--t7 { --line-text-weight: 70%; }
+
+	:global([data-theme='light']) .manifesto__roundel--t0,
+	:global([data-theme='light']) .manifesto__roundel--t7 { --line-text-weight: 100%; }
+	:global([data-theme='light']) .manifesto__roundel--t1 { --line-text-weight: 80%; }
+	:global([data-theme='light']) .manifesto__roundel--t2 { --line-text-weight: 45%; }
+	:global([data-theme='light']) .manifesto__roundel--t3 { --line-text-weight: 50%; }
+	:global([data-theme='light']) .manifesto__roundel--t5 { --line-text-weight: 70%; }
+	:global([data-theme='light']) .manifesto__roundel--t6 { --line-text-weight: 40%; }
 
 	.manifesto__roundel--t0 { left: 155px; top: 116px; }
 	.manifesto__roundel--t1 { right: 115px; top: 195px; }
@@ -107,7 +121,7 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 3px;
-		color: var(--primary); opacity: var(--chrome-ink-opacity);
+		color: var(--muted-foreground);
 		text-transform: uppercase;
 	}
 

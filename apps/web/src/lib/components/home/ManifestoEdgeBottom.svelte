@@ -33,7 +33,7 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 1px;
-		color: var(--primary); opacity: var(--chrome-ink-opacity);
+		color: var(--muted-foreground);
 		white-space: nowrap;
 	}
 

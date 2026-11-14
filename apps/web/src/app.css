@@ -4,11 +4,6 @@
 @import '@yesid/ui/base.css';
 @import '@yesid/ui/station-tabs.css';
 
-:root {
-  /* Rendered manifesto labels keep full contrast, including decorative text. */
-  --chrome-ink-opacity: 1;
-}
-
 html {
   /* Always reserve a real scrollbar track so a page-height change (e.g. blog
      collapsing all article sections) can't toggle the scrollbar and shift

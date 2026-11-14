@@ -80,13 +80,13 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 1px;
-		color: var(--primary); opacity: var(--chrome-ink-opacity);
+		color: var(--muted-foreground);
 		text-transform: uppercase;
 		white-space: nowrap;
 	}
 
 	.manifesto__coord--value {
-		color: var(--primary); opacity: var(--chrome-ink-opacity);
+		color: var(--muted-foreground);
 	}
 
 	.manifesto__separator-line {
