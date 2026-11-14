@@ -35,10 +35,10 @@
 
 <div data-testid="manifesto-edge-left" class="manifesto__edge-left" aria-hidden="true">
 	<span class="manifesto__readout">{sectionNumber}</span>
-	<span class="manifesto__dot-active"></span>
+	<span class="manifesto__spacer-active"></span>
 	<span class="manifesto__readout">{sectionName}</span>
-	<span class="manifesto__dot-inactive"></span>
-	<span class="manifesto__dot-inactive"></span>
+	<span class="manifesto__spacer-inactive"></span>
+	<span class="manifesto__spacer-inactive"></span>
 	<span class="manifesto__readout">{location}</span>
 </div>
 
@@ -111,22 +111,8 @@
 		text-transform: uppercase;
 	}
 
-	.manifesto__dot-active {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--primary);
-		box-shadow: 0 0 8px color-mix(in srgb, var(--glow) 40%, transparent);
-		flex-shrink: 0;
-	}
-
-	.manifesto__dot-inactive {
-		width: 5px;
-		height: 5px;
-		border-radius: 50%;
-		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
-		flex-shrink: 0;
-	}
+	.manifesto__spacer-active { width: 6px; height: 6px; flex-shrink: 0; }
+	.manifesto__spacer-inactive { width: 5px; height: 5px; flex-shrink: 0; }
 
 	@media (max-width: 640px) {
 		.manifesto__edge-left { left: 8px; font-size: 7px; gap: 16px; }

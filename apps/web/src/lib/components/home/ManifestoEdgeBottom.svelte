@@ -13,14 +13,14 @@
 {#each hFlows as flow}
 	<div
 		class="manifesto__flow-line"
-		style="top:{flow.y}px;width:{flow.w}px;left:-{flow.w}px;animation-duration:{flow.dur}s;animation-delay:{flow.delay}s;"
+		style="top:{flow.y}px;width:{flow.w}px;left:0;"
 	></div>
 {/each}
 
 {#each vFlows as flow}
 	<div
 		class="manifesto__flow-line-v"
-		style="left:{flow.x}px;height:{flow.h}px;top:-{flow.h}px;animation-duration:{flow.dur}s;animation-delay:{flow.delay}s;"
+		style="left:{flow.x}px;height:{flow.h}px;top:0;"
 	></div>
 {/each}
 
@@ -48,9 +48,6 @@
 			color-mix(in srgb, var(--primary) 10%, transparent) 70%,
 			transparent 100%
 		);
-		animation-name: flowRight;
-		animation-timing-function: linear;
-		animation-iteration-count: infinite;
 		z-index: var(--z-content);
 	}
 
@@ -64,20 +61,7 @@
 			color-mix(in srgb, var(--accent) 8%, transparent) 70%,
 			transparent 100%
 		);
-		animation-name: flowDown;
-		animation-timing-function: linear;
-		animation-iteration-count: infinite;
 		z-index: var(--z-content);
-	}
-
-	@keyframes flowRight {
-		from { transform: translateX(0); }
-		to { transform: translateX(calc(100vw + 400px)); }
-	}
-
-	@keyframes flowDown {
-		from { transform: translateY(0); }
-		to { transform: translateY(calc(100dvh + 200px)); }
 	}
 
 	.manifesto__edge-bottom {

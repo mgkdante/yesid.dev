@@ -16,7 +16,7 @@
 	import { siteLabels, siteMeta } from '#lib/content/index.ts';
 	import { clock, persisted } from '@yesid/ui/state';
 	import type { ContactContent } from '#lib/types.ts';
-	import { TerminalPanel, TerminalCursor } from '@yesid/ui/brand';
+	import { TerminalPanel } from '@yesid/ui/brand';
 	import { Button } from '@yesid/ui/button';
 	import { ResizablePaneGroup, ResizablePane } from '@yesid/ui/resizable';
 	import { ResizableHandle } from '@yesid/ui/resizable';
@@ -413,10 +413,10 @@
 				</div>
 			</div>
 
-			<!-- Blinking cursor -->
+			<!-- Retain the terminal row height without a decorative cursor. -->
 			<div class="flex items-center gap-1">
 				<span class="text-[var(--secondary-foreground)]">~</span>
-				<TerminalCursor />
+
 			</div>
 		</div>
 	</TerminalPanel>
