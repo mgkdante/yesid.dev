@@ -135,7 +135,6 @@
 		type="button"
 		class="train-rocket"
 		class:is-launched={launched}
-		class:no-bob={reduced}
 		data-testid="about-train-button"
 		aria-pressed={tapped}
 		aria-label={launched
@@ -168,22 +167,6 @@
 		display: grid;
 		place-items: center;
 		border-radius: var(--radius-md);
-		/* Idle bob — a tiny ceaseless float so the resting train feels alive.
-		   Gated off under reduced motion via .no-bob. */
-		animation: train-bob 3.2s ease-in-out infinite;
-	}
-
-	.train-rocket.no-bob {
-		animation: none;
-	}
-
-	/* Belt to the JS suspenders: gate the idle bob at the CSS layer too, so a
-	   reduced-motion visitor never sees it even before hydration (SSR-correct,
-	   and deterministic for the motion-policy e2e). */
-	@media (prefers-reduced-motion: reduce) {
-		.train-rocket {
-			animation: none;
-		}
 	}
 
 	.train-rocket:focus-visible {
@@ -207,13 +190,4 @@
 		filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--accent) 60%, transparent));
 	}
 
-	@keyframes train-bob {
-		0%,
-		100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(-3px);
-		}
-	}
 </style>

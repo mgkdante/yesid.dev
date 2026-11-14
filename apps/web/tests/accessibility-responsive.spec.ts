@@ -1,5 +1,5 @@
+import { expectAccessible } from './_support/accessibility';
 import { expect, test, type Page } from '@playwright/test';
-import { expectAccessible } from '@yesid/config/playwright';
 import { localeCopy } from '../src/lib/locales';
 import type { Locale } from '../src/lib/types';
 import { DEFAULT_LOCALE } from '../src/lib/utils/locale';

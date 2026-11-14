@@ -25,7 +25,7 @@
 {#each hiddenLines as line, i}
 	<div
 		class="manifesto__roundel manifesto__roundel--transit manifesto__roundel--t{i}"
-		aria-hidden="true"
+		aria-hidden="true" data-decorative-edge
 		style="--line-color: {line.color}; --line-color-border: {line.color}40; --line-color-bg: {line.color}1A; --line-color-text: {line.color};"
 	>
 		<span class="manifesto__roundel-dot"></span>
@@ -33,12 +33,12 @@
 	</div>
 {/each}
 
-<div data-testid="manifesto-edge-left" class="manifesto__edge-left" aria-hidden="true">
+<div data-testid="manifesto-edge-left" class="manifesto__edge-left" aria-hidden="true" data-decorative-edge>
 	<span class="manifesto__readout">{sectionNumber}</span>
-	<span class="manifesto__dot-active"></span>
+	<span class="manifesto__spacer-active"></span>
 	<span class="manifesto__readout">{sectionName}</span>
-	<span class="manifesto__dot-inactive"></span>
-	<span class="manifesto__dot-inactive"></span>
+	<span class="manifesto__spacer-inactive"></span>
+	<span class="manifesto__spacer-inactive"></span>
 	<span class="manifesto__readout">{location}</span>
 </div>
 
@@ -78,8 +78,9 @@
 		flex-shrink: 0;
 	}
 
-	/* Apply the shared chrome opacity to full line colors so colored names match the coordinate labels. */
-	.manifesto__roundel-name { color: var(--line-color-text); opacity: var(--chrome-ink-opacity); }
+	/* Station names keep their source line hue under the shared decorative quiet level. */
+	.manifesto__roundel-name { color: var(--line-color-text); }
+
 
 	.manifesto__roundel--t0 { left: 155px; top: 116px; }
 	.manifesto__roundel--t1 { right: 115px; top: 195px; }
@@ -107,26 +108,12 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 3px;
-		color: var(--primary); opacity: var(--chrome-ink-opacity);
+		color: var(--muted-foreground);
 		text-transform: uppercase;
 	}
 
-	.manifesto__dot-active {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--primary);
-		box-shadow: 0 0 8px color-mix(in srgb, var(--glow) 40%, transparent);
-		flex-shrink: 0;
-	}
-
-	.manifesto__dot-inactive {
-		width: 5px;
-		height: 5px;
-		border-radius: 50%;
-		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
-		flex-shrink: 0;
-	}
+	.manifesto__spacer-active { width: 6px; height: 6px; flex-shrink: 0; }
+	.manifesto__spacer-inactive { width: 5px; height: 5px; flex-shrink: 0; }
 
 	@media (max-width: 640px) {
 		.manifesto__edge-left { left: 8px; font-size: 7px; gap: 16px; }

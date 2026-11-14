@@ -23,7 +23,6 @@
 	import { getLettering } from './annotation-lettering';
 	import { ConstructionProps } from '@yesid/ui/brand';
 	import CloserFloodlight from './CloserFloodlight.svelte';
-	import { backgroundBreathing } from '#lib/motion/scrubs/index.ts';
 	import CloserTerminalBoard from './CloserTerminalBoard.svelte';
 
 	const ctaHref = $derived(closerContent.cta.href);
@@ -96,9 +95,8 @@
 				.from('[data-closer-board]', { opacity: 0, scale: 0.98, duration: durationSec('slower') })
 				.from('[data-closer-row]', { opacity: 0, x: -10, stagger: 0.05, duration: durationSec('slow') }, '-=0.3');
 		}, sectionEl);
-		const breathing = backgroundBreathing(sectionEl, { duration: 12 });
 		return () => {
-			context.revert(); breathing.destroy(); fit.disconnect();
+			context.revert(); fit.disconnect();
 			removeEventListener('scroll', follow);
 			removeEventListener('resize', follow);
 		};

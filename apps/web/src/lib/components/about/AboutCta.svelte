@@ -11,7 +11,7 @@
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
-	import { TerminalPanel, TerminalCursor } from '@yesid/ui/brand';
+	import { TerminalPanel } from '@yesid/ui/brand';
 	import { siteLabels } from '#lib/content/index.ts';
 	import { cursorGlow } from '@yesid/motion/actions';
 	import StopLabel from '#lib/components/brand/StopLabel.svelte';
@@ -58,10 +58,10 @@
 					</div>
 				{/each}
 
-				<!-- Blinking cursor -->
+				<!-- Retain the terminal row height without a decorative cursor. -->
 				<div class="mt-1 flex items-center gap-1">
 					<span class="text-[var(--secondary-foreground)]">~</span>
-					<TerminalCursor />
+
 				</div>
 			</div>
 		</TerminalPanel>

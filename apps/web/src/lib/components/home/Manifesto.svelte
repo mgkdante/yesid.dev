@@ -13,8 +13,8 @@
 	import { createCrescendoScrub } from '#lib/motion/scrubs/index.ts';
 	import { boop } from '@yesid/motion/actions';
 	import { ManifestoCanvas } from '@yesid/ui/brand';
-	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';
 	import ManifestoEdgeRight from './ManifestoEdgeRight.svelte';
+	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';
 	import ManifestoEdgeTop from './ManifestoEdgeTop.svelte';
 	import ManifestoEdgeBottom from './ManifestoEdgeBottom.svelte';
 	import ManifestoTransit from './ManifestoTransit.svelte';
@@ -105,7 +105,10 @@
 	<ManifestoCanvas containerEl={sectionEl} />
 
 	<ManifestoEdgeBottom {...edgeBottom} />
-	<ManifestoEdgeRight {...edgeRight} />
+	<div class="manifesto__stripe manifesto__stripe--tl"></div>
+	<div class="manifesto__stripe manifesto__stripe--br"></div>
+	<div class="manifesto__stripe manifesto__stripe--tr"></div>
+	<div class="manifesto__stripe manifesto__stripe--bl"></div>
 	<ManifestoEdgeLeft {...edgeLeft} hiddenLines={hiddenLines} />
 	<ManifestoEdgeTop ticks={ticks} />
 	<ManifestoTransit {...transit} />
@@ -129,6 +132,7 @@
 			{#each pills as pill}
 				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback" use:boop={{ scale: 1.03, timing: 200 }}>{pill.label}</a>
 			{/each}
+			<ManifestoEdgeRight {...edgeRight} />
 		</nav>
 	</div>
 </section>
@@ -136,6 +140,7 @@
 <style>
 
 	.manifesto {
+		--manifesto-edge-quiet: 0.45;
 		position: relative;
 		min-height: 100dvh;
 		padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -148,6 +153,8 @@
 		background: var(--manifesto);
 		cursor: crosshair;
 	}
+
+	.manifesto :global([data-decorative-edge]) { opacity: var(--manifesto-edge-quiet); }
 
 	.manifesto__circuit-grid {
 		opacity: var(--manifesto-background-strength);
@@ -197,13 +204,13 @@
 	.manifesto__prompt-cmd {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		color: color-mix(in srgb, var(--primary) 85%, transparent);
+		color: var(--primary);
 	}
 
 	.manifesto__prompt-text {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		color: color-mix(in srgb, var(--primary) 85%, transparent);
+		color: var(--primary);
 	}
 
 	.manifesto__statement {
@@ -241,6 +248,7 @@
 	}
 
 	.manifesto__pills {
+		position: relative;
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
@@ -282,4 +290,52 @@
 			translate: none;
 		}
 	}
+	.manifesto__stripe {
+		position: absolute;
+		overflow: hidden;
+		z-index: calc(var(--z-content) + 1);
+	}
+
+	.manifesto__stripe::before {
+		content: '';
+		position: absolute;
+	}
+
+	.manifesto__stripe--tl { top: 0; left: 0; width: 240px; height: 240px; }
+	.manifesto__stripe--tl::before {
+		width: 480px; height: 480px; top: -240px; left: -240px;
+		background: repeating-linear-gradient(-45deg, var(--hazard-a) 0px, var(--hazard-a) 12px, var(--hazard-b) 12px, var(--hazard-b) 24px);
+		opacity: var(--opacity-subtle);
+	}
+
+	.manifesto__stripe--br { bottom: 0; right: 0; width: 240px; height: 240px; }
+	.manifesto__stripe--br::before {
+		width: 480px; height: 480px; bottom: -240px; right: -240px;
+		background: repeating-linear-gradient(-45deg, var(--hazard-a) 0px, var(--hazard-a) 12px, var(--hazard-b) 12px, var(--hazard-b) 24px);
+		opacity: var(--opacity-subtle);
+	}
+
+	.manifesto__stripe--tr { top: 0; right: 0; width: 110px; height: 110px; }
+	.manifesto__stripe--tr::before {
+		width: 220px; height: 220px; top: -130px; right: -130px;
+		background: repeating-linear-gradient(45deg, var(--hazard-a) 0px, var(--hazard-a) 7px, var(--hazard-b) 7px, var(--hazard-b) 14px);
+		opacity: var(--opacity-faint);
+	}
+
+	.manifesto__stripe--bl { bottom: 0; left: 0; width: 110px; height: 110px; }
+	.manifesto__stripe--bl::before {
+		width: 220px; height: 220px; bottom: -130px; left: -130px;
+		background: repeating-linear-gradient(45deg, var(--hazard-a) 0px, var(--hazard-a) 7px, var(--hazard-b) 7px, var(--hazard-b) 14px);
+		opacity: var(--opacity-faint);
+	}
+
+	@media (max-width: 640px) {
+		.manifesto__stripe--tl, .manifesto__stripe--br { width: 160px; height: 160px; }
+		.manifesto__stripe--tr, .manifesto__stripe--bl { width: 80px; height: 80px; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.manifesto__stripe { opacity: 1; transform: none; translate: none; }
+	}
+
 </style>

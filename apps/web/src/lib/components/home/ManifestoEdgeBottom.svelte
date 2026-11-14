@@ -7,7 +7,7 @@
 	} = $props();
 </script>
 
-<div data-testid="manifesto-edge-bottom" class="manifesto__edge-bottom" aria-hidden="true">
+<div data-testid="manifesto-edge-bottom" class="manifesto__edge-bottom" aria-hidden="true" data-decorative-edge>
 	<span>{connected}</span>
 	<span class="manifesto__separator"></span>
 	<span>{line}</span>
@@ -33,7 +33,7 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 1px;
-		color: var(--primary); opacity: var(--chrome-ink-opacity);
+		color: var(--muted-foreground);
 		white-space: nowrap;
 	}
 
