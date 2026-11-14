@@ -322,6 +322,8 @@
 				}
 			},
 			"formTerminal": {
+				"requiredGuidance": {"en":"All fields are required.","fr":"Tous les champs sont obligatoires.","es":"Todos los campos son obligatorios."},
+				"noScript": {"en":"This form needs JavaScript. You can also email","fr":"Ce formulaire nécessite JavaScript. Vous pouvez aussi écrire à","es":"Este formulario necesita JavaScript. También puedes escribir a"},
 				"title": "yesid@mtl ~ /contact",
 				"command": "$ yesid --contact",
 				"commandOutput": {"en":"Opening contact form...","fr":"Ouverture du formulaire de contact...","es":"Abriendo formulario de contacto..."},
@@ -385,6 +387,11 @@
 			"web3formsKey": "6887fd90-3348-4d31-ba03-bc0e285697b6"
 		},
 		"hero": {
+			"scene": {
+				"name": {"en":"Montréal metro scene","fr":"Scène du métro de Montréal","es":"Escena del metro de Montreal"},
+				"open": {"en":"Open Montréal metro scene","fr":"Ouvrir la scène du métro de Montréal","es":"Abrir la escena del metro de Montreal"},
+				"close": {"en":"Close Montréal metro scene","fr":"Fermer la scène du métro de Montréal","es":"Cerrar la escena del metro de Montreal"}
+			},
 			"headline": {
 				"line1": {"en":"SYSTEMS THAT","fr":"DES SYSTÈMES QUI","es":"SISTEMAS QUE"},
 				"line2": {"en":"DON'T BREAK","fr":"NE CASSENT PAS","es":"NO SE ROMPEN"},
@@ -396,6 +403,8 @@
 			"ctaContact": {"en":"Book a call","fr":"Réserver un appel","es":"Agenda una llamada"},
 			"ctaWorkHref": "/projects",
 			"sqlPanel": {
+				"held": {"en":"Refresh unavailable. Showing the last received reading.","fr":"Mise à jour indisponible. Les dernières données reçues sont affichées.","es":"Actualización no disponible. Se muestran los últimos datos recibidos."},
+				"failure": {"en":"Live data is unavailable. Showing a demonstration.","fr":"Les données en direct sont indisponibles. Une démonstration est affichée.","es":"Los datos en vivo no están disponibles. Se muestra una demostración."},
 				"prompt": {"en":"yesid@transit:gold>","fr":"yesid@transit:gold>","es":"yesid@transit:gold>"},
 				"liveLabel": {"en":"DEMO","fr":"DÉMO","es":"DEMO"},
 				"liveBadge": {"en":"LIVE","fr":"EN DIRECT","es":"EN VIVO"},
@@ -14304,6 +14313,8 @@
 		],
 		"siteLabels": {
 			"a11y": {
+				"animationPause": {"en":"Pause animation","fr":"Mettre l'animation en pause","es":"Pausar la animación"},
+				"animationPlay": {"en":"Play animation","fr":"Relancer l'animation","es":"Reanudar la animación"},
 				"navCapabilities": {"en":"Capabilities","fr":"Capacités","es":"Capacidades"},
 				"carouselPrev": {"en":"Previous projects","fr":"Projets précédents","es":"Proyectos anteriores"},
 				"carouselNext": {"en":"Next projects","fr":"Projets suivants","es":"Próximos proyectos"},
@@ -14314,6 +14325,20 @@
 				"technologyStackTemplate": {"en":"Technology stack: {stack}","fr":"Stack technique : {stack}","es":"Stack tecnológico: {stack}"}
 			},
 			"ui": {
+				"topics": {
+					"ai": {"en":"AI","fr":"IA","es":"IA"},
+					"ai-assisted-development": {"en":"AI-assisted development","fr":"Développement assisté par l’IA","es":"Desarrollo asistido por IA"},
+					"cms": {"en":"Content management","fr":"Gestion de contenu","es":"Gestión de contenido"},
+					"directus": {"en":"Directus","fr":"Directus","es":"Directus"},
+					"e-commerce": {"en":"E-commerce","fr":"Commerce en ligne","es":"Comercio electrónico"},
+					"learning": {"en":"Learning","fr":"Apprentissage","es":"Aprendizaje"},
+					"personal-story": {"en":"Personal story","fr":"Récit personnel","es":"Historia personal"},
+					"software-architecture": {"en":"Software architecture","fr":"Architecture logicielle","es":"Arquitectura de software"},
+					"sveltekit": {"en":"SvelteKit","fr":"SvelteKit","es":"SvelteKit"},
+					"systems-thinking": {"en":"Systems thinking","fr":"Pensée systémique","es":"Pensamiento sistémico"},
+					"transit-data": {"en":"Transit data","fr":"Données de transport collectif","es":"Datos de transporte público"},
+					"web-development": {"en":"Web development","fr":"Développement Web","es":"Desarrollo web"}
+				},
 				"markerService": {"en":"{num} / SERVICE","fr":"{num} / SERVICE","es":"{num} / SERVICIO"},
 				"backToProjects": {"en":"← All Projects","fr":"← Tous les projets","es":"← Todos los proyectos"},
 				"errorStatusNote": {"en":"// requested path not in service","fr":"// chemin demandé hors service","es":"// ruta solicitada fuera de servicio"},

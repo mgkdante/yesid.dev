@@ -27,6 +27,8 @@ const contactContent: ContactContent = {
 		},
 	},
 	formTerminal: {
+		requiredGuidance: { en: 'guidance' },
+		noScript: { en: 'no script' },
 		title: 'Fixture form', command: '$ contact', commandOutput: { en: 'Ready' },
 		fields: {
 			name: { label: { en: 'name' }, placeholder: { en: 'Your name' } },

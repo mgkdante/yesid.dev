@@ -118,5 +118,19 @@
 	"footer_chrome_footer_explore_label": "EXPLORE",
 	"footer_chrome_footer_legal_label": "LEGAL",
 	"footer_chrome_footer_connect_label": "CONNECT",
-	"footer_chrome_footer_live_label": "Live"
+	"footer_chrome_footer_live_label": "Live",
+	"a11y_animation_pause": "Pause animation",
+	"a11y_animation_play": "Play animation",
+	"ui_topic_ai": "AI",
+	"ui_topic_ai_assisted_development": "AI-assisted development",
+	"ui_topic_cms": "Content management",
+	"ui_topic_directus": "Directus",
+	"ui_topic_e_commerce": "E-commerce",
+	"ui_topic_learning": "Learning",
+	"ui_topic_personal_story": "Personal story",
+	"ui_topic_software_architecture": "Software architecture",
+	"ui_topic_sveltekit": "SvelteKit",
+	"ui_topic_systems_thinking": "Systems thinking",
+	"ui_topic_transit_data": "Transit data",
+	"ui_topic_web_development": "Web development"
 }

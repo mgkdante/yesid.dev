@@ -1,3 +1,4 @@
+import { migrationCopy } from './copy-migration';
 /**
  * Contact-page block fetcher: flat terminal chrome and translated fields
  * recompose the build-time page projection.
@@ -103,6 +104,8 @@ export function toContactContent(
 			},
 		},
 		formTerminal: {
+			requiredGuidance: migrationCopy(tr, 'block_contact_content_translations', 'form_required_guidance'),
+			noScript: migrationCopy(tr, 'block_contact_content_translations', 'form_no_script'),
 			title: str(raw.form_terminal_title),
 			command: str(raw.form_terminal_command),
 			...toLocalizedFields(tr, [['commandOutput', 'form_command_output']]),
