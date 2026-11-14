@@ -18,6 +18,11 @@ for (const locale of locales) for (const width of [390, 1440]) {
   const weather = page.getByTestId('about-weather');
   const pause = weather.getByRole('button', { name: locale.pause, exact: true });
   await expect(pause).toHaveCount(1);
+  await expect(pause).toHaveAccessibleName(locale.pause);
+  await expect(pause).toHaveAttribute('title', locale.pause);
+  await expect(pause).toHaveText('');
+  await expect(pause.getByTestId('animation-pause-icon')).toBeVisible();
+  await expect(pause).toHaveCSS('border-top-color', 'rgba(0, 0, 0, 0)');
   await expect(page.getByRole('button', { name: locale.pause, exact: true })).toHaveCount(1);
   const manifesto = page.getByTestId('manifesto-section');
   await expect(manifesto.getByRole('button', { name: locale.pause, exact: true })).toHaveCount(0);
@@ -26,8 +31,10 @@ for (const locale of locales) for (const width of [390, 1440]) {
   await expect(weather.getByText('12°C', { exact: true })).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   const target = await pause.boundingBox();
-  expect(target!.height).toBeGreaterThanOrEqual(24);
-  expect(target!.width).toBeGreaterThanOrEqual(24);
+  expect(target!.height).toBeGreaterThanOrEqual(44);
+  expect(target!.width).toBeGreaterThanOrEqual(44);
+  expect(target!.height).toBeCloseTo(44, 0);
+  expect(target!.width).toBeCloseTo(44, 0);
   const card = await weather.boundingBox();
   const temperature = await weather.getByText('12°C', { exact: true }).boundingBox();
   const condition = await weather.getByText('Clouds', { exact: true }).boundingBox();
@@ -35,14 +42,21 @@ for (const locale of locales) for (const width of [390, 1440]) {
   expect(target!.y).toBeGreaterThanOrEqual(condition!.y + condition!.height);
   expect(target!.x + target!.width).toBeLessThanOrEqual(card!.x + card!.width);
   expect(target!.y + target!.height).toBeLessThanOrEqual(card!.y + card!.height);
+  await weather.screenshot({ path: test.info().outputPath('weather-playing.png') });
   await pause.focus();
   await page.keyboard.press('Enter');
   const play = page.getByRole('button', { name: locale.play, exact: true });
   await expect(play).toHaveAccessibleName(locale.play);
+  await expect(play).toHaveAttribute('title', locale.play);
+  await expect(play).toHaveText('');
+  await expect(play.getByTestId('animation-play-icon')).toBeVisible();
+  expect(await play.evaluate(el => el.matches(':focus-visible') && getComputedStyle(el).boxShadow !== 'none')).toBe(true);
   await expect(play).not.toHaveAttribute('aria-pressed');
   const keptRunning = () => page.evaluate(() => document.getAnimations().filter(a =>
    a.playState === 'running' && /weather-/.test((a as CSSAnimation).animationName)).length);
   await expect.poll(keptRunning).toBe(0);
+  await weather.screenshot({ path: test.info().outputPath('weather-pause-focused.png') });
+  await play.evaluate(el => (el as HTMLButtonElement).blur());
   await weather.screenshot({ path: test.info().outputPath('weather-pause.png') });
   await page.screenshot({ path: test.info().outputPath('paused-home.png') });
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));

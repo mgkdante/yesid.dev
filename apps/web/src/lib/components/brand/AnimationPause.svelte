@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Button } from '@yesid/ui/button';
+	import Pause from '@lucide/svelte/icons/pause';
+	import Play from '@lucide/svelte/icons/play';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { animationPaused, restoreAnimationPause, setAnimationPaused } from '#lib/state/animation-pause.ts';
 	const words = {
@@ -8,13 +10,19 @@
 		fr: ["Mettre l'animation en pause", "Relancer l'animation"],
 		es: ['Pausar la animación', 'Reanudar la animación'],
 	}[getLocale()];
+	const label = $derived(words[$animationPaused ? 1 : 0]);
 	onMount(restoreAnimationPause);
 </script>
 
 <div class="animation-control mt-2 flex shrink-0 justify-end">
-	<Button variant="outline" size="sm" class="h-auto min-h-6 min-w-6 max-w-full whitespace-normal px-2 py-1"
+	<Button variant="ghost" size="icon-tap" class="p-0 text-muted-foreground"
+		aria-label={label} title={label}
 		onclick={() => setAnimationPaused(!$animationPaused)}>
-		{words[$animationPaused ? 1 : 0]}
+		{#if $animationPaused}
+			<Play class="size-4" aria-hidden="true" data-testid="animation-play-icon" />
+		{:else}
+			<Pause class="size-4" aria-hidden="true" data-testid="animation-pause-icon" />
+		{/if}
 	</Button>
 </div>
 
