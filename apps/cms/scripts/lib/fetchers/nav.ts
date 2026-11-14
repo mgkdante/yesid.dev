@@ -75,7 +75,9 @@ export interface NavData {
  */
 export function isRenderableNavLink(raw: DirectusNavLinkRow): boolean {
 	if (raw.status !== 'published') return false;
-	if (raw.page === null || raw.page === undefined) return true;
+	if (raw.page === null || raw.page === undefined) {
+		return Boolean(raw.href?.trim() && raw.translations?.some((tr) => tr.languages_code === 'en' && tr.label?.trim()));
+	}
 	if (typeof raw.page === 'string') return false;
 	return raw.page.status === 'published';
 }
