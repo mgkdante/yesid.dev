@@ -21,7 +21,9 @@ describe('HeroContentSchema', () => {
 		ctaWork: ls('Work'),
 		ctaContact: ls('Contact'),
 		ctaWorkHref: '/projects',
+		scene: { name: ls('scene'), open: ls('open'), close: ls('close') },
 		sqlPanel: {
+			held: ls('held'), failure: ls('failure'),
 			prompt: ls('SELECT'),
 			liveLabel: ls('live'),
 			liveBadge: ls('liveBadge'),

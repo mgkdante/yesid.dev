@@ -61,7 +61,8 @@ export const AboutWeatherConfigSchema = z.object({
 });
 
 const AboutCtaLineSchema = z.object({
-	text: z.string(),
+	/** String form accepts older export caches; new exports resolve every locale against shared text. */
+	text: z.union([z.string(), LocalizedStringSchema]),
 	color: z.enum(['orange', 'muted', 'accent']),
 });
 

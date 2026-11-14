@@ -66,11 +66,10 @@
 	// LIVE labels require real transit data; simulated values must retain DEMO labels.
 	let live = $state(false);
 	let readingState = $state<'demo' | 'live' | 'held' | 'failure'>('demo');
-	const statusWords = {
-		en: { held: 'Refresh unavailable. Showing the last received reading.', failure: 'Live data is unavailable. Showing a demonstration.' },
-		fr: { held: 'Mise à jour indisponible. Les dernières données reçues sont affichées.', failure: 'Les données en direct sont indisponibles. Une démonstration est affichée.' },
-		es: { held: 'Actualización no disponible. Se muestran los últimos datos recibidos.', failure: 'Los datos en vivo no están disponibles. Se muestra una demostración.' },
-	}[locale];
+	const statusWords = $derived({
+		held: resolveLocale(heroContent.sqlPanel.held, locale),
+		failure: resolveLocale(heroContent.sqlPanel.failure, locale),
+	});
 	const sqlLabels = $derived({
 		state: readingState,
 		prompt: resolveLocale(heroContent.sqlPanel.prompt, locale),
@@ -87,7 +86,22 @@
 		resolveLocale(live ? heroContent.refreshButton.helperLive : heroContent.refreshButton.helper, locale),
 	);
 
-	const replayAriaLabel = resolveLocale(siteLabels.a11y.replayIntro, locale);
+	const sceneWords = $derived({
+		name: resolveLocale(heroContent.scene.name, locale),
+		open: resolveLocale(heroContent.scene.open, locale),
+		close: resolveLocale(heroContent.scene.close, locale),
+	});
+	let reducedMotion = $state(false);
+	let stillOpen = $state(false);
+	let stillScene = $state<HTMLElement>();
+	const replayAriaLabel = $derived(reducedMotion ? (stillOpen ? sceneWords.close : sceneWords.open) : resolveLocale(siteLabels.a11y.replayIntro, locale));
+	async function toggleStillScene(): Promise<void> {
+		stillOpen = !stillOpen;
+		await tick();
+		const target = stillOpen ? stillScene : heroTextContainer.querySelector<HTMLButtonElement>('[data-testid="hero-dot-replay"]');
+		target?.scrollIntoView({ behavior: 'instant', block: 'center' });
+		target?.focus({ preventScroll: true });
+	}
 
 	const metroCaption = resolveLocale(siteLabels.ui.metroCaption, locale);
 
@@ -307,7 +321,8 @@
 
 	// Rebuild and correct the pin end before paint, then rewind; jumping directly to the end must not arm completion.
 	async function handleReplay(): Promise<void> {
-		if (destroyed || replayArming || !replayEnabled || isPrefersReducedMotion()) return;
+		if (destroyed || replayArming || !replayEnabled) return;
+		if (reducedMotion) { await toggleStillScene(); return; }
 		heroApproaching = false;
 		restoreReplayFocus = document.activeElement === heroTextContainer.querySelector('[data-testid="hero-dot-replay"]');
 		homeIntroStore.begin();
@@ -353,8 +368,20 @@
 	}
 
 	onMount(() => {
-		replayEnabled = !isPrefersReducedMotion();
+		replayEnabled = true;
+		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const update = () => {
+			reducedMotion = preference.matches;
+			if (stillOpen) {
+				stillOpen = false;
+				heroTextContainer.querySelector<HTMLButtonElement>('[data-testid="hero-dot-replay"]')?.focus({ preventScroll: true });
+			}
+			if (reducedMotion && !introCollapsed) void collapseIntroTrack();
+		};
+		update();
+		preference.addEventListener('change', update);
 		homeIntroStore.settle();
+		return () => preference.removeEventListener('change', update);
 	});
 
 </script>
@@ -407,6 +434,7 @@
 						{replayEnabled}
 						beaconSettled={introCollapsed}
 						{replayAriaLabel}
+						replayExpanded={reducedMotion ? stillOpen : undefined}
 						onReplay={handleReplay}
 					/>
 
@@ -453,6 +481,14 @@
 			<span bind:this={scrollText}></span>
 		</p>
 	</div>
+
+	{#if reducedMotion && stillOpen}
+		<section id="metro-still-scene" bind:this={stillScene} tabindex="-1" aria-label={sceneWords.name}
+			class="metro-still-scene mx-auto w-full max-w-5xl p-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+			<h2 class="text-center">{sceneWords.name}</h2>
+			<MetroNetwork svg={metroSvg} still />
+		</section>
+	{/if}
 
 	<HeroMobileSql
 		heroData={heroData}

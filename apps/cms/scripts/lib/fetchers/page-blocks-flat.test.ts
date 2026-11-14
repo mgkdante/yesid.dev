@@ -351,3 +351,32 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		expect(ai).toEqual({ name: { en: 'Yesid' }, title: { en: 't' }, bio: { en: 'b' }, moreLink: { en: 'm' } });
 	});
 });
+
+describe('about terminal translations', () => {
+	const shared = [{ text: '> Original', color: 'orange' as const }, { text: '> Link', color: 'muted' as const }];
+	it('uses each locale by position while preserving shared count, order and colours', () => {
+		const out = toAboutContent({ id: 1, cta_lines: shared, translations: [
+			{ languages_code: 'en', cta_lines: [{ text: '> Updated' }] },
+			{ languages_code: 'fr', cta_lines: [{ text: '> Français' }, { text: '  ' }, { text: 'extra' }] },
+			{ languages_code: 'es', cta_lines: [{ text: '> Español', color: 'accent' }, null] },
+		] });
+		expect(out.cta.lines).toEqual([
+			{ text: { en: '> Updated', fr: '> Français', es: '> Español' }, color: 'orange' },
+			{ text: { en: '> Link', fr: '> Link', es: '> Link' }, color: 'muted' },
+		]);
+	});
+	it('keeps all languages on shared lines before the field is created or filled', () => {
+		const out = toAboutContent({ id: 1, cta_lines: shared });
+		expect(out.cta.lines).toEqual(shared.map(line => ({ ...line, text: { en: line.text, fr: line.text, es: line.text } })));
+	});
+	it.each([undefined, null, [], [{ text: '' }], [{ text: '  ' }], [null], [{ text: 42 }]].map(cta_lines => ({ cta_lines })))('preserves shared text for absent or blank translations: %j', ({ cta_lines }) => {
+		const out = toAboutContent({ id: 1, cta_lines: shared, translations: [
+			{ languages_code: 'en', cta_lines: [{ text: '> Edited English' }] },
+			{ languages_code: 'fr', cta_lines }, { languages_code: 'es', cta_lines },
+		] });
+		expect(out.cta.lines.map(line => line.text)).toEqual([
+			{ en: '> Edited English', fr: '> Original', es: '> Original' },
+			{ en: '> Link', fr: '> Link', es: '> Link' },
+		]);
+	});
+});

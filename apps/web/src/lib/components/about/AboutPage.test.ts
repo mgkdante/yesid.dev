@@ -243,7 +243,7 @@ describe('AboutPage', () => {
 
 	it('renders weather fallback when no data', () => {
 		render(AboutPage, { props: { aboutPage: fixture, weather: null } });
-		expect(screen.getByTestId('about-weather')).toHaveTextContent('-');
+		expect(screen.getByTestId('about-weather')).not.toHaveTextContent('-');
 	});
 	it('renders weather data when provided', () => {
 		render(AboutPage, {

@@ -9,7 +9,7 @@ describe('site-labels transform', () => {
  it('allows legacy exports before the photo-credit label is populated', () => {
   const { a11y_photo_credit: omitted, ...legacy } = seeds;
   const out = toSiteLabels({ id: 'legacy', translations: [{ languages_code: 'en', ...legacy }] });
-  expect(out.a11y.photoCredit).toBeUndefined();
+  expect(out.a11y.photoCredit).toEqual({ en: 'Photo credit', fr: 'Crédit photo', es: 'Crédito de la foto' });
   expect(() => SiteLabelsSchema.parse(out)).not.toThrow();
  });
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import AnimationPause from '#lib/components/brand/AnimationPause.svelte';
 	import type { AboutWeatherConfig } from '#lib/types.ts';
 	import type { WeatherData } from '#lib/utils/weather.ts';
 	import { fetchFreshWeather } from '#lib/utils/weather-refresh.ts';
@@ -82,10 +83,11 @@
 				</div>
 			{:else}
 				<!-- Fallback -->
-				<div class="mt-1 flex h-8 items-center justify-center font-mono text-sm text-[var(--muted-foreground)]">-</div>
+				<div class="mt-1 h-8" aria-hidden="true"></div>
 				<div class="mt-0.5 h-5" aria-hidden="true"></div>
 			{/if}
 		</div>
+		<AnimationPause />
 	</div>
 </Card>
 </div>

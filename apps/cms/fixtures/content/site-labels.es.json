@@ -1,3 +1,17 @@
 {
+	"a11y_animation_pause": "Pausar la animación",
+	"a11y_animation_play": "Reanudar la animación",
+	"ui_topic_ai": "IA",
+	"ui_topic_ai_assisted_development": "Desarrollo asistido por IA",
+	"ui_topic_cms": "Gestión de contenido",
+	"ui_topic_directus": "Directus",
+	"ui_topic_e_commerce": "Comercio electrónico",
+	"ui_topic_learning": "Aprendizaje",
+	"ui_topic_personal_story": "Historia personal",
+	"ui_topic_software_architecture": "Arquitectura de software",
+	"ui_topic_sveltekit": "SvelteKit",
+	"ui_topic_systems_thinking": "Pensamiento sistémico",
+	"ui_topic_transit_data": "Datos de transporte público",
+	"ui_topic_web_development": "Desarrollo web",
 	"a11y_photo_credit": "Crédito de la foto"
 }

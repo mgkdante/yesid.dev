@@ -75,4 +75,10 @@ describe('Manifesto', () => {
 		expect(ticks.textContent).toContain('0');
 		expect(ticks.textContent).toContain('80');
 	});
+	it('omits the decorative flow lines and animation control', () => {
+		const { container } = render(Manifesto, { props: { manifesto: manifestoContent } });
+		expect(container.querySelectorAll('.manifesto__flow-line, .manifesto__flow-line-v')).toHaveLength(0);
+		expect(screen.queryByRole('button', { name: 'Pause animation' })).not.toBeInTheDocument();
+	});
+
 });

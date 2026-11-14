@@ -158,8 +158,6 @@
 	let sending = $state(false);
 	let announcement = $state('');
 	let activeForm: HTMLFormElement | undefined;
-	const requiredGuidance = { en: 'All fields are required.', fr: 'Tous les champs sont obligatoires.', es: 'Todos los campos son obligatorios.' };
-	const noScript = { en: 'This form needs JavaScript. You can also email', fr: 'Ce formulaire nécessite JavaScript. Vous pouvez aussi écrire à', es: 'Este formulario necesita JavaScript. También puedes escribir a' };
 
 	async function focusErrors() {
 		await tick();
@@ -441,8 +439,8 @@
 					novalidate
 					class="mt-3 space-y-3"
 				>
-					<p>{resolveLocale(requiredGuidance, locale)}</p>
-					<noscript><p>{resolveLocale(noScript, locale)} <a href={`mailto:${siteMeta.links.email}`}>{siteMeta.links.email}</a>.</p></noscript>
+					<p>{resolveLocale(contactPage.formTerminal.requiredGuidance, locale)}</p>
+					<noscript><p>{resolveLocale(contactPage.formTerminal.noScript, locale)} <a href={`mailto:${siteMeta.links.email}`}>{siteMeta.links.email}</a>.</p></noscript>
 					<div class="flex flex-col gap-4">
 
 						{#each fields as { key, state }}
