@@ -13,7 +13,6 @@
 	import { createCrescendoScrub } from '#lib/motion/scrubs/index.ts';
 	import { boop } from '@yesid/motion/actions';
 	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';
-	import ManifestoEdgeRight from './ManifestoEdgeRight.svelte';
 	import ManifestoEdgeTop from './ManifestoEdgeTop.svelte';
 	import ManifestoEdgeBottom from './ManifestoEdgeBottom.svelte';
 	import ManifestoTransit from './ManifestoTransit.svelte';
@@ -40,16 +39,6 @@
 		sectionNumber: resolveLocale(manifestoContent.edgeLeft.sectionNumber, locale),
 		sectionName: resolveLocale(manifestoContent.edgeLeft.sectionName, locale),
 		location: resolveLocale(manifestoContent.edgeLeft.location, locale),
-	});
-
-	const edgeRight = $derived({
-		lat: resolveLocale(manifestoContent.edgeRight.lat, locale),
-		lng: resolveLocale(manifestoContent.edgeRight.lng, locale),
-		src: resolveLocale(manifestoContent.edgeRight.src, locale),
-		via: resolveLocale(manifestoContent.edgeRight.via, locale),
-		dst: resolveLocale(manifestoContent.edgeRight.dst, locale),
-		node: resolveLocale(manifestoContent.edgeRight.node, locale),
-		status: resolveLocale(manifestoContent.edgeRight.status, locale),
 	});
 
 	const edgeBottom = $derived({
@@ -104,7 +93,10 @@
 
 
 	<ManifestoEdgeBottom {...edgeBottom} />
-	<ManifestoEdgeRight {...edgeRight} />
+	<div class="manifesto__stripe manifesto__stripe--tl"></div>
+	<div class="manifesto__stripe manifesto__stripe--br"></div>
+	<div class="manifesto__stripe manifesto__stripe--tr"></div>
+	<div class="manifesto__stripe manifesto__stripe--bl"></div>
 	<ManifestoEdgeLeft {...edgeLeft} hiddenLines={hiddenLines} />
 	<ManifestoEdgeTop ticks={ticks} />
 	<ManifestoTransit {...transit} />
@@ -281,4 +273,52 @@
 			translate: none;
 		}
 	}
+	.manifesto__stripe {
+		position: absolute;
+		overflow: hidden;
+		z-index: calc(var(--z-content) + 1);
+	}
+
+	.manifesto__stripe::before {
+		content: '';
+		position: absolute;
+	}
+
+	.manifesto__stripe--tl { top: 0; left: 0; width: 240px; height: 240px; }
+	.manifesto__stripe--tl::before {
+		width: 480px; height: 480px; top: -240px; left: -240px;
+		background: repeating-linear-gradient(-45deg, var(--hazard-a) 0px, var(--hazard-a) 12px, var(--hazard-b) 12px, var(--hazard-b) 24px);
+		opacity: var(--opacity-subtle);
+	}
+
+	.manifesto__stripe--br { bottom: 0; right: 0; width: 240px; height: 240px; }
+	.manifesto__stripe--br::before {
+		width: 480px; height: 480px; bottom: -240px; right: -240px;
+		background: repeating-linear-gradient(-45deg, var(--hazard-a) 0px, var(--hazard-a) 12px, var(--hazard-b) 12px, var(--hazard-b) 24px);
+		opacity: var(--opacity-subtle);
+	}
+
+	.manifesto__stripe--tr { top: 0; right: 0; width: 110px; height: 110px; }
+	.manifesto__stripe--tr::before {
+		width: 220px; height: 220px; top: -130px; right: -130px;
+		background: repeating-linear-gradient(45deg, var(--hazard-a) 0px, var(--hazard-a) 7px, var(--hazard-b) 7px, var(--hazard-b) 14px);
+		opacity: var(--opacity-faint);
+	}
+
+	.manifesto__stripe--bl { bottom: 0; left: 0; width: 110px; height: 110px; }
+	.manifesto__stripe--bl::before {
+		width: 220px; height: 220px; bottom: -130px; left: -130px;
+		background: repeating-linear-gradient(45deg, var(--hazard-a) 0px, var(--hazard-a) 7px, var(--hazard-b) 7px, var(--hazard-b) 14px);
+		opacity: var(--opacity-faint);
+	}
+
+	@media (max-width: 640px) {
+		.manifesto__stripe--tl, .manifesto__stripe--br { width: 160px; height: 160px; }
+		.manifesto__stripe--tr, .manifesto__stripe--bl { width: 80px; height: 80px; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.manifesto__stripe { opacity: 1; transform: none; translate: none; }
+	}
+
 </style>

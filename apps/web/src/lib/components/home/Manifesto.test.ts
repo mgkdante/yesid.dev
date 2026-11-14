@@ -6,7 +6,7 @@ import { manifestoContent } from '#lib/content/site-content.ts';
 describe('Manifesto', () => {
 	it('hides decorative readouts while keeping service links accessible', () => {
 		render(Manifesto, { props: { manifesto: manifestoContent } });
-		for (const edge of ['left', 'right', 'top', 'bottom']) {
+		for (const edge of ['left', 'top', 'bottom']) {
 			expect(screen.getByTestId(`manifesto-edge-${edge}`)).toHaveAttribute('aria-hidden', 'true');
 		}
 		for (const part of ['prompt', 'platform-badge', 'direction-badge']) {
@@ -44,14 +44,6 @@ describe('Manifesto', () => {
 		expect(edge.textContent).toContain('SEC');
 		expect(edge.textContent).toContain('MANIFESTO');
 		expect(edge.textContent).toContain('MTL');
-	});
-
-	it('renders right edge with easter egg locations', () => {
-		render(Manifesto, { props: { manifesto: manifestoContent } });
-		const edge = screen.getByTestId('manifesto-edge-right');
-		expect(edge.textContent).toContain('Sherbrooke');
-		expect(edge.textContent).toContain('Lennoxville');
-		expect(edge.textContent).toContain('Montréal');
 	});
 
 	it('renders bottom status bar', () => {
