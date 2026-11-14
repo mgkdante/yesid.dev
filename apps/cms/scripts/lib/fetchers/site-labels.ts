@@ -87,6 +87,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			['replayIntro', 'a11y_replay_intro'], ['projectImageOpen', 'a11y_project_image_open'],
 			['projectImageClose', 'a11y_project_image_close'],
 			['architectureDiagram', 'a11y_architecture_diagram'],
+			['photoCredit', 'a11y_photo_credit', 'optional'],
 			['technologyStackTemplate', 'a11y_technology_stack_template'],
 		]),
 		ui: {

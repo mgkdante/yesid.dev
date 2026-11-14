@@ -6,6 +6,13 @@ import frSeeds from '../../../fixtures/content/site-labels.fr.json';
 import esSeeds from '../../../fixtures/content/site-labels.es.json';
 
 describe('site-labels transform', () => {
+ it('allows legacy exports before the photo-credit label is populated', () => {
+  const { a11y_photo_credit: omitted, ...legacy } = seeds;
+  const out = toSiteLabels({ id: 'legacy', translations: [{ languages_code: 'en', ...legacy }] });
+  expect(out.a11y.photoCredit).toBeUndefined();
+  expect(() => SiteLabelsSchema.parse(out)).not.toThrow();
+ });
+
 	it('exports remaining navigation copy without reading retired header fields', () => {
 		const retired = {
 			openMenuAria: 'nav_chrome_shared_open_menu_aria',
@@ -55,6 +62,7 @@ describe('site-labels transform', () => {
 			],
 		};
 		const out = toSiteLabels(row);
+		expect(out.a11y.photoCredit).toEqual({ en: 'Photo credit', fr: 'Crédit photo', es: 'Crédito de la foto' });
 		// Project chrome with French values merged from the translated row.
 		expect(out.projectsChrome.listing.filters.techStack).toEqual({ en: 'Tech Stack', fr: 'Stack technique' });
 		expect(out.projectsChrome.detail.glance.liveSiteLabel).toEqual({

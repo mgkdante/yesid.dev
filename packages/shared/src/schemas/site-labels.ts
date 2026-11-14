@@ -37,6 +37,7 @@ export const SiteLabelsSchema = z.object({
 		projectImageOpen: LocalizedStringSchema,
 		projectImageClose: LocalizedStringSchema,
 		architectureDiagram: LocalizedStringSchema,
+		photoCredit: LocalizedStringSchema.optional(),
 		technologyStackTemplate: LocalizedStringSchema,
 	}),
 	ui: z.object({
