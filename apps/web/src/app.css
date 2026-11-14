@@ -5,8 +5,8 @@
 @import '@yesid/ui/station-tabs.css';
 
 :root {
-  /* Ambient opacity for the decorative coordinate / edge labels on the manifesto. */
-  --chrome-ink-opacity: 0.4;
+  /* Rendered manifesto labels keep full contrast, including decorative text. */
+  --chrome-ink-opacity: 1;
 }
 
 html {

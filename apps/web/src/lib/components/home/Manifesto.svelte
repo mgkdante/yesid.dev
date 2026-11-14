@@ -196,13 +196,13 @@
 	.manifesto__prompt-cmd {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		color: color-mix(in srgb, var(--primary) 85%, transparent);
+		color: var(--primary);
 	}
 
 	.manifesto__prompt-text {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		color: color-mix(in srgb, var(--primary) 85%, transparent);
+		color: var(--primary);
 	}
 
 	.manifesto__statement {

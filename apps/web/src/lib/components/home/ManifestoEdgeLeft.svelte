@@ -78,8 +78,8 @@
 		flex-shrink: 0;
 	}
 
-	/* Apply the shared chrome opacity to full line colors so colored names match the coordinate labels. */
-	.manifesto__roundel-name { color: var(--line-color-text); opacity: var(--chrome-ink-opacity); }
+	/* The roundels carry line colors; their text uses the theme reading ink. */
+	.manifesto__roundel-name { color: var(--primary); opacity: var(--chrome-ink-opacity); }
 
 	.manifesto__roundel--t0 { left: 155px; top: 116px; }
 	.manifesto__roundel--t1 { right: 115px; top: 195px; }
