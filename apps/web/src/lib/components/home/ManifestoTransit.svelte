@@ -18,8 +18,8 @@
 	<div class="manifesto__chevron"></div>
 </div>
 
-<div data-testid="manifesto-platform-badge" class="manifesto__badge manifesto__badge--platform">{platformBadge}</div>
-<div data-testid="manifesto-direction-badge" class="manifesto__badge manifesto__badge--direction">{directionBadge}</div>
+<div data-testid="manifesto-platform-badge" class="manifesto__badge manifesto__badge--platform" aria-hidden="true">{platformBadge}</div>
+<div data-testid="manifesto-direction-badge" class="manifesto__badge manifesto__badge--direction" aria-hidden="true">{directionBadge}</div>
 
 <style>
 

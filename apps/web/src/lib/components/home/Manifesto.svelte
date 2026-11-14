@@ -127,7 +127,7 @@
 
 	<div class="manifesto__content">
 
-		<div data-testid="manifesto-prompt" class="manifesto__prompt">
+		<div data-testid="manifesto-prompt" class="manifesto__prompt" aria-hidden="true">
 			<span class="manifesto__prompt-cmd">{terminalUser}</span>
 			<span class="manifesto__prompt-text">{terminalCommand}</span>
 		</div>
@@ -285,7 +285,7 @@
 	}
 
 	@media (max-width: 640px) {
-		.manifesto__pill { font-size: 10px; padding: 12px 16px; min-height: 44px; }
+		.manifesto__pill { font-size: 12px; padding: 12px 16px; min-height: 44px; }
 		.manifesto__pills { gap: 6px; }
 	}
 

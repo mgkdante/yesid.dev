@@ -33,7 +33,7 @@
 	</div>
 {/each}
 
-<div data-testid="manifesto-edge-left" class="manifesto__edge-left">
+<div data-testid="manifesto-edge-left" class="manifesto__edge-left" aria-hidden="true">
 	<span class="manifesto__readout">{sectionNumber}</span>
 	<span class="manifesto__dot-active"></span>
 	<span class="manifesto__readout">{sectionName}</span>
