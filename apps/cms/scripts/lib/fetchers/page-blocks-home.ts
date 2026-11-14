@@ -1,3 +1,4 @@
+import { migrationCopy } from './copy-migration';
 /**
  * Home-page block fetchers — 7 blocks under pages('home'):
  *   hero, manifesto, proof-reel, services-grid, about-intro, cta, closer
@@ -46,7 +47,15 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 			['ctaWork', 'cta_work'], ['ctaContact', 'cta_contact'],
 		]),
 		ctaWorkHref: hrefOr(raw.cta_work_href, '/projects'),
+		scene: {
+			name: migrationCopy(tr, 'block_hero_translations', 'scene_name'),
+			open: migrationCopy(tr, 'block_hero_translations', 'scene_open'),
+			close: migrationCopy(tr, 'block_hero_translations', 'scene_close'),
+		},
 		sqlPanel: {
+			held: migrationCopy(tr, 'block_hero_translations', 'sql_status_held'),
+			failure: migrationCopy(tr, 'block_hero_translations', 'sql_status_failure'),
+
 			...toLocalizedFields(tr, [
 				['prompt', 'sql_prompt'], ['liveLabel', 'sql_live_label'],
 				['liveBadge', 'sql_live_badge'],

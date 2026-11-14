@@ -1,3 +1,4 @@
+import { migrationCopy } from './copy-migration';
 /**
  * site_labels fetcher (go2-t1c) — reads the site_labels singleton and
  * regroups the prefix-named flat columns (a11y_/ui_/pages_/email_) into the
@@ -81,15 +82,33 @@ function toBlogEntryRail(raw: SiteLabelsRow, tr: Translations): BlogEntryRail {
 export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 	const tr = raw.translations ?? [];
 	return {
-		a11y: toLocalizedFields(tr, [
-			['navCapabilities', 'a11y_nav_capabilities'], ['carouselPrev', 'a11y_carousel_prev'],
-			['carouselNext', 'a11y_carousel_next'],
-			['replayIntro', 'a11y_replay_intro'], ['projectImageOpen', 'a11y_project_image_open'],
-			['projectImageClose', 'a11y_project_image_close'],
-			['architectureDiagram', 'a11y_architecture_diagram'],
-			['technologyStackTemplate', 'a11y_technology_stack_template'],
-		]),
+		a11y: {
+			animationPause: migrationCopy(tr, 'site_labels_translations', 'a11y_animation_pause'),
+			animationPlay: migrationCopy(tr, 'site_labels_translations', 'a11y_animation_play'),
+			...toLocalizedFields(tr, [
+				['navCapabilities', 'a11y_nav_capabilities'], ['carouselPrev', 'a11y_carousel_prev'],
+				['carouselNext', 'a11y_carousel_next'],
+				['replayIntro', 'a11y_replay_intro'], ['projectImageOpen', 'a11y_project_image_open'],
+				['projectImageClose', 'a11y_project_image_close'],
+				['architectureDiagram', 'a11y_architecture_diagram'],
+				['technologyStackTemplate', 'a11y_technology_stack_template'],
+			]),
+		},
 		ui: {
+			topics: {
+				'ai': migrationCopy(tr, 'site_labels_translations', 'ui_topic_ai'),
+				'ai-assisted-development': migrationCopy(tr, 'site_labels_translations', 'ui_topic_ai_assisted_development'),
+				'cms': migrationCopy(tr, 'site_labels_translations', 'ui_topic_cms'),
+				'directus': migrationCopy(tr, 'site_labels_translations', 'ui_topic_directus'),
+				'e-commerce': migrationCopy(tr, 'site_labels_translations', 'ui_topic_e_commerce'),
+				'learning': migrationCopy(tr, 'site_labels_translations', 'ui_topic_learning'),
+				'personal-story': migrationCopy(tr, 'site_labels_translations', 'ui_topic_personal_story'),
+				'software-architecture': migrationCopy(tr, 'site_labels_translations', 'ui_topic_software_architecture'),
+				'sveltekit': migrationCopy(tr, 'site_labels_translations', 'ui_topic_sveltekit'),
+				'systems-thinking': migrationCopy(tr, 'site_labels_translations', 'ui_topic_systems_thinking'),
+				'transit-data': migrationCopy(tr, 'site_labels_translations', 'ui_topic_transit_data'),
+				'web-development': migrationCopy(tr, 'site_labels_translations', 'ui_topic_web_development'),
+			},
 			...toLocalizedFields(tr, [
 				['markerService', 'ui_marker_service'],
 				['backToProjects', 'ui_back_to_projects'], ['errorStatusNote', 'ui_error_status_note'],

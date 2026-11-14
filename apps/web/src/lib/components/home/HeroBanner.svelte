@@ -66,11 +66,10 @@
 	// LIVE labels require real transit data; simulated values must retain DEMO labels.
 	let live = $state(false);
 	let readingState = $state<'demo' | 'live' | 'held' | 'failure'>('demo');
-	const statusWords = {
-		en: { held: 'Refresh unavailable. Showing the last received reading.', failure: 'Live data is unavailable. Showing a demonstration.' },
-		fr: { held: 'Mise à jour indisponible. Les dernières données reçues sont affichées.', failure: 'Les données en direct sont indisponibles. Une démonstration est affichée.' },
-		es: { held: 'Actualización no disponible. Se muestran los últimos datos recibidos.', failure: 'Los datos en vivo no están disponibles. Se muestra una demostración.' },
-	}[locale];
+	const statusWords = $derived({
+		held: resolveLocale(heroContent.sqlPanel.held, locale),
+		failure: resolveLocale(heroContent.sqlPanel.failure, locale),
+	});
 	const sqlLabels = $derived({
 		state: readingState,
 		prompt: resolveLocale(heroContent.sqlPanel.prompt, locale),
@@ -87,11 +86,11 @@
 		resolveLocale(live ? heroContent.refreshButton.helperLive : heroContent.refreshButton.helper, locale),
 	);
 
-	const sceneWords = {
-		en: { name: 'Montréal metro scene', open: 'Open Montréal metro scene', close: 'Close Montréal metro scene' },
-		fr: { name: 'Scène du métro de Montréal', open: 'Ouvrir la scène du métro de Montréal', close: 'Fermer la scène du métro de Montréal' },
-		es: { name: 'Escena del metro de Montreal', open: 'Abrir la escena del metro de Montreal', close: 'Cerrar la escena del metro de Montreal' },
-	}[locale];
+	const sceneWords = $derived({
+		name: resolveLocale(heroContent.scene.name, locale),
+		open: resolveLocale(heroContent.scene.open, locale),
+		close: resolveLocale(heroContent.scene.close, locale),
+	});
 	let reducedMotion = $state(false);
 	let stillOpen = $state(false);
 	let stillScene = $state<HTMLElement>();

@@ -29,6 +29,8 @@ export type BlogEntryRailLink = z.infer<typeof BlogEntryRailLinkSchema>;
 
 export const SiteLabelsSchema = z.object({
 	a11y: z.object({
+		animationPause: LocalizedStringSchema,
+		animationPlay: LocalizedStringSchema,
 		navCapabilities: LocalizedStringSchema,
 		carouselPrev: LocalizedStringSchema,
 		carouselNext: LocalizedStringSchema,
@@ -40,6 +42,20 @@ export const SiteLabelsSchema = z.object({
 		technologyStackTemplate: LocalizedStringSchema,
 	}),
 	ui: z.object({
+		topics: z.object({
+			'ai': LocalizedStringSchema,
+			'ai-assisted-development': LocalizedStringSchema,
+			'cms': LocalizedStringSchema,
+			'directus': LocalizedStringSchema,
+			'e-commerce': LocalizedStringSchema,
+			'learning': LocalizedStringSchema,
+			'personal-story': LocalizedStringSchema,
+			'software-architecture': LocalizedStringSchema,
+			'sveltekit': LocalizedStringSchema,
+			'systems-thinking': LocalizedStringSchema,
+			'transit-data': LocalizedStringSchema,
+			'web-development': LocalizedStringSchema,
+		}),
 		markerService: LocalizedStringSchema,
 		/** "← All Projects" back-to-listing link on /projects/[slug] (go2/w4). */
 		backToProjects: LocalizedStringSchema,
