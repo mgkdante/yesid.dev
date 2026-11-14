@@ -47,6 +47,18 @@
           },
           "name": "image",
           "type": "string"
+        },
+        {
+          "field": "credit",
+          "meta": {
+            "field": "credit",
+            "interface": "input",
+            "type": "string",
+            "width": "full",
+            "note": "Optional photo attribution. Leave blank to retain the current credit during migration."
+          },
+          "name": "Photo credit",
+          "type": "string"
         }
       ],
       "template": "{{id}}"

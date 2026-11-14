@@ -1,6 +1,6 @@
 <!--
   Interests: Style A, diagonal strips with background images.
-  B&W by default, turns color on hover (desktop) / tap toggle (mobile).
+  Real photo colors in both themes; one strip expands on interaction.
   Comic/manga panel energy. Skewed strips with thin diagonal orange dividers.
   Stop label always top-left.
 -->
@@ -22,14 +22,22 @@
 	// Re-derive these values if the bento layout changes.
 	const INTEREST_SIZES = '(min-width: 1024px) calc(20vw + 48px), (min-width: 768px) 800px, 340px';
 
-	// Mobile tap toggle: track which strip is active (-1 = none)
-	let activeIndex = $state(-1);
+	// Hover previews a photo; activation keeps that selection after the pointer leaves.
+	let selectedIndex = $state(-1);
+	let hoveredIndex = $state(-1);
+	const expandedIndex = $derived(hoveredIndex >= 0 ? hoveredIndex : selectedIndex);
 
 	function handleTap(index: number) {
-		activeIndex = activeIndex === index ? -1 : index;
+		selectedIndex = selectedIndex === index ? -1 : index;
+		hoveredIndex = -1;
 	}
 
-	const ATTRIBUTION: Record<string, string> = {
+	function previewInterest(event: PointerEvent, index: number) {
+		if (event.pointerType !== 'touch' && window.matchMedia('(hover: hover) and (pointer: fine)').matches) hoveredIndex = index;
+	}
+
+	// Existing credits remain the compatibility fallback until the CMS field is populated.
+	const LEGACY_ATTRIBUTION: Record<string, string> = {
 		transit: 'Harrison Keely · CC BY 4.0',
 		space: 'NASA',
 	};
@@ -42,25 +50,31 @@
 >
 <Card class="relative h-full !gap-0 !py-0" data-testid="about-interests">
 	<!-- Stop label: top-left, always -->
-	<div class="absolute top-3 left-4 z-20">
+	<div class="absolute top-3 left-4 z-20 bg-[var(--background)] px-1 py-0.5">
 		<StopLabel {stop} {label} as="h2" />
 	</div>
 
 	<!-- Diagonal strips container -->
-	<div class="flex h-full min-h-36">
+	<div class="flex h-full min-h-40">
 		{#each interests as interest, i}
 			{@const media = variantImage(interest.image)}
 			{@const interestLabel = resolveLocale(interest.label, locale)}
+			{@const credit = (interest.credit && resolveLocale(interest.credit, locale)) || LEGACY_ATTRIBUTION[interest.id]}
 			<button
 				type="button"
-				class="tap-press interest-strip relative flex h-full flex-1 items-center justify-center overflow-hidden transition-all duration-500 ease-out"
-				class:strip-active={activeIndex === i}
+				class="tap-press interest-strip relative flex h-full items-center justify-center overflow-hidden"
+				class:strip-active={expandedIndex === i}
 				onclick={() => handleTap(i)}
-				aria-pressed={activeIndex === i}
+				onpointerenter={(event) => previewInterest(event, i)}
+				onpointerleave={() => hoveredIndex = -1}
+				onfocus={() => hoveredIndex = -1}
+				aria-label={interestLabel}
+				aria-describedby={credit ? `interest-credit-${interest.id}` : undefined}
+				aria-expanded={expandedIndex === i}
 			>
 
 				<div
-					class="strip-bg absolute inset-[-20px] transition-all duration-500 ease-out"
+					class="strip-bg absolute inset-[-20px]"
 					style="transform: skewX(-8deg) scale(1.2);"
 				>
 					<img
@@ -75,10 +89,6 @@
 					/>
 				</div>
 
-				<!-- Theme-tinted overlay for text readability (background-mix,
-				     not hardcoded black: dark ink in dark mode, paper in light). -->
-				<div class="strip-overlay absolute inset-0 transition-opacity duration-500"></div>
-
 				<!-- Diagonal orange divider (not after last) -->
 				{#if i < interests.length - 1}
 					<div
@@ -88,17 +98,18 @@
 					></div>
 				{/if}
 
-				<!-- Label: theme-aware ink + halo (see .strip-label below) -->
-				<div class="relative z-10 flex flex-col items-center justify-center">
-					<span class="strip-label font-mono text-caption font-semibold tracking-[3px]">
+				<!-- Caption backing keeps the name readable without tinting the photograph. -->
+				<div class="absolute inset-x-1 top-8 z-10 flex justify-center">
+					<span class="strip-label font-mono font-semibold">
 						{interestLabel}
 					</span>
 				</div>
 
-				{#if ATTRIBUTION[interest.id]}
+				{#if credit}
 					<span
-						class="strip-credit absolute inset-x-0 bottom-0 z-20 px-1 pb-1 pt-5 text-center font-mono text-[12px] leading-none tracking-tight"
-					>{ATTRIBUTION[interest.id]}</span>
+						id={`interest-credit-${interest.id}`}
+						class="strip-credit absolute inset-x-0 bottom-0 z-20 px-1 pb-1 pt-1 text-center font-mono text-[12px] leading-none tracking-tight"
+						>{credit}</span>
 				{/if}
 			</button>
 		{/each}
@@ -117,17 +128,35 @@
 		object-position: center;
 	}
 
-	/* Theme-aware filters keep image strips readable on both dark surfaces and light paper. */
-	.strip-bg {
-		filter: grayscale(1) brightness(0.3);
+	.interest-strip {
+		flex: 1 1 0%;
+		min-inline-size: 44px;
+		min-block-size: 44px;
+		transition: flex-grow 300ms var(--ease-default);
 	}
-	.strip-overlay {
-		background: color-mix(in srgb, var(--background) 40%, transparent);
+	.interest-strip.strip-active { flex-grow: 2.4; }
+	.interest-strip:focus-visible {
+		outline: 2px solid var(--foreground);
+		outline-offset: -4px;
+		box-shadow: inset 0 0 0 6px var(--background);
+		z-index: 30;
 	}
 	.strip-label {
+		max-inline-size: 100%;
+		padding: 0.25rem;
+		font-size: 12px;
+		line-height: 1.2;
+		letter-spacing: 0.05em;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 		text-transform: uppercase;
 		color: var(--foreground);
-		text-shadow: 0 1px 4px color-mix(in srgb, var(--background) 80%, transparent);
+		background: var(--background);
+	}
+	.strip-active .strip-label {
+		white-space: normal;
+		overflow-wrap: anywhere;
 	}
 
 	.strip-credit {
@@ -136,30 +165,8 @@
 		pointer-events: none;
 	}
 
-	/* Light theme: whitening equivalent of the dark treatment. */
-	:global([data-theme='light']) .strip-bg,
-	:global(.theme-light) .strip-bg {
-		filter: grayscale(1) brightness(1.45) contrast(0.85);
-	}
-
-	/* Desktop hover: strip turns color + grows */
-	.interest-strip:hover .strip-bg,
-	.interest-strip.strip-active .strip-bg {
-		filter: grayscale(0) brightness(0.6);
-	}
-	:global([data-theme='light']) .interest-strip:hover .strip-bg,
-	:global(.theme-light) .interest-strip:hover .strip-bg,
-	:global([data-theme='light']) .interest-strip.strip-active .strip-bg,
-	:global(.theme-light) .interest-strip.strip-active .strip-bg {
-		filter: grayscale(0) brightness(1.1);
-	}
-	.interest-strip:hover .strip-overlay,
-	.interest-strip.strip-active .strip-overlay {
-		opacity: var(--opacity-subtle);
-	}
-	.interest-strip:hover,
-	.interest-strip.strip-active {
-		flex: 1.4;
+	@media (prefers-reduced-motion: reduce) {
+		.interest-strip { transition: none; }
 	}
 
 	/* Button reset + cursor pointer on all strips */

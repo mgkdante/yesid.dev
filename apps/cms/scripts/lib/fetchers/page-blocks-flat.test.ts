@@ -251,13 +251,17 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 					label_testimonials_prev_aria: 'l5a', label_testimonials_next_aria: 'l5b',
 					label_testimonial_slide_aria: 'l6', label_show_testimonial_aria: 'l7',
 					metrics: [{ value: '10+', label: 'projects' }],
-					methodology: [], testimonials: [], interests: [],
+					methodology: [], testimonials: [], interests: [
+						{ id: 'transit', label: 'Transit', image: '/transit.svg', credit: 'EN credit' },
+						{ id: 'manga', label: 'Manga', image: '/manga.svg', credit: ' ' },
+					],
 				},
 				{
 					languages_code: 'fr',
 					identity_name: 'Yesid', polaroids: [{ alt: 'moi', caption: 'salut' }],
 					education: [{ school: 'École', program: 'Programme', icon: 'champlain' }],
 					weather_city: 'Montréal',
+					interests: [{ label: 'Transport', credit: 'FR credit' }, { label: 'Manga', credit: ' ' }],
 				},
 			],
 		};
@@ -265,6 +269,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		expect(out.identity.headshot).toBe('/img/y.jpg');
 		expect(out.identity.polaroids[0]?.alt).toEqual({ en: 'me', fr: 'moi' });
 		expect(out.weather).toEqual({ city: { en: 'Montreal', fr: 'Montréal' }, enabled: true });
+		expect(out.interests[0]?.credit).toEqual({ en: 'EN credit', fr: 'FR credit' });
+		expect(out.interests[1]?.credit).toBeUndefined();
 		expect(out.cta.command).toBe('whoami');
 		expect(out.stopLabels.next).toEqual({ en: 's10' });
 		expect(out.languages).toEqual([

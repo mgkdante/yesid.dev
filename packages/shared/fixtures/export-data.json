@@ -231,11 +231,13 @@
 				},
 				{
 					"id": "transit",
+					"credit": {"en":"Harrison Keely · CC BY 4.0","fr":"Harrison Keely · CC BY 4.0","es":"Harrison Keely · CC BY 4.0"},
 					"label": {"en":"Transit","fr":"Transport collectif","es":"Transporte"},
 					"image": "/images/about/interests/transit.webp"
 				},
 				{
 					"id": "space",
+					"credit": {"en":"NASA","fr":"NASA","es":"NASA"},
 					"label": {"en":"Space","fr":"L'espace","es":"Espacio"},
 					"image": "/images/about/interests/space.webp"
 				},
