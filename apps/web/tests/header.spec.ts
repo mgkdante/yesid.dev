@@ -100,6 +100,7 @@ test('a language link landing on a router redirect closes the menu with the Kit 
 		body: JSON.stringify({ type: 'redirect', location: '/fr/projects' }),
 	}));
 	await page.goto('/services');
+	await expect(page.locator('html')).toHaveAttribute('data-hydrated', '');
 	await openMenu(page, 'en');
 	await page.getByTestId('language-toggle').click();
 	await expect(page).toHaveURL(samePath('/fr/projects'));

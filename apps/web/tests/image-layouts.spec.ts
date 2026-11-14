@@ -39,6 +39,8 @@ test('article image layouts preserve order and fit desktop and phones', async ({
 		await route.fulfill({ response, json: payload });
 	});
 	await page.goto('/projects');
+	// SSR links can navigate by document before Kit's client router starts.
+	await expect(page.locator('html')).toHaveAttribute('data-hydrated', '');
 	await page.locator(`a[href="/projects/${project!.slug}"]`).first().click();
 	const article = page.locator('.article-body:visible').filter({ has: page.locator('[data-image-layout="row"]') });
 	const row = article.locator('[data-image-layout="row"]:visible');
