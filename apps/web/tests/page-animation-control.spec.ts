@@ -55,7 +55,10 @@ for (const locale of locales) for (const width of [390, 1440]) {
   await expect(play).toHaveAttribute('title', locale.play);
   await expect(play).toHaveText('');
   await expect(play.getByTestId('animation-play-icon')).toBeVisible();
-  expect(await play.evaluate(el => el.matches(':focus-visible') && getComputedStyle(el).boxShadow !== 'none')).toBe(true);
+  expect(await play.evaluate(el => {
+   const style = getComputedStyle(el);
+   return el.matches(':focus-visible') && style.outlineStyle !== 'none' && parseFloat(style.outlineWidth) >= 2;
+  })).toBe(true);
   await expect(play).not.toHaveAttribute('aria-pressed');
   const keptRunning = () => page.evaluate(() => document.getAnimations().filter(a =>
    a.playState === 'running' && /weather-/.test((a as CSSAnimation).animationName)).length);
