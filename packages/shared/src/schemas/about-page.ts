@@ -57,6 +57,24 @@ export const AboutEducationItemSchema = z.object({
 
 export const AboutWeatherConfigSchema = z.object({
 	city: LocalizedStringSchema,
+	conditions: z.object({
+		clear: LocalizedStringSchema,
+		partly: LocalizedStringSchema,
+		cloudy: LocalizedStringSchema,
+		showers: LocalizedStringSchema,
+		rain: LocalizedStringSchema,
+		storm: LocalizedStringSchema,
+		snow: LocalizedStringSchema,
+		mist: LocalizedStringSchema,
+		drizzle: LocalizedStringSchema.optional(),
+		light_snow: LocalizedStringSchema.optional(),
+		freezing_rain: LocalizedStringSchema.optional(),
+		fog: LocalizedStringSchema.optional(),
+		smoke: LocalizedStringSchema.optional(),
+		haze: LocalizedStringSchema.optional(),
+		dust: LocalizedStringSchema.optional(),
+		sleet: LocalizedStringSchema.optional(),
+	}),
 	enabled: z.boolean(),
 });
 

@@ -5,6 +5,7 @@ import { isProductionHostname, NOINDEX_POLICY } from '#lib/server/indexing.ts';
 import { pathLocale } from '#lib/utils/locale-routing.ts';
 import { preloadFont } from '@yesid/tokens/fonts';
 import localeBoot from '#lib/state/locale-boot.js?raw';
+import weatherDaypartBoot from '#lib/state/weather-daypart-boot.js?raw';
 
 const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800';
 const PUBLIC_CDN_CACHE_CONTROL = 'max-age=86400, stale-while-revalidate=604800';
@@ -24,7 +25,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const lang = pathLocale(event.url.pathname);
 	const response = await resolve(event, {
 		transformPageChunk: ({ html }) => injectThemeBoot(html.replace('%lang%', lang)
-			.replace('%yesid.localeBoot%', () => `<script>${localeBoot}</script>`)),
+			.replace('%yesid.localeBoot%', () => `<script>${localeBoot}</script>`)
+			.replace('%yesid.weatherDaypartBoot%', () => `<script>${weatherDaypartBoot}</script>`)),
 		// Preload the self-hosted variable fonts (+ js/css) via Link headers:
 		// without this the woff2 is only discovered through the CSS chain and
 		// font-display swap flashes fallback type on a text-LCP site.

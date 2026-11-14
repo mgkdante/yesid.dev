@@ -268,7 +268,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		const out = toAboutContent(row);
 		expect(out.identity.headshot).toBe('/img/y.jpg');
 		expect(out.identity.polaroids[0]?.alt).toEqual({ en: 'me', fr: 'moi' });
-		expect(out.weather).toEqual({ city: { en: 'Montreal', fr: 'Montréal' }, enabled: true });
+		expect(out.weather).toMatchObject({ city: { en: 'Montreal', fr: 'Montréal' }, enabled: true });
+		expect(out.weather.conditions.clear).toEqual({ en: 'Clear', fr: 'Dégagé', es: 'Despejado' });
 		expect(out.interests[0]?.credit).toEqual({ en: 'EN credit', fr: 'FR credit' });
 		expect(out.interests[1]?.credit).toBeUndefined();
 		expect(out.cta.command).toBe('whoami');

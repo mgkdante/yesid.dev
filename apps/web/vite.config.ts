@@ -15,6 +15,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 const designTokensCss = fileURLToPath(import.meta.resolve('@yesid/tokens/tokens.css'));
 const localeScriptHash = `sha256-${createHash('sha256').update(readFileSync(new URL('./src/lib/state/locale-boot.js', import.meta.url))).digest('base64')}` as const;
+const weatherScriptHash = `sha256-${createHash('sha256').update(readFileSync(new URL('./src/lib/state/weather-daypart-boot.js', import.meta.url))).digest('base64')}` as const;
 
 // SvelteKit hashes its bootstrap; the theme script hash comes from @yesid/ui/boot.json.
 
@@ -51,7 +52,7 @@ export default defineConfig({
 
 			csp: {
 				mode: 'hash',
-				directives: createCspDirectives({ themeScriptHash: boot.hash as `sha256-${string}`, localeScriptHash, vercelEnv: process.env.VERCEL_ENV })
+				directives: createCspDirectives({ themeScriptHash: boot.hash as `sha256-${string}`, localeScriptHash, weatherScriptHash, vercelEnv: process.env.VERCEL_ENV })
 			},
 			prerender: {
 				// '*' keeps the default crawl; the llms files are linked from nowhere,

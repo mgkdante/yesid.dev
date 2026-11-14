@@ -14,6 +14,9 @@ material.
   permitted uses under the
   [Standard "No Charge" GSAP License](https://gsap.com/community/standard-license/).
   GSAP is not open source, and the license restrictions still apply.
+- `suncalc@1.9.0` computes the sun and moon positions, twilight and moon phase for the About
+  weather card. It is BSD 2-Clause licensed, Copyright (c) 2014, Vladimir Agafonkin; the full
+  notice is in `node_modules/suncalc/LICENSE` and is kept with the package in every build.
 
 Separate license and attribution terms above are not replaced by the
 repository's all-rights-reserved license.

@@ -9,6 +9,63 @@ export interface WeatherData {
 	temp: number;
 	condition: string;
 	icon: string;
+	/** OpenWeather condition id (2xx storm, 3xx drizzle, 5xx rain, 6xx snow, 7xx atmosphere, 80x clouds). */
+	id?: number;
+	// Scene inputs, all from the same /weather response (no extra call or cost).
+	/** Cloud cover, percent. */
+	clouds?: number;
+	/** Wind in m/s; direction it blows FROM, degrees clockwise from north. */
+	windSpeed?: number;
+	windDeg?: number;
+	windGust?: number;
+	/** Precipitation over the last hour, mm. */
+	rain1h?: number;
+	snow1h?: number;
+	/** Visibility in metres (OpenWeather caps it at 10 000). */
+	visibility?: number;
+	feelsLike?: number;
+	humidity?: number;
+	/** Unix seconds (UTC). */
+	sunrise?: number;
+	sunset?: number;
+	dt?: number;
+}
+
+const num = (v: unknown): number | undefined => (typeof v === 'number' && Number.isFinite(v) ? v : undefined);
+
+/** The parts of OpenWeather's 2.5 /weather response the card reads. */
+export interface OpenWeatherCurrent {
+	main: { temp: number; feels_like?: number; humidity?: number };
+	weather?: Array<{ id?: number; description?: string; icon?: string }>;
+	clouds?: { all?: number };
+	wind?: { speed?: number; deg?: number; gust?: number };
+	rain?: { '1h'?: number };
+	snow?: { '1h'?: number };
+	visibility?: number;
+	sys?: { sunrise?: number; sunset?: number };
+	dt?: number;
+}
+
+/** Map an OpenWeather 2.5 /weather response to the card's data. Pure, unit-tested. */
+export function toWeatherData(data: OpenWeatherCurrent): WeatherData {
+	return {
+		temp: Math.round(data.main.temp),
+		condition: data.weather?.[0]?.description ?? '',
+		icon: data.weather?.[0]?.icon ?? '',
+		id: num(data.weather?.[0]?.id),
+		clouds: num(data.clouds?.all),
+		windSpeed: num(data.wind?.speed),
+		windDeg: num(data.wind?.deg),
+		windGust: num(data.wind?.gust),
+		rain1h: num(data.rain?.['1h']),
+		snow1h: num(data.snow?.['1h']),
+		visibility: num(data.visibility),
+		feelsLike: num(data.main?.feels_like),
+		humidity: num(data.main?.humidity),
+		sunrise: num(data.sys?.sunrise),
+		sunset: num(data.sys?.sunset),
+		dt: num(data.dt),
+	};
 }
 
 // Map the request locale to OpenWeather's `lang` code. OpenWeather localizes
@@ -67,12 +124,8 @@ export async function fetchMontrealWeather(
 		const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Montreal,CA&units=metric&lang=${lang}&appid=${OPENWEATHER_API_KEY}`);
 
 		if (res.ok) {
-			const data = await res.json();
-			const weather: WeatherData = {
-				temp: Math.round(data.main.temp),
-				condition: data.weather[0]?.description ?? '',
-				icon: data.weather[0]?.icon ?? '01d',
-			};
+			const data = (await res.json()) as OpenWeatherCurrent;
+			const weather = toWeatherData(data);
 			cache.set(lang, { weather, at: now });
 			return weather;
 		}

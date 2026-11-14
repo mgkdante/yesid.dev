@@ -1,13 +1,13 @@
 /**
- * @param {{ themeScriptHash: `sha256-${string}`; localeScriptHash?: `sha256-${string}`; vercelEnv?: string }} options
+ * @param {{ themeScriptHash: `sha256-${string}`; localeScriptHash?: `sha256-${string}`; weatherScriptHash?: `sha256-${string}`; vercelEnv?: string }} options
  * @returns {NonNullable<import('@sveltejs/kit/vite').Config['csp']>['directives']}
  */
-export function createCspDirectives({ themeScriptHash, localeScriptHash, vercelEnv }) {
+export function createCspDirectives({ themeScriptHash, localeScriptHash, weatherScriptHash, vercelEnv }) {
 	const preview = vercelEnv === 'preview';
 	return {
 		'default-src': ['self'],
 		// Cloudflare's proxy injects its Web Analytics beacon; it reports to the same-origin /cdn-cgi/rum.
-		'script-src': ['self', themeScriptHash, ...(localeScriptHash ? [localeScriptHash] : []), 'https://static.cloudflareinsights.com', ...(preview ? /** @type {const} */ (['https://vercel.live']) : [])],
+		'script-src': ['self', themeScriptHash, ...(localeScriptHash ? [localeScriptHash] : []), ...(weatherScriptHash ? [weatherScriptHash] : []), 'https://static.cloudflareinsights.com', ...(preview ? /** @type {const} */ (['https://vercel.live']) : [])],
 		'style-src': ['self', 'unsafe-inline', ...(preview ? /** @type {const} */ (['https://vercel.live']) : [])],
 		'img-src': ['self', 'data:', 'blob:', 'https://i.ytimg.com', ...(preview ? /** @type {const} */ (['https://vercel.live', 'https://vercel.com']) : [])],
 		'font-src': ['self', 'data:', ...(preview ? /** @type {const} */ (['https://vercel.live', 'https://assets.vercel.com']) : [])],

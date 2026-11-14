@@ -4,6 +4,7 @@ import values from '../../../fixtures/content/copy-migration.json';
 import fixture from '../../../../../packages/shared/fixtures/export-data.json';
 import { toHeroContent } from './page-blocks-home';
 import { toContactContent } from './page-blocks-medium';
+import { toAboutContent } from './page-blocks-about';
 import { toSiteLabels } from './site-labels';
 import { readFileSync } from 'node:fs';
 
@@ -17,6 +18,7 @@ it('keeps existing localized copy until each CMS translation is populated', () =
 it('preserves all migrated fixture values and lets CMS replace every locale independently', () => {
 	type Row = Record<string, unknown> & { languages_code: string };
 	const targets = {
+		block_about_content_translations: (rows: Row[]) => toAboutContent({ id: 1, translations: rows }),
 		block_contact_content_translations: (rows: Row[]) => toContactContent({ id: 1, translations: rows }, []).formTerminal,
 		block_hero_translations: (rows: Row[]) => toHeroContent({ id: 1, translations: rows }),
 		site_labels_translations: (rows: Row[]) => toSiteLabels({ id: '1', translations: rows }),

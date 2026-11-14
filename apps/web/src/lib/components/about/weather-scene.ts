@@ -1,47 +1,33 @@
-// Icon codes are stable across languages; their daypart suffix keeps SSR deterministic for each weather payload.
-
-export type WeatherSceneId =
-	| 'clear'
-	| 'clouds'
-	| 'rain'
-	| 'snow'
-	| 'storm'
-	| 'mist'
-	| 'offline';
-
-export interface WeatherSceneState {
-	scene: WeatherSceneId;
-	night: boolean;
-}
-
-const CODE_TO_SCENE: Record<string, WeatherSceneId> = {
-	'01': 'clear', // clear sky
-	'02': 'clouds', // few clouds
-	'03': 'clouds', // scattered clouds
-	'04': 'clouds', // broken / overcast
-	'09': 'rain', // shower rain / drizzle
-	'10': 'rain', // rain
-	'11': 'storm', // thunderstorm
-	'13': 'snow', // snow
-	'50': 'mist', // mist / fog / haze
-};
+// The Montréal places and their clock-aligned rotation. Everything about the sky
+// and the weather lives in weather/scene-state.ts.
 
 /**
- * Resolve the scene family + day/night flag from an OpenWeather icon code.
- * Falsy icon → offline (the card still renders a calm sky, never blank).
+ * The owner's Montréal places, in rotation order. The two on Île Sainte-Hélène
+ * (La Ronde and the Biosphère) are kept apart.
  */
-export function resolveWeatherScene(icon: string | null | undefined): WeatherSceneState {
-	if (!icon) return { scene: 'offline', night: false };
-	const night = /n$/i.test(icon);
-	const code = icon.replace(/[dn]$/i, '');
-	return { scene: CODE_TO_SCENE[code] ?? 'clear', night };
+export const PLACES = [
+	'skyline',
+	'montroyal',
+	'oldport',
+	'oratoire',
+	'ring',
+	'laronde',
+	'metro',
+	'olympic',
+	'biosphere',
+	'bellcentre',
+] as const;
+export type WeatherPlaceId = (typeof PLACES)[number];
+
+/** The place changes on every clock minute, the same for every visitor. */
+export const ROTATION_MS = 60_000;
+
+export function placeAt(ms: number): WeatherPlaceId {
+	const slot = Math.floor(ms / ROTATION_MS);
+	return PLACES[((slot % PLACES.length) + PLACES.length) % PLACES.length];
 }
 
-/**
- * Local-hour fallback for the offline scene only (no icon to read a daypart
- * from). Callers must invoke this client-side (onMount) so SSR output stays
- * deterministic — the server always renders the offline scene as day.
- */
-export function isNightHour(hour: number): boolean {
-	return hour < 7 || hour >= 19;
+/** Milliseconds until the next rotation boundary (1 to ROTATION_MS). */
+export function nextRotation(ms: number): number {
+	return ROTATION_MS - (((ms % ROTATION_MS) + ROTATION_MS) % ROTATION_MS);
 }

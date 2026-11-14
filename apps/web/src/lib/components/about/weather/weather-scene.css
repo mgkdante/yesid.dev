@@ -1,0 +1,375 @@
+/*
+ * Montréal weather scene. sceneState() decides every value; this sheet only
+ * maps the values on .wx (custom properties and data attributes) to paint.
+ * The card ignores the site theme: data-time is day from sunrise to sunset and
+ * night from sunset to sunrise, and the card itself wears .theme-light or
+ * .theme-dark for its tokens. Only transform and opacity animate; nothing pulses.
+ */
+
+/* ── Base palette (day) ─────────────────────────────────────────── */
+.wx {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	border-radius: inherit;
+	pointer-events: none;
+	container-type: size;
+	transition: opacity 0.5s ease;
+
+	--wx-ink: #49586e;
+	--wx-ink-o: 0.62;
+	--wx-lamp: var(--accent);
+	--wx-glass: #2c3a50;
+	--wx-win-o: 0.45;
+	--wx-n-op: 0;
+	--wx-d-op: 1;
+	--wx-glow: #fff3d6;
+	--wx-night-mix: 0%;
+	--wx-accent-o: 0.8;
+	--wx-snowcap: #ffffff;
+	--wx-drop: rgb(86 124 166 / 0.65);
+	--wx-flake: #ffffff;
+	--wx-moon: #efe9d2;
+	--wx-sun-core: color-mix(in srgb, var(--accent) 82%, #fff);
+	--wx-sun-halo: color-mix(in srgb, var(--accent) 45%, transparent);
+	--wx-flash: rgb(255 248 226 / 0.55);
+	--wx-chalk: rgb(255 255 255 / 0.85);
+	--wx-water: rgb(132 164 196 / 0.45);
+	--wx-white: #bcc6d3;
+	--wx-white-o: 0.92;
+	--wx-silver: #8794a6;
+	--wx-steel: #f4f7fb;
+	--wx-ice: #e6eef4;
+	--wx-steam: rgb(244 247 250 / 0.75);
+	/* Faces of pale volumes: the sunlit side follows data-light. */
+	--face-mid: #c3ccd8;
+	--face-lit: #e3e8ef;
+	--face-shade: #9eaabb;
+	--face-l: var(--face-mid);
+	--face-r: var(--face-mid);
+	/* Clouds, tinted by the sky phase (data-cloudtint). */
+	--cl-body: #ffffff;
+	--cl-under: #dbe3ec;
+	--cl-storm: #6e7c90;
+	--cl-o: 0.92;
+	--veil-colour: #f4f6f8;
+}
+
+.wx[data-time='night'] {
+	--wx-ink: #070b14;
+	--wx-ink-o: 0.72;
+	--wx-win-o: 0.9;
+	--wx-n-op: 1;
+	--wx-d-op: 0;
+	--wx-night-mix: 45%;
+	--wx-snowcap: #dfe8f6;
+	--wx-drop: rgb(150 180 230 / 0.5);
+	--wx-flake: rgb(232 240 252 / 0.85);
+	--wx-flash: rgb(255 240 205 / 0.2);
+	--wx-chalk: rgb(240 244 250 / 0.5);
+	--wx-water: rgb(120 150 190 / 0.16);
+	--wx-white: #c9d3e3;
+	--wx-white-o: 0.42;
+	--wx-silver: #9aa6b8;
+	--wx-steel: #c9d3e3;
+	--wx-ice: #8e9db2;
+	--wx-steam: rgb(200 210 225 / 0.35);
+	--face-mid: #3a4458;
+	--face-lit: #3f4a60;
+	--face-shade: #2f3849;
+	--cl-storm: #141a26;
+	--veil-colour: #7e889a;
+}
+
+.wx[data-light='left'] { --face-l: var(--face-lit); --face-r: var(--face-shade); }
+.wx[data-light='right'] { --face-l: var(--face-shade); --face-r: var(--face-lit); }
+/* Golden hour: sunlit faces warm up. */
+.wx[data-warm='true'] { --face-lit: color-mix(in oklab, #e3e8ef, #ffc98f 42%); }
+
+.wx[data-cloudtint='golden'] { --cl-body: #fff3ea; --cl-under: #f0b49c; }
+.wx[data-cloudtint='twilight'] { --cl-body: #8e7d9b; --cl-under: #c98d85; --cl-o: 0.86; }
+.wx[data-cloudtint='moonlit'] { --cl-body: #3d4866; --cl-under: #8f9bba; --cl-o: 0.78; }
+.wx[data-cloudtint='night'] { --cl-body: #20283a; --cl-under: #4a3a3e; --cl-o: 0.72; }
+
+.wx:is([data-atmosphere='haze'], [data-atmosphere='smoke']) { --veil-colour: #b58a5c; --wx-sun-core: #f08a4b; --wx-sun-halo: rgb(240 138 75 / 0.35); }
+.wx[data-atmosphere='dust'] { --veil-colour: #c9a25a; }
+.wx[data-atmosphere='ash'] { --veil-colour: #8a8a86; }
+
+.wx > * { position: absolute; }
+
+/* ── 1 Sky light ───────────────────────────────────────────────── */
+.wx-sky {
+	inset: 0;
+	background:
+		radial-gradient(120% 50% at 50% 100%, color-mix(in srgb, var(--sky-glow) calc(var(--sky-glow-o) * 55%), transparent), transparent 72%),
+		radial-gradient(130% 45% at 50% 100%, rgb(255 148 80 / calc(var(--city-glow) * 0.2)), transparent 70%),
+		linear-gradient(180deg, var(--sky-top) 0%, var(--sky-horizon) 100%);
+}
+/* Offline: the brand orange resting on the city. */
+.wx[data-scene='offline'] .wx-sky::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(110% 55% at 50% 102%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 70%);
+}
+
+.wx-stars { left: 0; top: 0; width: 100%; height: 62%; }
+.wx-stars-bright { opacity: var(--stars); }
+.wx-stars-faint { opacity: calc(var(--stars) * 0.75); }
+.wx-stars circle { fill: #f3f5ff; }
+
+/* ── 2 The sun or the moon (still: nothing pulses) ─────────────── */
+.wx-sun,
+.wx-moon {
+	height: min(17cqh, 13cqw);
+	aspect-ratio: 1;
+	transform: translate(-50%, -50%);
+}
+.wx-sun {
+	background:
+		radial-gradient(circle, var(--wx-sun-core) 0 26%, transparent 28%),
+		radial-gradient(circle, var(--wx-sun-halo) 0%, transparent 68%);
+	transform: translate(-50%, -50%) scale(1.5);
+}
+.wx[data-clouds='broken'] .wx-sun,
+.wx[data-clouds='overcast'] .wx-sun { opacity: 0.45; }
+.wx:not([data-precip='none']) .wx-sun { opacity: 0.25; }
+.wx-moon { overflow: visible; filter: drop-shadow(0 0 5px rgb(220 228 255 / 0.32)); }
+.wx-moon-lit { fill: var(--wx-moon); }
+.wx-moon-shine { fill: var(--wx-moon); opacity: 0.1; }
+.wx[data-clouds='broken'] .wx-moon,
+.wx[data-clouds='overcast'] .wx-moon { opacity: 0.5; }
+
+/* ── 3 Clouds and 4 wind ───────────────────────────────────────── */
+.wx-back, .wx-front { inset: 0; }
+.wx-deck {
+	position: absolute;
+	inset: 0 0 42% 0;
+	background: linear-gradient(color-mix(in oklab, var(--cl-body), var(--cl-storm) calc(var(--cl-dark) * 70%)), transparent);
+}
+.wx-cloud-gust { position: absolute; inset: 0; }
+.wx-gusty { animation: weather-gust 9s ease-in-out infinite alternate; }
+.wx-cloud-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 200%;
+	height: 100%;
+	animation: weather-drift-l var(--layer-drift, 60s) linear infinite;
+}
+.wx-cloud-layer.wx-ltr { animation-name: weather-drift-r; }
+.wx-cloud-layer.wx-low { top: 7%; }
+.wx-cloud-layer.wx-far { opacity: 0.7; }
+.wx-cloud-layer.wx-mid { opacity: 0.85; }
+.wx-cloud { position: absolute; overflow: visible; opacity: var(--cl-o); }
+.wx-cloud-body { fill: color-mix(in oklab, var(--cl-body), var(--cl-storm) calc(var(--cl-dark) * 70%)); }
+.wx-cloud-under { fill: color-mix(in oklab, var(--cl-under), var(--cl-storm) calc(var(--cl-dark) * 80%)); }
+
+/* Thunder: an occasional single flash, one per 11 s cycle (WCAG 2.3.1 allows three a second). */
+.wx-bolt {
+	top: 18%;
+	right: 26%;
+	width: 8%;
+	min-width: 13px;
+	fill: var(--accent);
+	opacity: 0;
+	animation: weather-zap 11s linear infinite;
+}
+.wx-flash {
+	position: absolute;
+	inset: 0;
+	background: var(--wx-flash);
+	opacity: 0;
+	animation: weather-flash 11s linear infinite;
+}
+
+/* ── 5 Precipitation ───────────────────────────────────────────── */
+.wx-precip {
+	position: absolute;
+	left: -40%;
+	top: -40%;
+	width: 180%;
+	height: 180%;
+	transform: rotate(calc(var(--slant) * -1));
+}
+.wx-precip > svg { animation: weather-fall var(--fall, 1s) linear infinite; }
+.wx-precip.wx-far { opacity: 0.55; }
+.wx-precip.wx-near { opacity: 0.9; }
+.wx-showers { mask-image: linear-gradient(90deg, #000 0 16%, transparent 28% 44%, #000 56% 76%, transparent 88%); }
+.wx-streak { stroke: var(--wx-drop); stroke-linecap: round; }
+.wx-flake { fill: var(--wx-flake); }
+.wx[data-time='day'] .wx-flake { stroke: rgb(140 156 180 / 0.55); stroke-width: 0.4; }
+.wx:is([data-precip='freezing'], [data-precip='sleet']) .wx-flake { fill: color-mix(in oklab, var(--wx-flake), var(--wx-drop) 40%); }
+/* Rain: wet ground catches the light. */
+.wx-wet {
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 7%;
+	background: linear-gradient(transparent, rgb(255 255 255 / 0.22));
+}
+.wx[data-time='night'] .wx-wet { background: linear-gradient(transparent, rgb(255 196 120 / 0.16)); }
+
+/* ── 6 Atmosphere ──────────────────────────────────────────────── */
+.wx-fogbank {
+	position: absolute;
+	left: -20%;
+	width: 140%;
+	height: 20%;
+	border-radius: 999px;
+	background: var(--veil-colour);
+	opacity: calc(var(--veil) * 0.9);
+	filter: blur(6px);
+	animation: weather-haze 30s ease-in-out infinite alternate;
+}
+.wx-fog-1 { top: 34%; }
+.wx-fog-2 { top: 52%; animation-duration: 38s; animation-direction: alternate-reverse; }
+.wx-fog-3 { top: 70%; height: 26%; animation-duration: 46s; }
+.wx-veil { inset: 0; background: var(--veil-colour); opacity: var(--veil); }
+
+/* ── The place ─────────────────────────────────────────────────── */
+.wx-place {
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: min(46cqh, 44cqw);
+	overflow: visible;
+}
+/* Atmospheric perspective: distant landmarks fade with low visibility. */
+.wx-f { fill: var(--wx-ink); opacity: calc(var(--wx-ink-o) * 0.5 * (1 - var(--far-fade, 0) * 0.85)); }
+.wx-n { fill: var(--wx-ink); opacity: var(--wx-ink-o); }
+.wx-st { fill: none; stroke: var(--wx-ink); }
+.wx-w {
+	fill: color-mix(in oklab, var(--wx-glass), var(--wx-lamp) calc(var(--wx-n-op) * 100%));
+	opacity: var(--wx-win-o);
+}
+.wx-wd { fill: var(--wx-lamp); opacity: 0.85; }
+/* Window strips (ribbon windows) as dashed strokes, and curtain-wall mullions (frames, never lit). */
+.wx-wst { fill: none; stroke: color-mix(in oklab, var(--wx-glass), var(--wx-lamp) calc(var(--wx-n-op) * 100%)); opacity: calc(var(--wx-win-o) * 0.8); }
+/* Large glazing (storefronts, glass walls): glass by day, a soft interior glow at night. */
+.wx-glazing { fill: color-mix(in oklab, var(--wx-glass), var(--wx-lamp) calc(var(--wx-n-op) * 55%)); opacity: calc(0.4 + var(--wx-n-op) * 0.1); }
+.wx-mullion { fill: none; stroke: color-mix(in oklab, var(--wx-glass), var(--wx-ink) 30%); opacity: 0.35; }
+.wx-h { fill: var(--wx-glow); opacity: var(--wx-n-op); filter: drop-shadow(0 0 2px var(--wx-glow)); }
+.wx-h.wx-beam { opacity: calc(var(--wx-n-op) * 0.12); filter: blur(3px); }
+.wx-h.wx-ringlit { fill: none; stroke: var(--wx-glow); opacity: calc(var(--wx-n-op) * 0.75); }
+.wx-sheen { fill: none; stroke: var(--wx-glow); opacity: calc(var(--wx-d-op) * 0.35); }
+
+/* Pale volumes: front, left-turned and right-turned faces. */
+.wx-white, .wx-face-f { fill: var(--face-mid); opacity: var(--wx-white-o); }
+.wx-face-l { fill: var(--face-l); opacity: var(--wx-white-o); }
+.wx-face-r { fill: var(--face-r); opacity: var(--wx-white-o); }
+.wx-white .wx-st, .wx-face-f .wx-st { stroke: var(--face-mid); }
+/* Undersides (canopies, soffits) stay in shadow whatever the hour. */
+.wx-face-d { fill: color-mix(in oklab, var(--face-shade), var(--wx-ink) 25%); opacity: var(--wx-white-o); }
+/* The shaded half of a round volume (a dome, a drum): a translucent ink overlay
+   on the side away from the sun; none under flat light. */
+.wx-shade-l, .wx-shade-r { fill: var(--wx-ink); opacity: 0; }
+.wx[data-light='right'] .wx-shade-l, .wx[data-light='left'] .wx-shade-r { opacity: 0.22; }
+.wx[data-light='flat'] :is(.wx-shade-l, .wx-shade-r) { opacity: 0.08; }
+
+/* 7 Season: trees, grass, ground, snow, ice, steam. */
+.wx-branches { fill: none; stroke: color-mix(in oklab, #5b4a3e, var(--wx-ink) var(--wx-night-mix)); stroke-linecap: round; opacity: 0.9; }
+.wx-foliage { fill: color-mix(in oklab, var(--leaf, #6f9a6a), var(--wx-ink) calc(var(--wx-night-mix) + 10%)); }
+.wx[data-foliage='spring'] { --leaf: #9cc77d; --lawn: #a3c98a; }
+.wx[data-foliage='autumn'] { --leaf: #cf6f3c; --lawn: #a8a46b; }
+.wx[data-foliage='bare'] { --lawn: #a79d82; }
+.wx[data-foliage='bare'] .wx-foliage { display: none; }
+/* Wooded hills (Mount Royal): two alternating crown tones, so autumn reads as reds and oranges. */
+.wx-woods, .wx-woods-alt { fill: color-mix(in oklab, var(--woods, #6f9670), var(--wx-ink) calc(var(--wx-night-mix) + 12%)); opacity: 0.92; }
+.wx-woods-alt { fill: color-mix(in oklab, var(--woods-alt, #5f8763), var(--wx-ink) calc(var(--wx-night-mix) + 12%)); }
+.wx[data-foliage='spring'] { --woods: #98bd7d; --woods-alt: #86b070; }
+.wx[data-foliage='autumn'] { --woods: #d4823c; --woods-alt: #b6452e; }
+.wx[data-foliage='bare'] { --woods: #8f857a; --woods-alt: #7d746b; }
+.wx[data-snow='true'] { --woods: #dfe4e9; --woods-alt: #c9d0d7; }
+.wx-conifer { fill: color-mix(in oklab, #4f7a5a, var(--wx-ink) calc(var(--wx-night-mix) + 10%)); }
+.wx-lawn { fill: color-mix(in oklab, var(--lawn, #8fb57a), var(--wx-ink) var(--wx-night-mix)); opacity: 0.85; }
+.wx-ground { fill: color-mix(in oklab, #cdd2d8, var(--wx-ink) var(--wx-night-mix)); opacity: 0.8; }
+.wx[data-snow='true'] { --lawn: #eef3f8; }
+.wx[data-snow='true'] .wx-ground { fill: color-mix(in oklab, #f1f4f8, var(--wx-ink) var(--wx-night-mix)); }
+.wx-cap { fill: var(--wx-snowcap); opacity: 0; }
+.wx[data-snow='true'] .wx-cap { opacity: 1; }
+.wx-water { fill: var(--wx-water); }
+.wx[data-ice='true'] .wx-water { fill: var(--wx-ice); opacity: 0.9; }
+.wx-plume { fill: var(--wx-steam); }
+
+/* Materials and real colours, quieted toward the ink at night. */
+.wx-dome { fill: var(--wx-ink); opacity: calc(var(--wx-ink-o) * 0.16); }
+.wx-silver { fill: color-mix(in oklab, var(--wx-silver), var(--wx-ink) var(--wx-night-mix)); opacity: 0.85; }
+.wx-clock { fill: #f4efe0; opacity: calc(0.7 * var(--wx-d-op)); }
+.wx-flood { fill: #ffc98a; opacity: calc(var(--wx-n-op) * 0.14); }
+.wx-portal, .wx-niche { fill: color-mix(in oklab, var(--wx-ink), var(--wx-lamp) calc(var(--wx-n-op) * 100%)); opacity: 0.6; }
+.wx-niche { opacity: 0.35; }
+.wx-steel { stroke: var(--wx-steel); }
+.wx-steel-edge { stroke: var(--wx-ink); opacity: calc(var(--wx-ink-o) * 0.9); }
+.wx-paint-red, .wx-paint-yellow, .wx-paint-blue, .wx-paint-copper, .wx-paint-brick, .wx-paint-glass, .wx-paint-orange { opacity: var(--wx-accent-o); }
+.wx-paint-red { fill: color-mix(in oklab, #c8202e, var(--wx-ink) var(--wx-night-mix)); }
+.wx-paint-yellow { fill: color-mix(in oklab, #f0c419, var(--wx-ink) var(--wx-night-mix)); }
+.wx-paint-blue { fill: color-mix(in oklab, #2f6fc0, var(--wx-ink) var(--wx-night-mix)); }
+.wx-paint-copper { fill: color-mix(in oklab, #5f9e83, var(--wx-ink) var(--wx-night-mix)); }
+.wx-paint-brick { fill: color-mix(in oklab, #9c4a32, var(--wx-ink) var(--wx-night-mix)); }
+.wx-paint-glass { fill: color-mix(in oklab, #5b86b0, var(--wx-ink) var(--wx-night-mix)); }
+.wx-paint-orange { fill: color-mix(in oklab, var(--primary), var(--wx-ink) var(--wx-night-mix)); }
+.wx-st.wx-paint-red { fill: none; stroke: color-mix(in oklab, #c8202e, var(--wx-ink) var(--wx-night-mix)); }
+.wx-st.wx-paint-yellow { fill: none; stroke: color-mix(in oklab, #f0c419, var(--wx-ink) var(--wx-night-mix)); }
+.wx-st.wx-paint-blue { fill: none; stroke: color-mix(in oklab, #2f6fc0, var(--wx-ink) var(--wx-night-mix)); }
+.wx-chalk { fill: var(--wx-chalk); }
+.wx-egg { display: var(--egg, none); }
+
+/* The TRV-7 balise: orange post, white reflective bands, black foot. */
+.wx-bo { fill: var(--primary); }
+.wx-bw { fill: #f4f4f4; }
+.wx-bk { fill: #222; }
+
+/* Soft scrims in the card colour: top-left behind the stop label, an ellipse
+   behind the words, the bottom-right corner behind the pause icon. */
+.wx-scrim {
+	inset: 0;
+	background:
+		radial-gradient(118% 25% at 0% 0%, color-mix(in srgb, var(--card) 96%, transparent), color-mix(in srgb, var(--card) 90%, transparent) 58%, transparent),
+		/* Tall enough for a stop label wrapped onto two lines on narrow cards, dense enough for a lightning flash. */
+		radial-gradient(280px 88px at 0% 0%, color-mix(in srgb, var(--card) 97%, transparent), color-mix(in srgb, var(--card) 93%, transparent) 62%, transparent),
+		radial-gradient(54% 34% at 50% 48%, color-mix(in srgb, var(--card) 66%, transparent), color-mix(in srgb, var(--card) 50%, transparent) 60%, transparent),
+		radial-gradient(30% 36% at 100% 100%, color-mix(in srgb, var(--card) 72%, transparent), transparent),
+		/* The pause icon's own haze, centred on it (12 px card padding + half the 44 px
+		   button): dense enough to keep 3:1 through a lightning flash, small enough to
+		   read as a soft corner rather than a tile. */
+		radial-gradient(46px 46px at calc(100% - 34px) calc(100% - 34px), color-mix(in srgb, var(--card) 94%, transparent), color-mix(in srgb, var(--card) 88%, transparent) 45%, transparent);
+}
+
+/* Place change: a 700 ms crossfade; the sky fades in once the hour is known. */
+.wx-place-enter { animation: wx-place-in 0.7s ease both; }
+.wx-place-exit { animation: wx-place-out 0.7s ease both; }
+.wx.wx-pending { opacity: 0; }
+
+/* ── Motion: transforms and opacity only ───────────────────────── */
+@keyframes weather-drift-l { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes weather-drift-r { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@keyframes weather-gust { from { transform: translateX(-1.5%); } to { transform: translateX(1.5%); } }
+@keyframes weather-haze { from { transform: translateX(-3.5%); } to { transform: translateX(3.5%); } }
+@keyframes weather-fall { from { transform: translateY(calc(var(--tile) * -1)); } to { transform: translateY(0); } }
+@keyframes weather-flash {
+	0%, 61.9% { opacity: 0; }
+	62.3% { opacity: 1; }
+	63.6%, 100% { opacity: 0; }
+}
+@keyframes weather-zap {
+	0%, 61.9% { opacity: 0; }
+	62.3% { opacity: 1; }
+	64.5%, 100% { opacity: 0; }
+}
+@keyframes wx-place-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes wx-place-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* The card's pause button and a hidden page stop every loop (WCAG 2.2.2). */
+.wx * { animation-play-state: var(--ambient-play-state, running) !important; }
+
+/* Reduced motion: a still frame of the same data; the bolt shows, no flash. */
+@media (prefers-reduced-motion: reduce) {
+	.wx, .wx * { animation: none !important; transition: none !important; }
+	.wx-bolt { opacity: 0.9; }
+}
+
+/* Forced colours: the drawing hides; the card text uses system colours. */
+@media (forced-colors: active) {
+	.wx { display: none; }
+}

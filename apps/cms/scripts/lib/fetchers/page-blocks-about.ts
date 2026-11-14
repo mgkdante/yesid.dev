@@ -11,6 +11,7 @@
 import { readItems } from '@directus/sdk';
 import { mapLocalizedRepeater, str, toLocalizedFields } from '../locale';
 import { AboutContentSchema, type LocalizedString, type AboutContent } from '@repo/shared';
+import { migrationCopy } from './copy-migration';
 import { fetchBlockSingleton, type BlockRow } from './singleton';
 import type { FetcherContext } from './types';
 
@@ -324,6 +325,24 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 	const weather: AboutContent['weather'] = {
 		...toLocalizedFields(tr, [['city', 'weather_city']]),
 		enabled: raw.weather_enabled === true,
+		conditions: {
+			clear: migrationCopy(tr, 'block_about_content_translations', 'weather_clear'),
+			partly: migrationCopy(tr, 'block_about_content_translations', 'weather_partly'),
+			cloudy: migrationCopy(tr, 'block_about_content_translations', 'weather_cloudy'),
+			showers: migrationCopy(tr, 'block_about_content_translations', 'weather_showers'),
+			rain: migrationCopy(tr, 'block_about_content_translations', 'weather_rain'),
+			storm: migrationCopy(tr, 'block_about_content_translations', 'weather_storm'),
+			snow: migrationCopy(tr, 'block_about_content_translations', 'weather_snow'),
+			mist: migrationCopy(tr, 'block_about_content_translations', 'weather_mist'),
+			drizzle: migrationCopy(tr, 'block_about_content_translations', 'weather_drizzle'),
+			light_snow: migrationCopy(tr, 'block_about_content_translations', 'weather_light_snow'),
+			freezing_rain: migrationCopy(tr, 'block_about_content_translations', 'weather_freezing_rain'),
+			fog: migrationCopy(tr, 'block_about_content_translations', 'weather_fog'),
+			smoke: migrationCopy(tr, 'block_about_content_translations', 'weather_smoke'),
+			haze: migrationCopy(tr, 'block_about_content_translations', 'weather_haze'),
+			dust: migrationCopy(tr, 'block_about_content_translations', 'weather_dust'),
+			sleet: migrationCopy(tr, 'block_about_content_translations', 'weather_sleet'),
+		},
 	};
 
 	// --- cta: parent scalars/arrays + flat LS ---

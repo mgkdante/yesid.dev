@@ -114,5 +114,87 @@
 			"fr": "Crédit photo",
 			"es": "Crédito de la foto"
 		}
+	},
+	"block_about_content_translations": {
+		"weather_clear": {
+			"en": "Clear",
+			"fr": "Dégagé",
+			"es": "Despejado"
+		},
+		"weather_partly": {
+			"en": "Partly cloudy",
+			"fr": "Partiellement nuageux",
+			"es": "Parcialmente nublado"
+		},
+		"weather_cloudy": {
+			"en": "Cloudy",
+			"fr": "Nuageux",
+			"es": "Nublado"
+		},
+		"weather_showers": {
+			"en": "Showers",
+			"fr": "Averses",
+			"es": "Chubascos"
+		},
+		"weather_rain": {
+			"en": "Rain",
+			"fr": "Pluie",
+			"es": "Lluvia"
+		},
+		"weather_storm": {
+			"en": "Thunderstorm",
+			"fr": "Orage",
+			"es": "Tormenta"
+		},
+		"weather_snow": {
+			"en": "Snow",
+			"fr": "Neige",
+			"es": "Nieve"
+		},
+		"weather_mist": {
+			"en": "Mist",
+			"fr": "Brume",
+			"es": "Neblina"
+		},
+		"weather_drizzle": {
+			"en": "Drizzle",
+			"fr": "Bruine",
+			"es": "Llovizna"
+		},
+		"weather_light_snow": {
+			"en": "Light snow",
+			"fr": "Faible neige",
+			"es": "Nieve ligera"
+		},
+		"weather_freezing_rain": {
+			"en": "Freezing rain",
+			"fr": "Pluie verglaçante",
+			"es": "Lluvia helada"
+		},
+		"weather_fog": {
+			"en": "Fog",
+			"fr": "Brouillard",
+			"es": "Niebla"
+		},
+		"weather_smoke": {
+			"en": "Smoke",
+			"fr": "Fumée",
+			"es": "Humo"
+		},
+		"weather_haze": {
+			"en": "Haze",
+			"fr": "Brume sèche",
+			"es": "Calima"
+		},
+		"weather_dust": {
+			"en": "Dust",
+			"fr": "Poussière",
+			"es": "Polvo"
+		},
+		"weather_sleet": {
+			"en": "Sleet",
+			"fr": "Grésil",
+			"es": "Aguanieve"
+		}
 	}
 }
