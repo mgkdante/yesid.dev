@@ -5,8 +5,9 @@ import { sitePages } from '../src/lib/content/site-pages';
 
 const paths = ['/', '/about', '/services', `/services/${fixtureService.id}`, '/projects', `/projects/${fixtureProject.slug}`, '/blog', '/blog/personal', fixturePostPath('en'), '/contact', ...sitePages.filter(p => p.path.startsWith('/legal/')).map(p => p.path), '/dev-27-missing'];
 const routes = [...paths, ...(['fr', 'es'] as const).flatMap(locale => [`/${locale}`, `/${locale}/about`, `/${locale}/contact`, fixturePostPath(locale)])];
-// Shared-component loops remain pending upstream Y-30 and release adoption. No product overrides.
-const shared = /^(?:led-pulse|pulse-glow|blink-light|terminal-blink)(?:-|$)/;
+// Pending Y-30: ErrorIllustration, StopLabel, TerminalCursor, MetroStation,
+// gradient Separator and StatusDot. No product overrides of shared internals.
+const shared = /^(?:led-pulse|pulse-glow|blink-light|terminal-blink|station-ping|gradient-flow)(?:-|$)/;
 const normalize = (name: string) => name.replace(/^svelte-[^-]+-/, '');
 const weather = /^weather-(?:twinkle|glow|float|drift|fall|snow|zap|flash|haze)(?:-|$)/;
 
@@ -25,7 +26,7 @@ for (const width of [390, 1440]) for (const path of routes) {
    samples.push(await page.evaluate(() => {
     const describe = (el: Element | null) => el ? `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${el.getAttribute('data-slot') ? '[data-slot=' + el.getAttribute('data-slot') + ']' : ''}.${el.getAttribute('class') ?? ''}` : 'unknown';
     return {
-     animations: document.getAnimations().filter(a => a.playState === 'running').map(a => ({ name: a instanceof CSSAnimation ? a.animationName.replace(/^svelte-[^-]+-/, '') : a instanceof CSSTransition ? `transition:${a.transitionProperty}` : 'WebAnimation', loop: a.effect?.getTiming().iterations === Infinity, target: describe((a.effect as KeyframeEffect)?.target as Element), shared: Boolean(((a.effect as KeyframeEffect)?.target as Element)?.closest('[data-slot="stop-label"], [data-slot="error-page"], [data-testid="footer"], [data-slot="terminal-panel"]')) })),
+     animations: document.getAnimations().filter(a => a.playState === 'running').map(a => ({ name: a instanceof CSSAnimation ? a.animationName.replace(/^svelte-[^-]+-/, '') : a instanceof CSSTransition ? `transition:${a.transitionProperty}` : 'WebAnimation', loop: a.effect?.getTiming().iterations === Infinity, target: describe((a.effect as KeyframeEffect)?.target as Element), shared: Boolean(((a.effect as KeyframeEffect)?.target as Element)?.closest('[data-slot="stop-label"], [data-slot="error-page"], [data-testid="footer"], [data-slot="terminal-panel"], [data-slot="metro-station"], [data-slot="separator"]')) })),
      css: [...document.querySelectorAll('*')].flatMap(el => ['', '::before', '::after'].flatMap(pseudo => { const s = getComputedStyle(el, pseudo || null); return s.animationName === 'none' ? [] : [{ target: describe(el) + pseudo, name: s.animationName, iterations: s.animationIterationCount, state: s.animationPlayState }]; })),
      dots: [...document.querySelectorAll('[data-slot="status-dot"], [data-slot="stop-label"], [class*="cursor"], [class*="dot"], [class*="signal"], [class*="light-"], [data-construction-prop]')].map(describe),
     };
@@ -40,7 +41,7 @@ for (const width of [390, 1440]) for (const path of routes) {
    await expect(page.locator('.manifesto__flow-line, .manifesto__flow-line-v')).toHaveCount(0);
    const cssLoops = samples.flatMap(s => s.css).filter(a => a.iterations.split(',').some(n => n.trim() === 'infinite'));
    expect(cssLoops.filter(a => !(weather.test(normalize(a.name)) && /weather-/.test(a.target))
-    && !(shared.test(normalize(a.name)) && /stop-label|terminal-signal|status-dot|light-a|light-b|terminal-cursor/.test(a.target)))).toEqual([]);
+    && !(shared.test(normalize(a.name)) && /stop-label|terminal-signal|status-dot|light-a|light-b|terminal-cursor|metro-station|separator/.test(a.target)))).toEqual([]);
    const finite = samples.flatMap(s => s.animations).filter(a => !a.loop && !['draw', 'post-swing', 'board-settle', 'transition:opacity'].includes(a.name));
    expect(finite).toEqual([]);
    expect(samples.flatMap(s => s.animations).some(a => /train-bob/.test(a.name))).toBe(false);
