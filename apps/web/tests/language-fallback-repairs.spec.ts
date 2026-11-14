@@ -25,16 +25,26 @@ for (const locale of ['en', 'fr', 'es'] as const) {
 	});
 	test(`${locale}: diagram load failure keeps a localized explanation`, async ({ page }) => {
 		await page.route(/web3forms|cal\.com|plausible|\/api\/event/, route => route.abort());
-		await page.route('**/_app/immutable/chunks/*.js', async route => {
-			const response = await route.fetch();
-			if ((await response.text()).includes('mermaidAPI')) await route.abort();
-			else await route.fulfill({ response });
+		const pendingChunks = new Set<Promise<void>>();
+		await page.route('**/_app/immutable/chunks/*.js', route => {
+			const pending = (async () => {
+				const response = await route.fetch();
+				if ((await response.text()).includes('mermaidAPI')) await route.abort();
+				else await route.fulfill({ response });
+			})();
+			pendingChunks.add(pending);
+			return pending.finally(() => { pendingChunks.delete(pending); });
 		});
-		const prefix = locale === 'en' ? '' : `/${locale}`;
-		await page.goto(`${prefix}/projects/transit-data-pipeline`);
-		const diagram = page.getByTestId('mermaid-diagram').first();
-		await diagram.scrollIntoViewIfNeeded();
-		await expect(diagram.locator('figcaption')).toContainText({ en: 'The diagram could not be displayed.', fr: "Le diagramme n'a pas pu s'afficher.", es: 'No se pudo mostrar el diagrama.' }[locale]);
-		await page.unrouteAll({ behavior: 'wait' });
+		try {
+			const prefix = locale === 'en' ? '' : `/${locale}`;
+			await page.goto(`${prefix}/projects/transit-data-pipeline`);
+			const diagram = page.getByTestId('mermaid-diagram').first();
+			await diagram.scrollIntoViewIfNeeded();
+			await expect(diagram.locator('figcaption')).toContainText({ en: 'The diagram could not be displayed.', fr: "Le diagramme n'a pas pu s'afficher.", es: 'No se pudo mostrar el diagrama.' }[locale]);
+		} finally {
+			// Keep interception installed until every fetch/fulfill callback has settled.
+			while (pendingChunks.size) await Promise.all(pendingChunks);
+			await page.unrouteAll({ behavior: 'wait' });
+		}
 	});
 }
