@@ -231,11 +231,13 @@
 				},
 				{
 					"id": "transit",
+					"credit": {"en":"Harrison Keely · CC BY 4.0","fr":"Harrison Keely · CC BY 4.0","es":"Harrison Keely · CC BY 4.0"},
 					"label": {"en":"Transit","fr":"Transport collectif","es":"Transporte"},
 					"image": "/images/about/interests/transit.webp"
 				},
 				{
 					"id": "space",
+					"credit": {"en":"NASA","fr":"NASA","es":"NASA"},
 					"label": {"en":"Space","fr":"L'espace","es":"Espacio"},
 					"image": "/images/about/interests/space.webp"
 				},
@@ -14322,6 +14324,7 @@
 				"projectImageOpen": {"en":"Open {caption}","fr":"Ouvrir {caption}","es":"Abrir {caption}"},
 				"projectImageClose": {"en":"Close image","fr":"Fermer l'image","es":"Cerrar imagen"},
 				"architectureDiagram": {"en":"Architecture diagram","fr":"Diagramme d'architecture","es":"Diagrama de arquitectura"},
+				"photoCredit": {"en":"Photo credit","fr":"Crédit photo","es":"Crédito de la foto"},
 				"technologyStackTemplate": {"en":"Technology stack: {stack}","fr":"Stack technique : {stack}","es":"Stack tecnológico: {stack}"}
 			},
 			"ui": {

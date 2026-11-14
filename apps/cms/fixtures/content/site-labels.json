@@ -6,6 +6,7 @@
 	"a11y_project_image_open": "Open {caption}",
 	"a11y_project_image_close": "Close image",
 	"a11y_architecture_diagram": "Architecture diagram",
+	"a11y_photo_credit": "Photo credit",
 	"a11y_technology_stack_template": "Technology stack: {stack}",
 	"ui_marker_service": "{num} / SERVICE",
 	"ui_back_to_projects": "← All Projects",

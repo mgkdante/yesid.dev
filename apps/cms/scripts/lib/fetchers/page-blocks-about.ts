@@ -298,10 +298,15 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 	const enInterests = interestsByLocale.get('en') ?? [];
 	const interests: AboutContent['interests'] = enInterests.map((enI, idx) => {
 		const labelLS: LocalizedString = { en: str(enI.label) };
+		const creditLS: LocalizedString = { en: str(enI.credit).trim() };
 		for (const [locale, iList] of interestsByLocale) {
 			if (locale === 'en') continue;
 			const i = iList[idx];
 			if (!i) continue;
+			if (typeof i.credit === 'string' && i.credit.trim()) {
+				if (locale === 'fr') creditLS.fr = i.credit.trim();
+				else if (locale === 'es') creditLS.es = i.credit.trim();
+			}
 			if (typeof i.label === 'string' && i.label.length > 0) {
 				if (locale === 'fr') labelLS.fr = i.label;
 				else if (locale === 'es') labelLS.es = i.label;
@@ -311,6 +316,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 			id: str(enI.id),
 			label: labelLS,
 			image: str(enI.image),
+			...(creditLS.en ? { credit: creditLS } : {}),
 		};
 	});
 

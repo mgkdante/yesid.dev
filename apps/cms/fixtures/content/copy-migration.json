@@ -108,6 +108,11 @@
 			"en": "Web development",
 			"fr": "Développement Web",
 			"es": "Desarrollo web"
+		},
+		"a11y_photo_credit": {
+			"en": "Photo credit",
+			"fr": "Crédit photo",
+			"es": "Crédito de la foto"
 		}
 	}
 }

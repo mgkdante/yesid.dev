@@ -85,6 +85,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 		a11y: {
 			animationPause: migrationCopy(tr, 'site_labels_translations', 'a11y_animation_pause'),
 			animationPlay: migrationCopy(tr, 'site_labels_translations', 'a11y_animation_play'),
+			photoCredit: migrationCopy(tr, 'site_labels_translations', 'a11y_photo_credit'),
 			...toLocalizedFields(tr, [
 				['navCapabilities', 'a11y_nav_capabilities'], ['carouselPrev', 'a11y_carousel_prev'],
 				['carouselNext', 'a11y_carousel_next'],

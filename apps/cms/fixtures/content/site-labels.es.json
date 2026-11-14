@@ -12,5 +12,6 @@
 	"ui_topic_sveltekit": "SvelteKit",
 	"ui_topic_systems_thinking": "Pensamiento sistémico",
 	"ui_topic_transit_data": "Datos de transporte público",
-	"ui_topic_web_development": "Desarrollo web"
+	"ui_topic_web_development": "Desarrollo web",
+	"a11y_photo_credit": "Crédito de la foto"
 }
