@@ -9,6 +9,8 @@
 	import Newspaper from '@lucide/svelte/icons/newspaper';
 	import UserRound from '@lucide/svelte/icons/user-round';
 	import Mail from '@lucide/svelte/icons/mail';
+	import LogIn from '@lucide/svelte/icons/log-in';
+	import { menuHref, visibleMenuItems, CLIENT_LOGIN_URL } from '#lib/navigation/menu.ts';
 	import { browser } from '$app/env';
 	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
 	import { viewTransition } from '@yesid/motion/utils/viewTransition';
@@ -120,6 +122,7 @@
 		'/blog': Newspaper,
 		'/about': UserRound,
 		'/contact': Mail,
+		[CLIENT_LOGIN_URL]: LogIn,
 	};
 	const isCurrent = (href: string) => (href === '/' ? basePath === '/' : basePath.startsWith(href));
 	const nextLocale = $derived(
@@ -183,8 +186,8 @@
 				current: isCurrent(link.href),
 				priority: link.priority,
 			}))}
-			menuItems={menuItems.map((item) => ({
-				href: localizeHref(item.href, locale),
+			menuItems={visibleMenuItems(menuItems, locale).map((item) => ({
+				href: menuHref(item.href, locale),
 				label: resolveLocale(item.label, locale),
 				subtitle: item.subtitle ? resolveLocale(item.subtitle, locale) : undefined,
 				current: isCurrent(item.href),
