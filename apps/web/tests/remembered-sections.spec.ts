@@ -1,3 +1,4 @@
+import { headerLanguageLink, openHeaderMenu } from './_support/header-controls';
 import { expect, test, type Page } from '@playwright/test';
 
 test.use({ storageState: { cookies: [], origins: [] } });
@@ -52,13 +53,13 @@ test('locale reading restoration reveals the individual reading target and Back 
 		const box = node.querySelector<HTMLElement>('[data-slot="collapsible-content"]')!.getBoundingClientRect();
 		return box.top < innerHeight / 4 && box.bottom > innerHeight / 4;
 	})).toBe(true);
-	await page.getByTestId('language-toggle').click();
+	await (await headerLanguageLink(page)).click();
 	await expect(page).toHaveURL(/\/fr\/projects\//);
 	await expect(trigger(page, 1)).toHaveAttribute('aria-expanded', 'true');
 	expect(await page.evaluate(() => localStorage.getItem('sections-choice'))).toBe('collapsed');
 	await expect.poll(() => readingProgress(page)).toBeCloseTo(0.5, 1);
 	const before = await readingProgress(page);
-	await page.getByTestId('nav-menu-toggle').click();
+	await openHeaderMenu(page);
 	await page.getByRole('dialog').locator('a.menu-item[href="/fr/services"]').click();
 	await expect(page).toHaveURL(/\/fr\/services$/);
 	await expect(page.locator('main a[href="/fr/services/database-engineering"]').filter({ visible: true }).first()).toBeVisible();

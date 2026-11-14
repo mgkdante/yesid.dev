@@ -182,7 +182,7 @@
 				href: localizeHref(link.href, locale),
 				label: resolveLocale(link.label, locale),
 				current: isCurrent(link.href),
-				priority: link.priority,
+				priority: link.href === '/contact' ? 1 : Math.max(2, link.priority ?? 1) as 2 | 3,
 			}))}
 			menuItems={visibleMenuItems(menuItems, locale).map((item) => ({
 				href: menuHref(item.href, locale),
