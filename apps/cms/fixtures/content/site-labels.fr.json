@@ -6,6 +6,7 @@
 	"a11y_project_image_open": "Ouvrir {caption}",
 	"a11y_project_image_close": "Fermer l'image",
 	"a11y_architecture_diagram": "Diagramme d'architecture",
+	"a11y_photo_credit": "Crédit photo",
 	"a11y_technology_stack_template": "Stack technique : {stack}",
 	"ui_marker_service": "{num} / SERVICE",
 	"ui_back_to_projects": "← Tous les projets",
@@ -118,5 +119,19 @@
 	"footer_chrome_footer_explore_label": "EXPLORER",
 	"footer_chrome_footer_legal_label": "LÉGAL",
 	"footer_chrome_footer_connect_label": "CONNEXION",
-	"footer_chrome_footer_live_label": "En direct"
+	"footer_chrome_footer_live_label": "En direct",
+	"a11y_animation_pause": "Mettre l'animation en pause",
+	"a11y_animation_play": "Relancer l'animation",
+	"ui_topic_ai": "IA",
+	"ui_topic_ai_assisted_development": "Développement assisté par l’IA",
+	"ui_topic_cms": "Gestion de contenu",
+	"ui_topic_directus": "Directus",
+	"ui_topic_e_commerce": "Commerce en ligne",
+	"ui_topic_learning": "Apprentissage",
+	"ui_topic_personal_story": "Récit personnel",
+	"ui_topic_software_architecture": "Architecture logicielle",
+	"ui_topic_sveltekit": "SvelteKit",
+	"ui_topic_systems_thinking": "Pensée systémique",
+	"ui_topic_transit_data": "Données de transport collectif",
+	"ui_topic_web_development": "Développement Web"
 }

@@ -14,7 +14,10 @@ export const HeroContentSchema = z.object({
 	ctaWork: LocalizedStringSchema,
 	ctaContact: LocalizedStringSchema,
 	ctaWorkHref: z.string(),
+	scene: z.object({ name: LocalizedStringSchema, open: LocalizedStringSchema, close: LocalizedStringSchema }),
 	sqlPanel: z.object({
+		held: LocalizedStringSchema,
+		failure: LocalizedStringSchema,
 		prompt: LocalizedStringSchema,
 		/** Badge in the DEMO state (simulated data). */
 		liveLabel: LocalizedStringSchema,

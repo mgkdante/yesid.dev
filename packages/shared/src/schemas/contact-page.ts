@@ -25,6 +25,8 @@ export const ContactFormTerminalSchema = z.object({
 	title: z.string(),
 	command: z.string(),
 	commandOutput: LocalizedStringSchema,
+	requiredGuidance: LocalizedStringSchema,
+	noScript: LocalizedStringSchema,
 	fields: z.object({
 		name: ContactTerminalFieldSchema,
 		email: ContactTerminalFieldSchema,

@@ -1,0 +1,118 @@
+{
+	"block_contact_content_translations": {
+		"form_required_guidance": {
+			"en": "All fields are required.",
+			"fr": "Tous les champs sont obligatoires.",
+			"es": "Todos los campos son obligatorios."
+		},
+		"form_no_script": {
+			"en": "This form needs JavaScript. You can also email",
+			"fr": "Ce formulaire nécessite JavaScript. Vous pouvez aussi écrire à",
+			"es": "Este formulario necesita JavaScript. También puedes escribir a"
+		}
+	},
+	"block_hero_translations": {
+		"sql_status_held": {
+			"en": "Refresh unavailable. Showing the last received reading.",
+			"fr": "Mise à jour indisponible. Les dernières données reçues sont affichées.",
+			"es": "Actualización no disponible. Se muestran los últimos datos recibidos."
+		},
+		"sql_status_failure": {
+			"en": "Live data is unavailable. Showing a demonstration.",
+			"fr": "Les données en direct sont indisponibles. Une démonstration est affichée.",
+			"es": "Los datos en vivo no están disponibles. Se muestra una demostración."
+		},
+		"scene_name": {
+			"en": "Montréal metro scene",
+			"fr": "Scène du métro de Montréal",
+			"es": "Escena del metro de Montreal"
+		},
+		"scene_open": {
+			"en": "Open Montréal metro scene",
+			"fr": "Ouvrir la scène du métro de Montréal",
+			"es": "Abrir la escena del metro de Montreal"
+		},
+		"scene_close": {
+			"en": "Close Montréal metro scene",
+			"fr": "Fermer la scène du métro de Montréal",
+			"es": "Cerrar la escena del metro de Montreal"
+		}
+	},
+	"site_labels_translations": {
+		"a11y_animation_pause": {
+			"en": "Pause animation",
+			"fr": "Mettre l'animation en pause",
+			"es": "Pausar la animación"
+		},
+		"a11y_animation_play": {
+			"en": "Play animation",
+			"fr": "Relancer l'animation",
+			"es": "Reanudar la animación"
+		},
+		"ui_topic_ai": {
+			"en": "AI",
+			"fr": "IA",
+			"es": "IA"
+		},
+		"ui_topic_ai_assisted_development": {
+			"en": "AI-assisted development",
+			"fr": "Développement assisté par l’IA",
+			"es": "Desarrollo asistido por IA"
+		},
+		"ui_topic_cms": {
+			"en": "Content management",
+			"fr": "Gestion de contenu",
+			"es": "Gestión de contenido"
+		},
+		"ui_topic_directus": {
+			"en": "Directus",
+			"fr": "Directus",
+			"es": "Directus"
+		},
+		"ui_topic_e_commerce": {
+			"en": "E-commerce",
+			"fr": "Commerce en ligne",
+			"es": "Comercio electrónico"
+		},
+		"ui_topic_learning": {
+			"en": "Learning",
+			"fr": "Apprentissage",
+			"es": "Aprendizaje"
+		},
+		"ui_topic_personal_story": {
+			"en": "Personal story",
+			"fr": "Récit personnel",
+			"es": "Historia personal"
+		},
+		"ui_topic_software_architecture": {
+			"en": "Software architecture",
+			"fr": "Architecture logicielle",
+			"es": "Arquitectura de software"
+		},
+		"ui_topic_sveltekit": {
+			"en": "SvelteKit",
+			"fr": "SvelteKit",
+			"es": "SvelteKit"
+		},
+		"ui_topic_systems_thinking": {
+			"en": "Systems thinking",
+			"fr": "Pensée systémique",
+			"es": "Pensamiento sistémico"
+		},
+		"ui_topic_transit_data": {
+			"en": "Transit data",
+			"fr": "Données de transport collectif",
+			"es": "Datos de transporte público"
+		},
+		"ui_topic_web_development": {
+			"en": "Web development",
+			"fr": "Développement Web",
+			"es": "Desarrollo web"
+		},
+		"a11y_photo_credit": {
+			"en": "Photo credit",
+			"fr": "Crédit photo",
+			"es": "Crédito de la foto"
+		}
+	}
+}

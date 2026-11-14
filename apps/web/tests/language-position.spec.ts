@@ -1,3 +1,4 @@
+import { headerLanguageLink } from './_support/header-controls';
 import { test, expect, type Locator, type Page } from '@playwright/test';
 
 // Read at the same line as the detail TOC, without depending on its active-ID observer.
@@ -42,7 +43,7 @@ test('project language switch keeps progress inside the long first section', asy
 	await expect(section).toBeVisible();
 	await readMiddle(page, section);
 	const before = await progress(section);
-	await page.getByTestId('language-toggle').click();
+	await (await headerLanguageLink(page)).click();
 	await expect(page).toHaveURL(/\/fr\/projects\/transit-data-pipeline$/);
 	await handoffFinished(page);
 	await expectReadingProgress(page, section, before);
@@ -60,7 +61,7 @@ test('project language switch does not open a closed target section', async ({ p
 	if (page.viewportSize()!.width >= 1024) {
 		await expect(page.locator('nav.toc-nav > .toc-item').nth(1)).toHaveAttribute('aria-current', 'location');
 	}
-	await page.getByTestId('language-toggle').click();
+	await (await headerLanguageLink(page)).click();
 	await expect(page).toHaveURL(/\/fr\/projects\/transit-data-pipeline$/);
 	await handoffFinished(page);
 	await expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -77,7 +78,7 @@ for (const detail of [
 		await readMiddle(page, section);
 		const before = await progress(section);
 		for (const locale of ['fr', 'es', 'en']) {
-			const toggle = page.getByTestId('language-toggle');
+			const toggle = await headerLanguageLink(page);
 			const href = await toggle.getAttribute('href');
 			expect(href).toBeTruthy();
 			await toggle.click();
@@ -94,7 +95,7 @@ test('project keeps reading progress with reduced motion @motion', async ({ page
 	const section = page.locator('.sections-column [data-section-index="0"]');
 	await expect(section).toBeVisible();
 	await readMiddle(page, section);
-	await page.getByTestId('language-toggle').click();
+	await (await headerLanguageLink(page)).click();
 	await expect(page).toHaveURL(/\/fr\/projects\/transit-data-pipeline$/);
 	await handoffFinished(page);
 	await expectReadingProgress(page, section, 0.5);

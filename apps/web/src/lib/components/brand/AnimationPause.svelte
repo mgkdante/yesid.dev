@@ -5,11 +5,10 @@
 	import Play from '@lucide/svelte/icons/play';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { animationPaused, restoreAnimationPause, setAnimationPaused } from '#lib/state/animation-pause.ts';
-	const words = {
-		en: ['Pause animation', 'Play animation'],
-		fr: ["Mettre l'animation en pause", "Relancer l'animation"],
-		es: ['Pausar la animación', 'Reanudar la animación'],
-	}[getLocale()];
+	import { siteLabels } from '#lib/content/index.ts';
+	import { resolveLocale } from '#lib/utils/locale.ts';
+	const locale = getLocale();
+	const words = [resolveLocale(siteLabels.a11y.animationPause, locale), resolveLocale(siteLabels.a11y.animationPlay, locale)];
 	const label = $derived(words[$animationPaused ? 1 : 0]);
 	onMount(restoreAnimationPause);
 </script>

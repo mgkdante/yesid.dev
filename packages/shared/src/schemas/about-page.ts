@@ -46,6 +46,7 @@ export const AboutInterestSchema = z.object({
 	id: z.string(),
 	label: LocalizedStringSchema,
 	image: z.string(),
+	credit: LocalizedStringSchema.optional(),
 });
 
 export const AboutEducationItemSchema = z.object({

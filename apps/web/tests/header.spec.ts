@@ -1,3 +1,4 @@
+import { headerLanguageLink } from './_support/header-controls';
 import { localeCopy } from '../src/lib/locales';
 import { expect, test, type Page } from '@playwright/test';
 
@@ -62,6 +63,7 @@ for (const locale of PUBLISHED_LOCALES) {
 
 	test(`${locale}: the language switch goes to the next locale`, async ({ page }) => {
 		await page.goto(start(locale));
+		await headerLanguageLink(page);
 		await page
 			.getByRole('link', { name: new RegExp(`^${literal(chrome[locale].navChrome.shared.localeSwitcherAria)}:`) })
 			.click();
@@ -73,6 +75,9 @@ for (const locale of PUBLISHED_LOCALES) {
 	// Links that don't fit move to the menu once the app script measures them, so poll the settled pill.
 	test(`${locale}: the header stays inside the viewport`, async ({ page }) => {
 		await page.goto(start(locale));
+		if (page.viewportSize()!.width < 500) {
+			await expect(page.getByTestId('nav-pill').getByRole('link', { name: resolveLocale(menuItems.find(item => item.href === '/contact')!.label, locale), exact: true })).toBeVisible();
+		}
 		await expect.poll(async () => {
 			const pill = (await page.getByTestId('nav-pill').boundingBox())!;
 			return pill.x >= 0 && pill.x + pill.width <= page.viewportSize()!.width;
@@ -105,5 +110,5 @@ test('a language link landing on a router redirect closes the menu with the Kit 
 	await page.getByTestId('language-toggle').click();
 	await expect(page).toHaveURL(samePath('/fr/projects'));
 	await expect(menu(page, 'fr')).toBeHidden();
-	await expect(page.getByTestId('language-toggle')).not.toBeFocused();
+	await expect(page.locator('[data-testid="language-toggle"]:focus')).toHaveCount(0);
 });

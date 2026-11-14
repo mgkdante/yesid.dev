@@ -1,5 +1,6 @@
 import { test, expect, type Locator } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { aboutPageContent } from '../src/lib/content/about-page';
 
 async function contrast(text: Locator, base: Locator) {
 	const background = await base.evaluate(node => getComputedStyle(node).backgroundColor);
@@ -47,13 +48,18 @@ for (const width of [390, 1440]) for (const theme of ['dark', 'light']) {
 		const interests = page.getByTestId('about-interests');
 		await interests.scrollIntoViewIfNeeded();
 		for (const name of ['Harrison Keely · CC BY 4.0', 'NASA']) {
-			const credit = interests.getByText(name, { exact: true });
+			const item = aboutPageContent.interests.find(interest => interest.id === (name === 'NASA' ? 'space' : 'transit'))!;
+			await interests.getByRole('button', { name: item.label.en, exact: true }).click();
+			await interests.getByTestId('interest-credit-trigger').click();
+			const dialog = page.getByRole('dialog');
+			const credit = dialog.getByText(name, { exact: true });
 			await expect(credit).toBeVisible();
 			const size = await credit.evaluate(node => parseFloat(getComputedStyle(node).fontSize));
-			const ratio = await contrast(credit, page.locator('body'));
+			const ratio = await contrast(credit, dialog);
 			measurements.push({ text: name, size, contrast: ratio });
 			expect(size).toBeGreaterThanOrEqual(12);
 			expect(ratio).toBeGreaterThanOrEqual(4.5);
+			await page.keyboard.press('Escape');
 		}
 		await page.screenshot({ path: testInfo.outputPath('about.png') });
 		expect((await new AxeBuilder({ page }).withRules(['aria-hidden-focus']).analyze()).violations).toEqual([]);

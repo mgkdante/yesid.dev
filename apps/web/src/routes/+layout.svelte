@@ -157,10 +157,7 @@
 
 {#snippet footerBrand()}
 	<Wordmark href={localizeHref('/', locale)} data-testid="footer-wordmark" class="items-baseline text-2xl" />
-{/snippet}
-
-{#snippet footerAddress()}
-	<address class="not-italic">{resolveLocale(footer.location, locale)}</address>
+	<address class="mt-2 font-mono text-xs not-italic text-[var(--muted-foreground)]">{resolveLocale(footer.location, locale)}</address>
 {/snippet}
 
 <svelte:head>
@@ -178,13 +175,14 @@
 		class="site-shell flex min-h-screen flex-col overflow-x-clip font-body text-[var(--foreground)]"
 	>
 		<SiteHeader
+			compactControls
 			{navigation}
 			home={localizeHref('/', locale)}
 			links={headerLinks.map((link) => ({
 				href: localizeHref(link.href, locale),
 				label: resolveLocale(link.label, locale),
 				current: isCurrent(link.href),
-				priority: link.priority,
+				priority: link.href === '/contact' ? 1 : Math.max(2, link.priority ?? 1) as 2 | 3,
 			}))}
 			menuItems={visibleMenuItems(menuItems, locale).map((item) => ({
 				href: menuHref(item.href, locale),
@@ -223,7 +221,7 @@
 
 			<SiteFooter
 				brand={footerBrand}
-				tagline={resolveLocale(footer.tagline, locale)}
+				tagline={resolveLocale(footer.tagline, locale).replace(/^\/\/\s*/, '')}
 				groups={[
 					{
 						label: resolveLocale(footer.exploreLabel, locale),
@@ -237,9 +235,6 @@
 					},
 					{ label: resolveLocale(footer.connectLabel, locale), links: socialLinks },
 				]}
-				statusStart={footerAddress}
-				statusPrefix={resolveLocale(footer.statusPrefix, locale)}
-				liveLabel={resolveLocale(footer.liveLabel, locale)}
 			/>
 		</div>
 	</div>

@@ -27,6 +27,16 @@ for (const detail of [
 				return (innerHeight * 0.25 - box.top) / box.height;
 			});
 			await expect.poll(progress).toBeCloseTo(0.5, 1);
+			const headerWidth = await page.getByTestId('nav').evaluate((el) =>
+				el.getBoundingClientRect().width - parseFloat(getComputedStyle(el).paddingInlineEnd),
+			);
+			if (headerWidth < 600) {
+				await page.getByTestId('nav-menu-toggle').click();
+				const nativeControls = page.locator('[popover]:popover-open');
+				await expect(nativeControls).toBeVisible();
+				await expect(nativeControls.getByTestId('language-toggle')).toBeVisible();
+				await expect(page.locator('html')).not.toHaveAttribute('data-hydrated');
+			}
 			const language = page.getByTestId('language-toggle');
 			const href = await language.getAttribute('href');
 			await language.click({ noWaitAfter: true });
