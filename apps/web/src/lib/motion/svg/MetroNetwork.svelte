@@ -5,11 +5,12 @@
 
 	interface Props {
 		svg: string;
+		still?: boolean;
 		containerEl?: HTMLDivElement;
 		svgEl?: SVGSVGElement;
 	}
 
-	let { svg, containerEl = $bindable(), svgEl = $bindable() }: Props = $props();
+	let { svg, still = false, containerEl = $bindable(), svgEl = $bindable() }: Props = $props();
 
 	onMount(() => {
 		if (!containerEl) return;
@@ -26,7 +27,7 @@
 		// keeping Berri-UQAM at the same ~80% horizontal position
 		// (replaces `window.innerWidth < 768` — same boundary at integer widths)
 		const isMobile = isViewportAtMost(767);
-		if (isMobile) {
+		if (isMobile && !still) {
 			found.setAttribute('viewBox', '972 300 600 600');
 		}
 		found.style.overflow = 'visible';
@@ -36,6 +37,7 @@
 		// Stations are small filled circles/paths with fill="#E07800"
 		// Background is the large dark shape (fill="#1E1E1E")
 		// Labels are grey text paths (fill="#808285")
+		if (still) return;
 		const allPaths = found.querySelectorAll('path');
 		let biggestStation: Element | null = null;
 		let biggestSize = 0;
@@ -83,6 +85,7 @@
 
 <div
 	bind:this={containerEl}
+	data-still={still || undefined}
 	class="metro-network-frame relative flex max-h-[80dvh] w-full items-center justify-center"
 	data-testid="metro-network-container"
 >{@html svg}</div>
@@ -95,6 +98,9 @@
 	:global(.metro-network-frame svg [fill="white"]) {
 		opacity: 0;
 	}
+
+ :global(.metro-network-frame[data-still] svg path:not([fill="white"])) { opacity: 1; }
+ :global(.metro-network-frame[data-still] svg) { height: 55svh; max-height: 36rem; }
 
 	/* CSS owns theme-aware SVG color; the timeline changes only opacity and drawing progress. */
 	:global([data-theme="light"] .metro-network-frame svg [fill="#1E1E1E"]),

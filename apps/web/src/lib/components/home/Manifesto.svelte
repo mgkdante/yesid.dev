@@ -75,21 +75,6 @@
 		}))
 	);
 
-	const hFlows = [
-		{ y: 80, w: 200, dur: 10, delay: 0 },
-		{ y: 240, w: 140, dur: 12, delay: 3 },
-		{ y: 400, w: 180, dur: 9, delay: 6 },
-		{ y: 560, w: 160, dur: 11, delay: 1.5 },
-		{ y: 160, w: 120, dur: 13, delay: 4.5 },
-		{ y: 640, w: 170, dur: 10, delay: 7.5 },
-	];
-
-	const vFlows = [
-		{ x: 80, h: 120, dur: 12, delay: 2 },
-		{ x: 320, h: 90, dur: 9, delay: 5 },
-		{ x: 560, h: 110, dur: 11, delay: 0 },
-	];
-
 	let sectionEl = $state<HTMLElement>(undefined!);
 	let statementEl = $state<HTMLElement>(undefined!);
 
@@ -119,7 +104,7 @@
 
 	<ManifestoCanvas containerEl={sectionEl} />
 
-	<ManifestoEdgeBottom {...edgeBottom} hFlows={hFlows} vFlows={vFlows} />
+	<ManifestoEdgeBottom {...edgeBottom} />
 	<ManifestoEdgeRight {...edgeRight} />
 	<ManifestoEdgeLeft {...edgeLeft} hiddenLines={hiddenLines} />
 	<ManifestoEdgeTop ticks={ticks} />

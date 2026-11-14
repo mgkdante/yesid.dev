@@ -30,6 +30,7 @@
 		replayEnabled = false,
 		beaconSettled = false,
 		replayAriaLabel = 'Replay intro',
+		replayExpanded,
 		onReplay,
 	}: {
 		headlineLine1: string;
@@ -49,6 +50,7 @@
 		beaconSettled?: boolean;
 		/** aria-label for the armed dot (site_labels a11y.replayIntro). */
 		replayAriaLabel?: string;
+		replayExpanded?: boolean;
 		/** Fired when the armed dot is clicked — HeroBanner replays the intro. */
 		onReplay?: () => void;
 	} = $props();
@@ -142,6 +144,8 @@
 				disabled={!replayEnabled}
 				aria-hidden={replayEnabled ? undefined : 'true'}
 				aria-label={replayAriaLabel}
+				aria-expanded={replayExpanded}
+				aria-controls={replayExpanded !== undefined ? 'metro-still-scene' : undefined}
 				onclick={() => onReplay?.()}
 			><svg
 					class="hero-dot"

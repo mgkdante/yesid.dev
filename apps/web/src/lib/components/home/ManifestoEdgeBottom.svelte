@@ -1,28 +1,11 @@
 <script lang="ts">
 	let {
 		connected, line, url, version, scrollHint,
-		hFlows, vFlows,
 	}: {
 		connected: string; line: string; url: string;
 		version: string; scrollHint: string;
-		hFlows: { y: number; w: number; dur: number; delay: number }[];
-		vFlows: { x: number; h: number; dur: number; delay: number }[];
 	} = $props();
 </script>
-
-{#each hFlows as flow}
-	<div
-		class="manifesto__flow-line"
-		style="top:{flow.y}px;width:{flow.w}px;left:-{flow.w}px;animation-duration:{flow.dur}s;animation-delay:{flow.delay}s;"
-	></div>
-{/each}
-
-{#each vFlows as flow}
-	<div
-		class="manifesto__flow-line-v"
-		style="left:{flow.x}px;height:{flow.h}px;top:-{flow.h}px;animation-duration:{flow.dur}s;animation-delay:{flow.delay}s;"
-	></div>
-{/each}
 
 <div data-testid="manifesto-edge-bottom" class="manifesto__edge-bottom" aria-hidden="true">
 	<span>{connected}</span>
@@ -37,48 +20,6 @@
 </div>
 
 <style>
-
-	.manifesto__flow-line {
-		position: absolute;
-		height: 1px;
-		background: linear-gradient(90deg,
-			transparent 0%,
-			color-mix(in srgb, var(--primary) 10%, transparent) 30%,
-			color-mix(in srgb, var(--primary) 15%, transparent) 50%,
-			color-mix(in srgb, var(--primary) 10%, transparent) 70%,
-			transparent 100%
-		);
-		animation-name: flowRight;
-		animation-timing-function: linear;
-		animation-iteration-count: infinite;
-		z-index: var(--z-content);
-	}
-
-	.manifesto__flow-line-v {
-		position: absolute;
-		width: 1px;
-		background: linear-gradient(180deg,
-			transparent 0%,
-			color-mix(in srgb, var(--accent) 8%, transparent) 30%,
-			color-mix(in srgb, var(--accent) 12%, transparent) 50%,
-			color-mix(in srgb, var(--accent) 8%, transparent) 70%,
-			transparent 100%
-		);
-		animation-name: flowDown;
-		animation-timing-function: linear;
-		animation-iteration-count: infinite;
-		z-index: var(--z-content);
-	}
-
-	@keyframes flowRight {
-		from { transform: translateX(0); }
-		to { transform: translateX(calc(100vw + 400px)); }
-	}
-
-	@keyframes flowDown {
-		from { transform: translateY(0); }
-		to { transform: translateY(calc(100dvh + 200px)); }
-	}
 
 	.manifesto__edge-bottom {
 		position: absolute;
@@ -105,7 +46,6 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.manifesto__flow-line, .manifesto__flow-line-v { display: none; }
 		.manifesto__edge-bottom { opacity: 1; transform: translateX(-50%); translate: none; }
 	}
 </style>
