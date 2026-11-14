@@ -6,13 +6,16 @@ import { INITIAL_HERO_DATA, LIVE_KPIS_URL, LIVE_POLL_MS } from '#lib/live/index.
 import { tick } from 'svelte';
 import contract from '../../../../../../contracts/kpis-v1.examples.json';
 
-function mountHero() {
+function mountHero(locale = 'en') {
 	return render(HeroBanner, {
-		metroSvg: '<svg xmlns="http://www.w3.org/2000/svg"></svg>',
-		hero: heroContent,
-		heroAnim: heroAnimContent,
-		initialHeroData: INITIAL_HERO_DATA,
-		bookingHref: 'https://cal.com/fixture',
+		props: {
+			metroSvg: '<svg xmlns="http://www.w3.org/2000/svg"></svg>',
+			hero: heroContent,
+			heroAnim: heroAnimContent,
+			initialHeroData: INITIAL_HERO_DATA,
+			bookingHref: 'https://cal.com/fixture',
+		},
+		context: new Map([[Symbol.for('@yesid/ui/locale'), () => locale]]),
 	});
 }
 
@@ -221,4 +224,15 @@ describe('HeroBanner live KPI polling boundary', () => {
 		document.dispatchEvent(new Event('visibilitychange'));
 		expect(fetchKpis).toHaveBeenCalledTimes(3);
 	});
+});
+
+it.each([
+	['en', 'Live data is unavailable. Showing a demonstration.'],
+	['fr', 'Les données en direct sont indisponibles. Une démonstration est affichée.'],
+	['es', 'Los datos en vivo no están disponibles. Se muestra una demostración.'],
+])('%s describes the displayed demonstration as a status', async (locale, message) => {
+	liveFetch().mockRejectedValue(new Error('offline'));
+	const view = mountHero(locale);
+	await settle();
+	expect(view.getAllByTestId('sql-live')[0]).toHaveTextContent(message);
 });

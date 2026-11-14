@@ -67,14 +67,14 @@
 	let live = $state(false);
 	let readingState = $state<'demo' | 'live' | 'held' | 'failure'>('demo');
 	const statusWords = {
-		en: { held: 'Refresh unavailable. Showing the last received reading.', failure: 'Live data is unavailable. View the demonstration.' },
-		fr: { held: 'Mise à jour indisponible. Les dernières données reçues sont affichées.', failure: 'Les données en direct sont indisponibles. Voir la démonstration.' },
-		es: { held: 'Actualización no disponible. Se muestran los últimos datos recibidos.', failure: 'Los datos en vivo no están disponibles. Ver la demostración.' },
+		en: { held: 'Refresh unavailable. Showing the last received reading.', failure: 'Live data is unavailable. Showing a demonstration.' },
+		fr: { held: 'Mise à jour indisponible. Les dernières données reçues sont affichées.', failure: 'Les données en direct sont indisponibles. Une démonstration est affichée.' },
+		es: { held: 'Actualización no disponible. Se muestran los últimos datos recibidos.', failure: 'Los datos en vivo no están disponibles. Se muestra una demostración.' },
 	}[locale];
 	const sqlLabels = $derived({
 		state: readingState,
 		prompt: resolveLocale(heroContent.sqlPanel.prompt, locale),
-		liveLabel: readingState === 'held' ? statusWords.held : readingState === 'failure' ? statusWords.failure : (resolveLocale(live ? heroContent.sqlPanel.liveBadge : heroContent.sqlPanel.liveLabel, locale) || (live ? 'LIVE' : 'DEMO')),
+		liveLabel: readingState === 'held' ? statusWords.held : readingState === 'failure' ? statusWords.failure : resolveLocale(live ? heroContent.sqlPanel.liveBadge : heroContent.sqlPanel.liveLabel, locale),
 		columnRoute: resolveLocale(heroContent.sqlPanel.columns.route, locale),
 		columnAvgDelay: resolveLocale(heroContent.sqlPanel.columns.avgDelayS, locale),
 		columnVehicles: resolveLocale(heroContent.sqlPanel.columns.vehicles, locale),
@@ -224,8 +224,6 @@
 			heroTextContainer,
 			heroDot,
 			scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 			pinLength: isMobile ? '300%' : '800%',
 			onHeroApproach: approaching => { heroApproaching = approaching; },
 			// Refresh before rewind because a deferred refresh would restore scroll and cancel native smooth scrolling.
