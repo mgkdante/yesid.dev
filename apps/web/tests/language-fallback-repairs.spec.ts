@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 for (const locale of ['en', 'fr', 'es'] as const) {
-	test(`${locale}: localized CTA, topics, weather absence and HTTP 404`, async ({ page }, testInfo) => {
+	test(`${locale}: localized destinations, topics, weather absence and HTTP 404`, async ({ page }, testInfo) => {
 		await page.route(/web3forms|cal\.com|plausible|\/api\/event/, route => route.abort());
 		await page.route('**/api/weather*', route => route.fulfill({ status: 503, body: 'null' }));
 		await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -11,7 +11,6 @@ for (const locale of ['en', 'fr', 'es'] as const) {
 			await page.addInitScript(theme => localStorage.setItem('theme', theme), theme);
 			await page.goto(`${prefix}/about`);
 			const cta = page.getByTestId('about-cta');
-			if (locale !== 'en') await expect(cta).not.toContainText(/Ready for new projects|AI-accelerated|Email:/);
 			await expect(page.getByTestId('about-cta-button')).toHaveAttribute('href', `${prefix}/contact`);
 			await expect(page.getByTestId('about-weather').getByText('-', { exact: true })).toHaveCount(0);
 			await cta.scrollIntoViewIfNeeded();

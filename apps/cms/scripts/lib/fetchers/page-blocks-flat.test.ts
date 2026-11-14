@@ -233,7 +233,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 			id: 1,
 			headshot: '/img/y.jpg', weather_enabled: true,
 			cta_command: 'whoami', cta_button_href: '/contact',
-			cta_lines: [{ text: 'hi', color: 'muted' }, { text: { en: 'Hello', fr: 'Bonjour', es: 'Hola' }, color: 'orange' }],
+			cta_lines: [{ text: 'hi', color: 'muted' }],
 			languages: ['English'],
 			translations: [
 				{
@@ -266,7 +266,6 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		expect(out.identity.polaroids[0]?.alt).toEqual({ en: 'me', fr: 'moi' });
 		expect(out.weather).toEqual({ city: { en: 'Montreal', fr: 'Montréal' }, enabled: true });
 		expect(out.cta.command).toBe('whoami');
-		expect(out.cta.lines[1]?.text).toEqual({ en: 'Hello', fr: 'Bonjour', es: 'Hola' });
 		expect(out.stopLabels.next).toEqual({ en: 's10' });
 		expect(out.languages).toEqual([
 			{

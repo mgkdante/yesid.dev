@@ -10,7 +10,7 @@
 
 import { readItems } from '@directus/sdk';
 import { mapLocalizedRepeater, str, toLocalizedFields } from '../locale';
-import { AboutContentSchema, LocalizedStringSchema, type LocalizedString, type AboutContent } from '@repo/shared';
+import { AboutContentSchema, type LocalizedString, type AboutContent } from '@repo/shared';
 import { fetchBlockSingleton, type BlockRow } from './singleton';
 import type { FetcherContext } from './types';
 
@@ -313,7 +313,7 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 	const cta: AboutContent['cta'] = {
 		command: str(raw.cta_command),
 		lines: rawCtaLines.map((l) => ({
-			text: typeof l.text === 'object' && l.text !== null ? LocalizedStringSchema.parse(l.text) : str(l.text),
+			text: str(l.text),
 			color: (l.color as 'orange' | 'muted' | 'accent') ?? 'muted',
 		})),
 		...toLocalizedFields(tr, [['buttonLabel', 'cta_button_label']]),

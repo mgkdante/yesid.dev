@@ -60,7 +60,7 @@ export const AboutWeatherConfigSchema = z.object({
 });
 
 const AboutCtaLineSchema = z.object({
-	text: z.union([z.string(), LocalizedStringSchema]),
+	text: z.string(),
 	color: z.enum(['orange', 'muted', 'accent']),
 });
 

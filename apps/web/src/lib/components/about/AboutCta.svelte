@@ -7,8 +7,8 @@
 <script lang="ts">
 	import type { AboutCta } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
-	import { getLocale } from '#lib/utils/locale-context.ts';
 	import { localizeHref } from '#lib/utils/locale-routing.ts';
+	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
 	import { TerminalPanel, TerminalCursor } from '@yesid/ui/brand';
@@ -22,10 +22,6 @@
 
 	const buttonLabel = $derived(resolveLocale(cta.buttonLabel, locale));
 	const terminalTitle = $derived(resolveLocale(siteLabels.ui.terminalTitle, locale));
-	// Legacy English output stays out of untranslated views until CMS copy is supplied.
-	const lines = $derived(cta.lines.map(line => ({ ...line,
-		text: typeof line.text === 'string' ? (locale === 'en' ? line.text : '') : (line.text[locale] ?? ''),
-	})).filter(line => line.text.trim()));
 </script>
 
 <div
@@ -52,7 +48,7 @@
 				</div>
 
 				<!-- Output lines -->
-				{#each lines as line}
+				{#each cta.lines as line}
 					<div class="{line.color === 'orange'
 						? 'text-[var(--primary)]'
 						: line.color === 'accent'

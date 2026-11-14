@@ -253,23 +253,23 @@
 				"command": "$ yesid --contact",
 				"lines": [
 					{
-						"text": {"en":"> Ready for new projects","fr":"> Prêt pour de nouveaux projets","es":"> Listo para nuevos proyectos"},
+						"text": "> Ready for new projects",
 						"color": "orange"
 					},
 					{
-						"text": {"en":"> AI-accelerated, human-owned","fr":"> Développement assisté par l’IA, sous contrôle humain","es":"> Con ayuda de IA, bajo control humano"},
+						"text": "> AI-accelerated, human-owned",
 						"color": "muted"
 					},
 					{
-						"text": {"en":"> Email: contact@yesid.dev","fr":"> Courriel : contact@yesid.dev","es":"> Correo: contact@yesid.dev"},
+						"text": "> Email: contact@yesid.dev",
 						"color": "muted"
 					},
 					{
-						"text": {"en":"> GitHub: https://github.com/mgkdante","fr":"> GitHub: https://github.com/mgkdante","es":"> GitHub: https://github.com/mgkdante"},
+						"text": "> GitHub: https://github.com/mgkdante",
 						"color": "muted"
 					},
 					{
-						"text": {"en":"> LinkedIn: https://www.linkedin.com/in/otaloray/","fr":"> LinkedIn: https://www.linkedin.com/in/otaloray/","es":"> LinkedIn: https://www.linkedin.com/in/otaloray/"},
+						"text": "> LinkedIn: https://www.linkedin.com/in/otaloray/",
 						"color": "muted"
 					}
 				],
