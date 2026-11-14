@@ -12,6 +12,7 @@
 	let { manifesto: manifestoContent }: { manifesto: ManifestoContent } = $props();
 	import { createCrescendoScrub } from '#lib/motion/scrubs/index.ts';
 	import { boop } from '@yesid/motion/actions';
+	import { ManifestoCanvas } from '@yesid/ui/brand';
 	import ManifestoEdgeRight from './ManifestoEdgeRight.svelte';
 	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';
 	import ManifestoEdgeTop from './ManifestoEdgeTop.svelte';
@@ -101,7 +102,7 @@
 
 	<div class="manifesto__circuit-grid"></div>
 
-
+	<ManifestoCanvas containerEl={sectionEl} />
 
 	<ManifestoEdgeBottom {...edgeBottom} />
 	<div class="manifesto__stripe manifesto__stripe--tl"></div>
