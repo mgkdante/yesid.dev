@@ -93,6 +93,20 @@ export function toAboutLanguages(rows: readonly DirectusAboutLanguageRow[]): Abo
 	})).filter((row) => row.id.length > 0 && row.label.en.length > 0 && row.image.length > 0);
 }
 
+/** Parent rows own line order and colour; a blank locale keeps the shared text. */
+function ctaLineText(shared: unknown, index: number, translations: ReadonlyArray<Record<string, unknown>>): LocalizedString {
+	const fallback = str(shared);
+	const text: LocalizedString = { en: fallback, fr: fallback, es: fallback };
+	for (const row of translations) {
+		const locale = row.languages_code;
+		if (locale !== 'en' && locale !== 'fr' && locale !== 'es') continue;
+		const line: unknown = Array.isArray(row.cta_lines) ? row.cta_lines[index] : undefined;
+		if (!line || typeof line !== 'object' || !('text' in line)) continue;
+		if (typeof line.text === 'string' && line.text.trim()) text[locale] = line.text;
+	}
+	return text;
+}
+
 export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent['languages']): AboutContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
@@ -312,8 +326,8 @@ export function toAboutContent(raw: BlockRow, normalizedLanguages?: AboutContent
 		: [];
 	const cta: AboutContent['cta'] = {
 		command: str(raw.cta_command),
-		lines: rawCtaLines.map((l) => ({
-			text: str(l.text),
+		lines: rawCtaLines.map((l, index) => ({
+			text: ctaLineText(l.text, index, tr),
 			color: (l.color as 'orange' | 'muted' | 'accent') ?? 'muted',
 		})),
 		...toLocalizedFields(tr, [['buttonLabel', 'cta_button_label']]),

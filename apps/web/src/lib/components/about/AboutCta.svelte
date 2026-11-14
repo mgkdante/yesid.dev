@@ -54,7 +54,7 @@
 						: line.color === 'accent'
 							? 'text-[var(--accent-text)]'
 							: 'text-[var(--secondary-foreground)]'}">
-						{line.text}
+						{typeof line.text === 'string' ? line.text : resolveLocale(line.text, locale)}
 					</div>
 				{/each}
 
