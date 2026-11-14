@@ -155,6 +155,10 @@
 		background: color-mix(in srgb, var(--background) 40%, transparent);
 	}
 	.strip-label {
+		max-inline-size: 100%;
+		overflow-wrap: normal;
+		word-break: normal;
+		hyphens: none;
 		text-transform: uppercase;
 		color: var(--foreground);
 		text-shadow: 0 1px 4px color-mix(in srgb, var(--background) 80%, transparent);
@@ -182,9 +186,10 @@
 	.interest-strip.strip-active .strip-overlay {
 		opacity: var(--opacity-subtle);
 	}
-	.interest-strip { min-inline-size: 44px; min-block-size: 44px; transition: flex-grow 500ms var(--ease-default); }
+	/* A whole label word sets the strip minimum; the button still guarantees its hit area. */
+	.interest-strip { min-inline-size: min-content; min-block-size: 44px; transition: flex-grow 500ms var(--ease-default); }
 	.interest-strip.strip-active { flex-grow: 1.4; }
-	.interest-select { min-inline-size: 0; min-block-size: 44px; }
+	.interest-select { min-inline-size: 44px; min-block-size: 44px; }
 	.interest-select:focus-visible, :global(.interest-credit-trigger:focus-visible) {
 		outline: 2px solid var(--foreground); outline-offset: -4px;
 		box-shadow: inset 0 0 0 6px var(--background);
@@ -215,5 +220,8 @@
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.interest-strip, .interest-select, .strip-bg, .strip-overlay { transition: none; }
+	}
+	@media (max-width: 1023px) {
+		.strip-label { letter-spacing: 0; }
 	}
 </style>
