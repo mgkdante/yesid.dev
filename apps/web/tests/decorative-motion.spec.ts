@@ -26,7 +26,18 @@ for (const width of [390, 1440]) for (const path of routes) {
    samples.push(await page.evaluate(() => {
     const describe = (el: Element | null) => el ? `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${el.getAttribute('data-slot') ? '[data-slot=' + el.getAttribute('data-slot') + ']' : ''}.${el.getAttribute('class') ?? ''}` : 'unknown';
     return {
-     animations: document.getAnimations().filter(a => a.playState === 'running').map(a => ({ name: a instanceof CSSAnimation ? a.animationName.replace(/^svelte-[^-]+-/, '') : a instanceof CSSTransition ? `transition:${a.transitionProperty}` : 'WebAnimation', loop: a.effect?.getTiming().iterations === Infinity, target: describe((a.effect as KeyframeEffect)?.target as Element), shared: Boolean(((a.effect as KeyframeEffect)?.target as Element)?.closest('[data-slot="stop-label"], [data-slot="error-page"], [data-testid="footer"], [data-slot="terminal-panel"], [data-slot="metro-station"], [data-slot="separator"]')) })),
+     animations: document.getAnimations().filter(a => a.playState === 'running').map(a => {
+      const target = (a.effect as KeyframeEffect)?.target as Element | null;
+      const property = a instanceof CSSTransition ? a.transitionProperty : '';
+      // The retained closing scene follows scroll; it can still be settling when sampled.
+      const closingTransition = Boolean(target?.closest('[data-testid="closer-section"]') && (
+       (property === 'height' && target.matches('.construction-extension, .closer-beam')) ||
+       (property === 'translate' && target.matches('[data-slot="closer-floodlight"]')) ||
+       (property === 'scale' && target.matches('.closer-beam')) ||
+       (property === 'transform' && target.matches('[data-construction-prop] > svg'))
+      ));
+      return { name: a instanceof CSSAnimation ? a.animationName.replace(/^svelte-[^-]+-/, '') : a instanceof CSSTransition ? `transition:${property}` : 'WebAnimation', loop: a.effect?.getTiming().iterations === Infinity, target: describe(target), closingTransition, shared: Boolean(target?.closest('[data-slot="stop-label"], [data-slot="error-page"], [data-testid="footer"], [data-slot="terminal-panel"], [data-slot="metro-station"], [data-slot="separator"]')) };
+     }),
      css: [...document.querySelectorAll('*')].flatMap(el => ['', '::before', '::after'].flatMap(pseudo => { const s = getComputedStyle(el, pseudo || null); return s.animationName === 'none' ? [] : [{ target: describe(el) + pseudo, name: s.animationName, iterations: s.animationIterationCount, state: s.animationPlayState }]; })),
      dots: [...document.querySelectorAll('[data-slot="status-dot"], [data-slot="stop-label"], [class*="cursor"], [class*="dot"], [class*="signal"], [class*="light-"], [data-construction-prop]')].map(describe),
     };
@@ -42,7 +53,7 @@ for (const width of [390, 1440]) for (const path of routes) {
    const cssLoops = samples.flatMap(s => s.css).filter(a => a.iterations.split(',').some(n => n.trim() === 'infinite'));
    expect(cssLoops.filter(a => !(weather.test(normalize(a.name)) && /weather-/.test(a.target))
     && !(shared.test(normalize(a.name)) && /stop-label|terminal-signal|status-dot|light-a|light-b|terminal-cursor|metro-station|separator/.test(a.target)))).toEqual([]);
-   const finite = samples.flatMap(s => s.animations).filter(a => !a.loop && !['draw', 'post-swing', 'board-settle', 'transition:opacity'].includes(a.name));
+   const finite = samples.flatMap(s => s.animations).filter(a => !a.loop && !a.closingTransition && !['draw', 'post-swing', 'board-settle', 'transition:opacity'].includes(a.name));
    expect(finite).toEqual([]);
    expect(samples.flatMap(s => s.animations).some(a => /train-bob/.test(a.name))).toBe(false);
    expect(await page.locator('main .terminal-cursor').count()).toBe(path.includes('dev-27-missing') ? 1 : 0);
