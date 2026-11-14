@@ -19,7 +19,7 @@
 		onRefresh,
 	}: {
 		heroData: HeroData;
-		labels: Pick<ComponentProps<typeof HeroSqlPanel>, 'prompt' | 'liveLabel' | 'columnRoute' | 'columnAvgDelay' | 'columnVehicles' | 'metaTemplate'> & { updatedAgo: string; refreshLabel: string; refreshHelper: string };
+		labels: Pick<ComponentProps<typeof HeroSqlPanel>, 'state' | 'prompt' | 'liveLabel' | 'columnRoute' | 'columnAvgDelay' | 'columnVehicles' | 'metaTemplate'> & { updatedAgo: string; refreshLabel: string; refreshHelper: string };
 		onRefresh: () => void;
 	} = $props();
 

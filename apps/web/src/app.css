@@ -26,31 +26,6 @@ html {
 	border-color: var(--border-strong);
 }
 
-/* Keep the cursor global so typewriter activation can override it without scoped specificity. */
-.scroll-block-cursor {
-  margin-left: 0.15em;
-  opacity: 0;
-  color: currentColor;
-}
-
-/* Visibility avoids multiplying the cursor blink with the scroll-driven prompt fade. */
-@keyframes typewriter-blink {
-  0%, 100% { visibility: visible; }
-  50% { visibility: hidden; }
-}
-
-.typewriter-cursor {
-  opacity: 1;
-  animation: typewriter-blink 1s step-end infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .typewriter-cursor {
-    animation: none;
-    visibility: visible;
-  }
-}
-
 /* App-owned page geometry. */
 :root {
   --chrome-offset: var(--nav-clearance);

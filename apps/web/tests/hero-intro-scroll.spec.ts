@@ -103,13 +103,9 @@ test('replay pins immediately and completes after its visual scrub', async ({ pa
 		});
 		expect(await settledHeroScale(page), 'the settled near-end scene must still differ from its final pose').toBeGreaterThan(1.01);
 		await expect(page.getByTestId('hero-banner').getByTestId('hero-dot-annotation')).toBeHidden();
-		await expect.poll(() => page.getByTestId('hero-dot').evaluate(async svg => {
-			const animation = svg.getAnimations().find(candidate => candidate.playState === 'running');
-			if (!animation) return false;
-			const before = animation.currentTime;
-			await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
-			return animation.currentTime !== before;
-		}), { message: 'the dot pulses before the pin releases' }).toBe(true);
+		await expect.poll(() => page.getByTestId('hero-dot').evaluate(svg =>
+   svg.getAnimations().some(animation => animation.playState === 'running' && animation.effect?.getTiming().iterations === Infinity)
+  ), { message: 'the dot stays still before the pin releases' }).toBe(false);
 		await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
 		await expect.poll(() => page.getByTestId('hero-text-container').evaluate(el => getComputedStyle(el).opacity)).toBe('0');
 		await captureInk(page);

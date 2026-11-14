@@ -5,7 +5,6 @@
 -->
 <script lang="ts">
   import type { HeroQueryRow } from '#lib/live/index.ts';
-  import { StatusDot } from '@yesid/ui/brand';
   import TransitInfoLink from './TransitInfoLink.svelte';
   import TransitSourceNote from './TransitSourceNote.svelte';
 
@@ -14,6 +13,7 @@
     queryTime: number;
     prompt: string;
     liveLabel: string;
+    state?: string;
     columnRoute: string;
     columnAvgDelay: string;
     columnVehicles: string;
@@ -27,6 +27,7 @@
     queryTime,
     prompt,
     liveLabel,
+    state = 'demo',
     columnRoute,
     columnAvgDelay,
     columnVehicles,
@@ -42,6 +43,7 @@
 <div
   class="rounded-lg border-2 border-[var(--border-rule)] bg-[var(--terminal)] p-5 font-mono"
   data-testid="sql-panel"
+  data-state={state}
 >
   <!-- Header: prompt + live dot -->
   <div class="mb-4 flex items-center justify-between">
@@ -49,7 +51,6 @@
       {prompt}<TransitInfoLink />
     </span>
     <span class="flex items-center gap-1.5 text-caption text-[var(--terminal-ink-muted)]" data-testid="sql-live">
-      <StatusDot color="green" pulse />
       {liveLabel}
     </span>
   </div>
@@ -96,5 +97,5 @@
   </div>
 </div>
 
-<TransitSourceNote />
+{#if state === 'live' || state === 'held'}<TransitSourceNote />{/if}
 

@@ -15,10 +15,6 @@ export interface HeroTimelineOpts {
 	heroDot: SVGSVGElement;
 
 	scrollPrompt: HTMLElement;
-	/** Typewriter blink restart callback (onUpdate progress <= 0.005). */
-	startBlink: () => void;
-	/** Typewriter blink stop callback (onUpdate progress > 0.005). */
-	stopBlink: () => void;
 	/** Pin length as a GSAP-compatible percent string. Default '800%'. Mobile callers pass '300%'. */
 	pinLength?: string;
 	/* Replay refreshes before rewinding; a deferred refresh would cancel native smooth scrolling. */
@@ -127,8 +123,6 @@ export function createHeroTimeline(
 		heroTextContainer,
 		heroDot,
 		scrollPrompt,
-		startBlink,
-		stopBlink,
 		pinLength = '800%',
 		onIntroComplete,
 		onHeroApproach,
@@ -304,11 +298,6 @@ export function createHeroTimeline(
 		animation: tl,
 		invalidateOnRefresh: true,
 		onUpdate: (self: { progress: number; direction: number }) => {
-			if (self.progress > 0.005) {
-				stopBlink();
-			} else if (self.progress <= 0.005 && self.direction === -1) {
-				startBlink();
-			}
 			if (self.progress < 1) {
 				introCompleteArmed = true;
 			} else if (!isTouch) {

@@ -10,10 +10,9 @@
 	import type { ManifestoContent } from '#lib/types.ts';
 
 	let { manifesto: manifestoContent }: { manifesto: ManifestoContent } = $props();
-	import { isPrefersReducedMotion } from '@yesid/motion/stores/reducedMotion';
 	import { createCrescendoScrub } from '#lib/motion/scrubs/index.ts';
 	import { boop } from '@yesid/motion/actions';
-	import { ManifestoCanvas, TerminalCursor } from '@yesid/ui/brand';
+	import { ManifestoCanvas } from '@yesid/ui/brand';
 	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';
 	import ManifestoEdgeRight from './ManifestoEdgeRight.svelte';
 	import ManifestoEdgeTop from './ManifestoEdgeTop.svelte';
@@ -63,7 +62,6 @@
 	});
 
 	const transit = $derived({
-		arrivalLabel: resolveLocale(manifestoContent.transit.arrivalLabel, locale),
 		platformBadge: resolveLocale(manifestoContent.transit.platformBadge, locale),
 		directionBadge: resolveLocale(manifestoContent.transit.directionBadge, locale),
 	});
@@ -92,44 +90,10 @@
 		{ x: 560, h: 110, dur: 11, delay: 0 },
 	];
 
-	let countdownSeconds = $state(167);
-	let countdownDisplay = $derived(
-		`${String(Math.floor(countdownSeconds / 60)).padStart(2, '0')}:${String(countdownSeconds % 60).padStart(2, '0')}`
-	);
-
 	let sectionEl = $state<HTMLElement>(undefined!);
 	let statementEl = $state<HTMLElement>(undefined!);
 
 	onMount(() => {
-		let countdownInterval: ReturnType<typeof setInterval> | undefined;
-		let visibilityObserver: IntersectionObserver | null = null;
-
-		function startCountdown() {
-			if (countdownInterval || isPrefersReducedMotion()) return;
-			countdownInterval = setInterval(() => {
-				countdownSeconds = countdownSeconds <= 0 ? 300 : countdownSeconds - 1;
-			}, 1000);
-		}
-
-		function stopCountdown() {
-			if (countdownInterval) {
-				clearInterval(countdownInterval);
-				countdownInterval = undefined;
-			}
-		}
-
-		// Tick the countdown only near the viewport; the margin starts it just before entry.
-		if (browser && sectionEl) {
-			visibilityObserver = new IntersectionObserver(
-				(entries) => {
-					if (entries[0].isIntersecting) startCountdown();
-					else stopCountdown();
-				},
-				{ rootMargin: '100px' },
-			);
-			visibilityObserver.observe(sectionEl);
-		}
-
 		let destroyCrescendo: (() => void) | undefined;
 		if (browser && sectionEl && statementEl) {
 			destroyCrescendo = createCrescendoScrub(statementEl, {
@@ -140,8 +104,6 @@
 		}
 
 		return () => {
-			stopCountdown();
-			visibilityObserver?.disconnect();
 			destroyCrescendo?.();
 		};
 	});
@@ -161,14 +123,13 @@
 	<ManifestoEdgeRight {...edgeRight} />
 	<ManifestoEdgeLeft {...edgeLeft} hiddenLines={hiddenLines} />
 	<ManifestoEdgeTop ticks={ticks} />
-	<ManifestoTransit {...transit} countdownDisplay={countdownDisplay} />
+	<ManifestoTransit {...transit} />
 
 	<div class="manifesto__content">
 
 		<div data-testid="manifesto-prompt" class="manifesto__prompt">
 			<span class="manifesto__prompt-cmd">{terminalUser}</span>
 			<span class="manifesto__prompt-text">{terminalCommand}</span>
-			<TerminalCursor />
 		</div>
 
 		<div data-testid="manifesto-text" bind:this={statementEl} class="manifesto__statement">

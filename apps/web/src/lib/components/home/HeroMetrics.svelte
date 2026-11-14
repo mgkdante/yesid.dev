@@ -36,7 +36,7 @@
       case 'delay':
         return resolveLocale(dashboard.delayLabel, locale);
       case 'routes':
-        return resolveLocale(dashboard.routesLabel, locale);
+        return live ? resolveLocale(dashboard.routesLabel, locale) : resolveLocale(dashboard.routesSub, locale).replace('{total}', String(metric.total ?? ''));
     }
   }
 
@@ -105,7 +105,7 @@
 </div>
 
 <!-- Short screens keep the CTAs in the first view; the SQL panel note still credits Transit there. -->
-<div class="metrics-source"><TransitSourceNote /></div>
+<div class="metrics-source">{#if live}<TransitSourceNote />{/if}</div>
 
 <style>
   @media (max-height: 720px) { .metrics-source { display: none; } }

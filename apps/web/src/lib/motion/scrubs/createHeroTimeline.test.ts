@@ -99,8 +99,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			heroTextContainer: refs.heroTextContainer,
 			heroDot: refs.heroDot,
 			scrollPrompt: refs.scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 		});
 		expect(typeof destroy).toBe('function');
 		destroy();
@@ -113,8 +111,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			heroTextContainer: refs.heroTextContainer,
 			heroDot: refs.heroDot,
 			scrollPrompt: refs.scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 		});
 		expect(createSpy).toHaveBeenCalled();
 		const pinCall = createSpy.mock.calls.find((c) => c[0].pin !== undefined);
@@ -130,8 +126,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			heroTextContainer: refs.heroTextContainer,
 			heroDot: refs.heroDot,
 			scrollPrompt: refs.scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 		});
 		expect(() => destroy()).not.toThrow();
 	});
@@ -145,8 +139,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			heroTextContainer: refs.heroTextContainer,
 			heroDot: refs.heroDot,
 			scrollPrompt: refs.scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 		});
 
 		expect(createSpy).not.toHaveBeenCalled();
@@ -162,8 +154,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			heroTextContainer: refs.heroTextContainer,
 			heroDot: refs.heroDot,
 			scrollPrompt: refs.scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 			pinLength: '300%',
 		});
 		const pinCall = createSpy.mock.calls.find((c) => c[0].pin !== undefined);
@@ -183,8 +173,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			heroTextContainer: refs.heroTextContainer,
 			heroDot: refs.heroDot,
 			scrollPrompt: refs.scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 		});
 		const pinCall = createSpy.mock.calls.find((c) => c[0].pin !== undefined);
 		// GSAP is mocked here, so inspect the caption tween's target and opacity.
@@ -211,8 +199,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			heroTextContainer: refs.heroTextContainer,
 			heroDot: refs.heroDot,
 			scrollPrompt: refs.scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 		});
 		const pinCall = createSpy.mock.calls.find((c) => c[0].pin !== undefined);
 		const tl = pinCall![0].animation as unknown as { fromTo: ReturnType<typeof vi.fn> };
@@ -234,8 +220,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			heroTextContainer: refs.heroTextContainer,
 			heroDot: refs.heroDot,
 			scrollPrompt: refs.scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 			onIntroComplete,
 		});
 		const pinCall = createSpy.mock.calls.find((c) => c[0].pin !== undefined);
@@ -276,8 +260,7 @@ describe('motion/scrubs/createHeroTimeline', () => {
 		try {
 			destroy = createHeroTimeline(refs.pinContainer, {
 				svgWrapper: refs.svgWrapper, heroTextContainer: refs.heroTextContainer,
-				heroDot: refs.heroDot, scrollPrompt: refs.scrollPrompt,
-				startBlink: () => {}, stopBlink: () => {}, onIntroComplete,
+				heroDot: refs.heroDot, scrollPrompt: refs.scrollPrompt, onIntroComplete,
 			});
 			const vars = createSpy.mock.calls.find(call => call[0].pin)![0];
 			const state = (progress: number) => ({ progress, direction: 1 }) as ScrollTrigger;
@@ -301,8 +284,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			heroTextContainer: refs.heroTextContainer,
 			heroDot: refs.heroDot,
 			scrollPrompt: refs.scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 		});
 		const pinCall = createSpy.mock.calls.find((c) => c[0].pin !== undefined);
 		const onUpdate = pinCall![0].onUpdate as (self: {
@@ -323,8 +304,6 @@ describe('motion/scrubs/createHeroTimeline', () => {
 			heroTextContainer: refs.heroTextContainer,
 			heroDot: refs.heroDot,
 			scrollPrompt: refs.scrollPrompt,
-			startBlink: () => {},
-			stopBlink: () => {},
 		});
 		expect(createSpy).not.toHaveBeenCalled();
 		expect(() => destroy()).not.toThrow();

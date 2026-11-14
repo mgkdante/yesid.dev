@@ -50,7 +50,7 @@ describe('Manifesto', () => {
 
 	it('renders transit elements', () => {
 		render(Manifesto, { props: { manifesto: manifestoContent } });
-		expect(screen.getByTestId('manifesto-arrival')).toBeInTheDocument();
+		expect(screen.queryByTestId('manifesto-arrival')).not.toBeInTheDocument();
 		expect(screen.getByTestId('manifesto-platform-badge')).toBeInTheDocument();
 		expect(screen.getByTestId('manifesto-direction-badge')).toBeInTheDocument();
 	});

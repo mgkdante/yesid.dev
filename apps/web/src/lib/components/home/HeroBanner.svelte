@@ -12,7 +12,6 @@
 		gsap,
 	} from '@yesid/motion/utils/gsap';
 	import { createHeroTimeline } from '#lib/motion/scrubs/index.ts';
-	import { createTypewriter } from '#lib/motion/utils/heroTypewriter.ts';
 	import { isViewportAtMost } from '@yesid/motion/utils/device';
 	import { getLenis } from '@yesid/motion/utils/lenis';
 	import { siteLabels } from '#lib/content/index.ts';
@@ -48,7 +47,6 @@
 	let svgWrapper: HTMLDivElement;
 	let scrollPrompt: HTMLParagraphElement;
 	let scrollText: HTMLSpanElement;
-	let scrollCursorEl: HTMLSpanElement;
 
 	const scrollDownLabel = $derived(resolveLocale(heroAnimContent.scrollDown, locale));
 	// Fit a nowrap mono line to 90vw; budget one extra character for the cursor.
@@ -67,9 +65,16 @@
 	let heroData: HeroData = $state(untrack(() => INITIAL_HERO_DATA));
 	// LIVE labels require real transit data; simulated values must retain DEMO labels.
 	let live = $state(false);
+	let readingState = $state<'demo' | 'live' | 'held' | 'failure'>('demo');
+	const statusWords = {
+		en: { held: 'Refresh unavailable. Showing the last received reading.', failure: 'Live data is unavailable. Showing a demonstration.' },
+		fr: { held: 'Mise à jour indisponible. Les dernières données reçues sont affichées.', failure: 'Les données en direct sont indisponibles. Une démonstration est affichée.' },
+		es: { held: 'Actualización no disponible. Se muestran los últimos datos recibidos.', failure: 'Los datos en vivo no están disponibles. Se muestra una demostración.' },
+	}[locale];
 	const sqlLabels = $derived({
+		state: readingState,
 		prompt: resolveLocale(heroContent.sqlPanel.prompt, locale),
-		liveLabel: resolveLocale(live ? heroContent.sqlPanel.liveBadge : heroContent.sqlPanel.liveLabel, locale),
+		liveLabel: readingState === 'held' ? statusWords.held : readingState === 'failure' ? statusWords.failure : resolveLocale(live ? heroContent.sqlPanel.liveBadge : heroContent.sqlPanel.liveLabel, locale),
 		columnRoute: resolveLocale(heroContent.sqlPanel.columns.route, locale),
 		columnAvgDelay: resolveLocale(heroContent.sqlPanel.columns.avgDelayS, locale),
 		columnVehicles: resolveLocale(heroContent.sqlPanel.columns.vehicles, locale),
@@ -123,11 +128,13 @@
 	function applyLiveSnapshot(snapshot: LiveHeroSnapshot) {
 		heroData = snapshot.data;
 		live = true;
+		readingState = 'live';
 		liveBase = { freshnessS: snapshot.freshnessS, receivedAt: Date.now() };
 	}
 
 	function dropToDemo(stamp: string) {
 		live = false;
+		readingState = 'failure';
 		liveBase = null;
 		heroData = generateHeroData();
 		demoStamp = stamp;
@@ -146,7 +153,9 @@
 			} else {
 				consecutiveFailures += 1;
 				// Keep the original liveBase so a held real reading keeps ageing.
-				if (live && consecutiveFailures >= 2) dropToDemo(stamp);
+				if (live && consecutiveFailures < 2) readingState = 'held';
+				else if (live) dropToDemo(stamp);
+				else readingState = 'failure';
 			}
 		}).finally(() => { pendingLiveCheck = null; });
 		return pendingLiveCheck;
@@ -201,9 +210,8 @@
 		if (destroyed) return;
 		initScrollTriggerConfig();
 
-		// Scrolling past the intro cuts off typing and leaves the cursor blinking.
-		const typewriter = createTypewriter(scrollPrompt, scrollText, scrollCursorEl, scrollDownLabel);
-		typewriter.type(() => {});
+		// The scroll instruction stays still throughout the intro.
+		scrollText.textContent = scrollDownLabel;
 
 		await document.fonts.ready;
 		if (destroyed) return;
@@ -216,8 +224,6 @@
 			heroTextContainer,
 			heroDot,
 			scrollPrompt,
-			startBlink: typewriter.startBlink,
-			stopBlink: typewriter.stopBlink,
 			pinLength: isMobile ? '300%' : '800%',
 			onHeroApproach: approaching => { heroApproaching = approaching; },
 			// Refresh before rewind because a deferred refresh would restore scroll and cancel native smooth scrolling.
@@ -238,7 +244,6 @@
 		document.addEventListener('visibilitychange', onVisibilityChange);
 
 		cleanup = () => {
-			typewriter.destroy();
 			destroyHero();
 			document.removeEventListener('visibilitychange', onVisibilityChange);
 		};
@@ -401,7 +406,6 @@
 						{live}
 						{replayEnabled}
 						beaconSettled={introCollapsed}
-						beaconPulsing={introCollapsed || heroApproaching}
 						{replayAriaLabel}
 						onReplay={handleReplay}
 					/>
@@ -446,7 +450,7 @@
 			class="scroll-prompt pointer-events-none absolute left-0 w-full text-center font-mono font-black uppercase leading-[0.95] text-primary md:whitespace-nowrap md:leading-none"
 			style="--billboard-vw: {billboardVw}vw"
 		>
-			<span bind:this={scrollText}></span><span bind:this={scrollCursorEl} class="scroll-block-cursor typewriter-cursor" aria-hidden="true">&#x2588;</span>
+			<span bind:this={scrollText}></span>
 		</p>
 	</div>
 
