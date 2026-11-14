@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
+import { siteLabels } from '../src/lib/content/site-labels.ts';
 const locales = [
  { path: '', pause: 'Pause animation', play: 'Play animation', scene: 'Montréal metro scene' },
  { path: 'fr/', pause: "Mettre l'animation en pause", play: "Relancer l'animation", scene: 'Scène du métro de Montréal' },
@@ -82,6 +83,34 @@ for (const locale of locales) for (const width of [390, 1440]) {
   await expect(scene).toBeFocused();
  });
 }
+for (const width of [390, 1440]) {
+ test(`motion-allowed metro replay matches main in EN at ${width}`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 900 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  const dot = page.getByTestId('hero-dot-replay');
+  const metro = page.getByTestId('metro-network-container');
+  const mainReplayName = siteLabels.a11y.replayIntro.en;
+  await expect(dot).toBeEnabled();
+  await expect(dot).toHaveAccessibleName(mainReplayName);
+  await expect(dot).not.toHaveAttribute('aria-expanded');
+  await expect(dot).not.toHaveAttribute('aria-controls');
+  await expect(page.locator('#metro-still-scene')).toHaveCount(0);
+  await expect(metro).toBeHidden();
+  await expect(page.locator('.pin-spacer')).toHaveCount(0);
+  const settledHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  await dot.click();
+  await expect(page.locator('.pin-spacer')).toHaveCount(1);
+  await expect(metro).toBeVisible();
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollHeight)).toBeGreaterThan(settledHeight + 1800);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(8);
+  await expect(dot).toHaveAccessibleName(mainReplayName);
+  await expect(dot).not.toHaveAttribute('aria-expanded');
+  await expect(dot).not.toHaveAttribute('aria-controls');
+  await expect(page.locator('#metro-still-scene')).toHaveCount(0);
+ });
+}
+
 test('storm flash frequency is below three in every rolling second', async ({ page }) => {
  await page.route('**/api/weather*', r => r.fulfill({ json: { temp: 12, condition: 'Storm', icon: '11d' } }));
  await page.goto('/about');
