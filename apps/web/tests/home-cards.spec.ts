@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { expectCardContentInside, expectCardRowsAligned } from './lib/project-card-geometry.js';
+import { expectCardContentInside, expectCardRowsForLayout, hasMultipleCardColumns } from './lib/project-card-geometry.js';
 
 test.beforeEach(async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.route(/web3forms|cal\.com|plausible|\/api\/event/, route => route.abort());
 });
 
 for (const locale of ['en', 'fr', 'es']) {
@@ -14,24 +15,31 @@ for (const locale of ['en', 'fr', 'es']) {
 			await expect(cards.first()).toBeVisible();
 			await cards.first().scrollIntoViewIfNeeded();
 			await page.evaluate(() => document.fonts.ready);
-			await expectCardRowsAligned(cards);
+			await expectCardRowsForLayout(cards);
 			const original = page.viewportSize()!;
 			await page.setViewportSize({ width: original.width < 768 ? 1280 : 390, height: original.height });
-			await expectCardRowsAligned(cards);
+			await expectCardRowsForLayout(cards);
 			if (placement === 'listing') {
 				// Removing and restoring cards must trigger alignment with the new tallest row.
 				await page.setViewportSize({ width: 1280, height: original.height });
 				const search = page.getByTestId('project-search-sidebar');
 				await search.fill((await cards.first().getByRole('heading').innerText()).trim());
 				await expect(cards).toHaveCount(1);
+				await page.setViewportSize({ width: 390, height: original.height });
+				await expectCardRowsForLayout(cards);
+				await page.setViewportSize({ width: 1280, height: original.height });
 				await search.fill('');
-				await expectCardRowsAligned(cards);
+				await expectCardRowsForLayout(cards);
+				await page.setViewportSize({ width: 390, height: original.height });
+				await expectCardRowsForLayout(cards);
 			}
+			await page.setViewportSize(original);
+			await expectCardRowsForLayout(cards);
 		});
 	}
 }
 
-test('home project cards share one size and show title, excerpt and links without clipping', async ({ page }) => {
+test('home project cards size to their columns and show title, excerpt and links without clipping', async ({ page }) => {
 	await page.goto('/', { waitUntil: 'domcontentloaded' });
 	const section = page.getByTestId('proof-reel-section');
 	await expect(section).toBeVisible();
@@ -57,7 +65,12 @@ test('home project cards share one size and show title, excerpt and links withou
 		const media = node.querySelector('[data-testid="proof-card-image"]')!.getBoundingClientRect();
 		return [box.width, box.height, media.height].map(Math.round).join('x');
 	}));
-	expect(new Set(sizes), 'every home card shares one size and media split').toEqual(new Set([sizes[0]]));
+	if (await hasMultipleCardColumns(cards)) {
+		expect(new Set(sizes), 'side-by-side home cards share one size and media split').toEqual(new Set([sizes[0]]));
+	} else {
+		expect(new Set(sizes.map(size => size.split('x')[0])).size, 'single-card slides share the viewport width').toBe(1);
+		await expectCardRowsForLayout(cards);
+	}
 	const viewAll = section.getByTestId('proof-view-all');
 	await expect(viewAll).toHaveAttribute('href', /^\/(?:fr\/|es\/)?projects\/?$/);
 	await viewAll.scrollIntoViewIfNeeded();

@@ -1,5 +1,37 @@
 import { expect, type Locator } from '@playwright/test';
 
+/** Count columns in the visible reel viewport or listing, including tablet layouts. */
+export async function hasMultipleCardColumns(cards: Locator) {
+	return cards.first().evaluate(card => {
+		const frame = card.closest('[data-testid="proof-reel-section"]')?.querySelector('.embla') ?? card.parentElement!;
+		return frame.getBoundingClientRect().width >= card.getBoundingClientRect().width * 2 - 1;
+	});
+}
+
+export async function expectCardRowsNatural(cards: Locator) {
+	for (const row of ['title', 'excerpt', 'service', 'services', 'links']) {
+		const rows = row === 'title' ? cards.getByRole('heading') : cards.getByTestId(new RegExp(`(?:project-card|proof-card|proof)-${row}$`));
+		await expect.poll(() => rows.evaluateAll(nodes => {
+			const visible = nodes.filter(node => node.checkVisibility());
+			if (!visible.length) return Infinity;
+			return Math.max(...visible.map(node => {
+				const element = node as HTMLElement;
+				const height = element.getBoundingClientRect().height;
+				const minimum = element.style.minHeight;
+				element.style.minHeight = '0px';
+				const natural = element.getBoundingClientRect().height;
+				element.style.minHeight = minimum;
+				return Math.abs(height - natural);
+			}));
+		}), { message: `${row} rows keep their natural heights in one column` }).toBeLessThanOrEqual(1);
+	}
+}
+
+export async function expectCardRowsForLayout(cards: Locator) {
+	if (await hasMultipleCardColumns(cards)) await expectCardRowsAligned(cards);
+	else await expectCardRowsNatural(cards);
+}
+
 export async function expectCardContentInside(card: Locator) {
 	const violations = await card.evaluate(link => {
 		const failures: string[] = [];
