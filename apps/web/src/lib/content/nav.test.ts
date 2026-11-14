@@ -23,8 +23,16 @@ describe('navLinks', () => {
 });
 
 describe('menuItems', () => {
-	it('contains all 5 navigation items', () => {
-		expect(menuItems).toHaveLength(5);
+	it('contains six destinations with client login immediately before Contact', () => {
+		expect(menuItems).toHaveLength(6);
+		expect(menuItems.map((item) => item.href)).toEqual([
+			'/services',
+			'/projects',
+			'/blog',
+			'/about',
+			'https://login.yesid.dev',
+			'/contact',
+		]);
 	});
 
 	it('has subtitles for all items', () => {
