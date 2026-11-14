@@ -1,0 +1,66 @@
+{
+  "collection": "block_about_content_translations",
+  "field": "cta_lines",
+  "type": "json",
+  "meta": {
+    "collection": "block_about_content_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "cta_lines",
+    "group": "grp_interface",
+    "hidden": false,
+    "interface": "list",
+    "note": "Match the shared terminal lines by position. Keep the > prefix. Blank entries use the shared text; order and colours stay shared.",
+    "options": {
+      "addLabel": "Add line",
+      "template": "{{text}}",
+      "fields": [
+        {
+          "field": "text",
+          "name": "Text",
+          "type": "string",
+          "meta": {
+            "field": "text",
+            "interface": "input",
+            "width": "full"
+          }
+        }
+      ]
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 10,
+    "special": [
+      "cast-json"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Contact terminal · Translated lines"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "cta_lines",
+    "table": "block_about_content_translations",
+    "data_type": "json",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}
