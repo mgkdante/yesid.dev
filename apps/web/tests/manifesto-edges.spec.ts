@@ -11,7 +11,7 @@ for (const locale of ['', 'fr', 'es']) for (const width of [320, 360, 390, 820, 
   await page.goto('/' + locale);
   await page.evaluate(() => document.fonts.ready);
   const edge = page.getByTestId('manifesto-edge-right');
-  await expect(edge).toHaveAttribute('data-placed', 'true');
+  await expect(edge).toBeVisible();
   await expect(page.locator('[data-decorative-edge]')).not.toHaveCount(0);
   await expectDecorativeEdges(page);
   const samples = [];
@@ -23,10 +23,32 @@ for (const locale of ['', 'fr', 'es']) for (const width of [320, 360, 390, 820, 
     const box = node.getBoundingClientRect();
     const overlaps = (other: DOMRect) => box.left < other.right && box.right > other.left && box.top < other.bottom && box.bottom > other.top;
     const obstacles = [...document.querySelectorAll('[data-testid="manifesto-prompt"], .manifesto__statement, [data-testid="manifesto-line-huge"], [data-testid="manifesto-pill"], [data-testid="manifesto-edge-bottom"], .manifesto__stripe, .manifesto__badge, .manifesto__roundel, .manifesto__beck-line, .manifesto__chevrons')];
-    const section = node.parentElement!.getBoundingClientRect();
+    const section = node.closest('[data-testid="manifesto-section"]')!.getBoundingClientRect();
     return getComputedStyle(node).visibility === 'visible' && box.width > 0 && box.left >= section.left && box.right <= section.right && box.top >= section.top && box.bottom <= section.bottom && obstacles.filter(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; }).every(el => !overlaps(el.getBoundingClientRect()));
    })).toBe(true);
-   samples.push(await edge.evaluate(node => ({ box: node.getBoundingClientRect().toJSON(), text: node.textContent })));
+   const scrollProof = await edge.evaluate(async node => {
+    const section = node.closest('[data-testid="manifesto-section"]')!;
+    const origin = section.getBoundingClientRect().top + scrollY;
+    let mutations = 0;
+    const observer = new MutationObserver(records => { mutations += records.length; });
+    observer.observe(node, { attributes: true });
+    const positions = [];
+    for (const offset of [0, 150, 300]) {
+     scrollTo(0, origin + offset);
+     await new Promise(done => requestAnimationFrame(() => requestAnimationFrame(done)));
+     const box = node.getBoundingClientRect(), base = section.getBoundingClientRect();
+     positions.push({ scroll: scrollY, x: box.left - base.left, y: box.top - base.top });
+    }
+    observer.disconnect();
+    return { mutations, positions };
+   });
+   expect(scrollProof.mutations).toBe(0);
+   expect(new Set(scrollProof.positions.map(p => p.scroll)).size).toBe(3);
+   for (const position of scrollProof.positions) {
+    expect(position.x).toBeCloseTo(scrollProof.positions[0].x, 1);
+    expect(position.y).toBeCloseTo(scrollProof.positions[0].y, 1);
+   }
+   samples.push({ height, reducedMotion, scrollProof, ...await edge.evaluate(node => ({ box: node.getBoundingClientRect().toJSON(), text: node.textContent })) });
   }
   await info.attach('edge-geometry', { body: JSON.stringify(samples), contentType: 'application/json' });
  });

@@ -109,7 +109,6 @@
 	<div class="manifesto__stripe manifesto__stripe--br"></div>
 	<div class="manifesto__stripe manifesto__stripe--tr"></div>
 	<div class="manifesto__stripe manifesto__stripe--bl"></div>
-	<ManifestoEdgeRight {...edgeRight} />
 	<ManifestoEdgeLeft {...edgeLeft} hiddenLines={hiddenLines} />
 	<ManifestoEdgeTop ticks={ticks} />
 	<ManifestoTransit {...transit} />
@@ -133,6 +132,7 @@
 			{#each pills as pill}
 				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback" use:boop={{ scale: 1.03, timing: 200 }}>{pill.label}</a>
 			{/each}
+			<ManifestoEdgeRight {...edgeRight} />
 		</nav>
 	</div>
 </section>
@@ -248,6 +248,7 @@
 	}
 
 	.manifesto__pills {
+		position: relative;
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
