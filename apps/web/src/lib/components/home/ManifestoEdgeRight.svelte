@@ -12,7 +12,7 @@
 <div class="manifesto__stripe manifesto__stripe--tr"></div>
 <div class="manifesto__stripe manifesto__stripe--bl"></div>
 
-<div data-testid="manifesto-edge-right" class="manifesto__edge-right">
+<div data-testid="manifesto-edge-right" class="manifesto__edge-right" aria-hidden="true">
 	<span class="manifesto__coord">{lat}</span>
 	<span class="manifesto__coord">{lng}</span>
 	<span class="manifesto__separator-line"></span>

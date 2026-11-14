@@ -4,6 +4,19 @@ import Manifesto from './Manifesto.svelte';
 import { manifestoContent } from '#lib/content/site-content.ts';
 
 describe('Manifesto', () => {
+	it('hides decorative readouts while keeping service links accessible', () => {
+		render(Manifesto, { props: { manifesto: manifestoContent } });
+		for (const edge of ['left', 'right', 'top', 'bottom']) {
+			expect(screen.getByTestId(`manifesto-edge-${edge}`)).toHaveAttribute('aria-hidden', 'true');
+		}
+		for (const part of ['prompt', 'platform-badge', 'direction-badge']) {
+			expect(screen.getByTestId(`manifesto-${part}`)).toHaveAttribute('aria-hidden', 'true');
+		}
+		for (const link of screen.getAllByRole('link')) {
+			expect(link.closest('[aria-hidden="true"]')).toBeNull();
+			expect(link.tabIndex).toBe(0);
+		}
+	});
 	it('renders the manifesto section', () => {
 		render(Manifesto, { props: { manifesto: manifestoContent } });
 		expect(screen.getByTestId('manifesto-section')).toBeInTheDocument();

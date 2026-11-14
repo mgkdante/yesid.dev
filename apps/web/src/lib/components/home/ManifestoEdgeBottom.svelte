@@ -24,7 +24,7 @@
 	></div>
 {/each}
 
-<div data-testid="manifesto-edge-bottom" class="manifesto__edge-bottom">
+<div data-testid="manifesto-edge-bottom" class="manifesto__edge-bottom" aria-hidden="true">
 	<span>{connected}</span>
 	<span class="manifesto__separator"></span>
 	<span>{line}</span>

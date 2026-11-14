@@ -97,7 +97,7 @@
 
 				{#if ATTRIBUTION[interest.id]}
 					<span
-						class="strip-credit absolute inset-x-0 bottom-0 z-20 px-1 pb-1 pt-5 text-center font-mono text-[8px] leading-none tracking-tight"
+						class="strip-credit absolute inset-x-0 bottom-0 z-20 px-1 pb-1 pt-5 text-center font-mono text-[12px] leading-none tracking-tight"
 					>{ATTRIBUTION[interest.id]}</span>
 				{/if}
 			</button>
@@ -131,12 +131,8 @@
 	}
 
 	.strip-credit {
-		color: color-mix(in srgb, var(--foreground) 72%, transparent);
-		background: linear-gradient(
-			to top,
-			color-mix(in srgb, var(--background) 76%, transparent),
-			transparent
-		);
+		color: var(--foreground);
+		background: var(--background);
 		pointer-events: none;
 	}
 
