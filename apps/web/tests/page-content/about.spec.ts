@@ -1,6 +1,10 @@
 import { test, expect, type Page } from '@playwright/test';
 import { aboutPageContent } from '../../src/lib/content/about-page';
 
+test.beforeEach(async ({ page }) => {
+	await page.route(/web3forms|plausible|cal\.com|vercel.*(analytics|insights)/, route => route.abort());
+});
+
 for (const locale of ['', '/fr', '/es'])
 	test(`about prose determines card height: ${locale || 'en'}`, { tag: '@theme' }, async ({ page }) => {
 		await page.setViewportSize({ width: 1280, height: 600 });
@@ -289,3 +293,20 @@ test.describe('reduced motion', () => {
 		}
 	});
 });
+
+for (const locale of ['en', 'fr', 'es'] as const) {
+	test(`terminal output follows the language tab (${locale})`, async ({ page }, testInfo) => {
+		await forceWeather(page, CASES[0]);
+		await page.goto(`${locale === 'en' ? '' : `/${locale}`}/about`);
+		const terminal = page.getByTestId('about-cta');
+		await terminal.scrollIntoViewIfNeeded();
+		for (const line of aboutPageContent.cta.lines) {
+			const text = typeof line.text === 'string' ? line.text : line.text[locale] ?? line.text.en;
+			await expect(terminal.getByText(text, { exact: true })).toBeVisible();
+		}
+		expect(await terminal.evaluate(el => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(1);
+		await page.getByTestId('about-cta-button').focus();
+		await expect(page.getByTestId('about-cta-button')).toBeFocused();
+		await terminal.screenshot({ path: testInfo.outputPath(`terminal-${locale}.png`) });
+	});
+}
