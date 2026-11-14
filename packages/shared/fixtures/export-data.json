@@ -249,7 +249,25 @@
 			],
 			"weather": {
 				"city": {"en":"Montreal","fr":"Montréal","es":"Montreal"},
-				"enabled": true
+				"enabled": true,
+				"conditions": {
+					"clear": {"en":"Clear","fr":"Dégagé","es":"Despejado"},
+					"partly": {"en":"Partly cloudy","fr":"Partiellement nuageux","es":"Parcialmente nublado"},
+					"cloudy": {"en":"Cloudy","fr":"Nuageux","es":"Nublado"},
+					"showers": {"en":"Showers","fr":"Averses","es":"Chubascos"},
+					"rain": {"en":"Rain","fr":"Pluie","es":"Lluvia"},
+					"storm": {"en":"Thunderstorm","fr":"Orage","es":"Tormenta"},
+					"snow": {"en":"Snow","fr":"Neige","es":"Nieve"},
+					"mist": {"en":"Mist","fr":"Brume","es":"Neblina"},
+					"drizzle": {"en":"Drizzle","fr":"Bruine","es":"Llovizna"},
+					"light_snow": {"en":"Light snow","fr":"Faible neige","es":"Nieve ligera"},
+					"freezing_rain": {"en":"Freezing rain","fr":"Pluie verglaçante","es":"Lluvia helada"},
+					"fog": {"en":"Fog","fr":"Brouillard","es":"Niebla"},
+					"smoke": {"en":"Smoke","fr":"Fumée","es":"Humo"},
+					"haze": {"en":"Haze","fr":"Brume sèche","es":"Calima"},
+					"dust": {"en":"Dust","fr":"Poussière","es":"Polvo"},
+					"sleet": {"en":"Sleet","fr":"Grésil","es":"Aguanieve"}
+				}
 			},
 			"cta": {
 				"command": "$ yesid --contact",

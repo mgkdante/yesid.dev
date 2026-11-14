@@ -1,10 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { siteLabels } from '../src/lib/content/site-labels.ts';
+// The card prints its own condition words (CMS, with the approved fallback per language) and an Intl
+// temperature, never OpenWeather's text: icon 03d is the "partly" word.
+const celsius = (lang: string) => new Intl.NumberFormat(lang, { style: 'unit', unit: 'celsius' }).format(12);
 const locales = [
- { path: '', pause: 'Pause animation', play: 'Play animation', scene: 'Montréal metro scene' },
- { path: 'fr/', pause: "Mettre l'animation en pause", play: "Relancer l'animation", scene: 'Scène du métro de Montréal' },
- { path: 'es/', pause: 'Pausar la animación', play: 'Reanudar la animación', scene: 'Escena del metro de Montreal' },
+ { path: '', pause: 'Pause animation', play: 'Play animation', scene: 'Montréal metro scene', condition: 'Partly cloudy', temperature: celsius('en') },
+ { path: 'fr/', pause: "Mettre l'animation en pause", play: "Relancer l'animation", scene: 'Scène du métro de Montréal', condition: 'Partiellement nuageux', temperature: celsius('fr') },
+ { path: 'es/', pause: 'Pausar la animación', play: 'Reanudar la animación', scene: 'Escena del metro de Montreal', condition: 'Parcialmente nublado', temperature: celsius('es') },
 ];
 test.beforeEach(async ({ page }) => {
  await page.route(/plausible|google-analytics|calendly|\/api\/contact/, r => r.abort());
@@ -28,7 +31,7 @@ for (const locale of locales) for (const width of [390, 1440]) {
   await expect(manifesto.getByRole('button', { name: locale.pause, exact: true })).toHaveCount(0);
   await expect(manifesto.locator('.manifesto__flow-line, .manifesto__flow-line-v')).toHaveCount(0);
   await pause.scrollIntoViewIfNeeded();
-  await expect(weather.getByText('12°C', { exact: true })).toBeVisible();
+  await expect(weather.getByText(locale.temperature, { exact: true })).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   const target = await pause.boundingBox();
   expect(target!.height).toBeGreaterThanOrEqual(44);
@@ -36,8 +39,8 @@ for (const locale of locales) for (const width of [390, 1440]) {
   expect(target!.height).toBeCloseTo(44, 0);
   expect(target!.width).toBeCloseTo(44, 0);
   const card = await weather.boundingBox();
-  const temperature = await weather.getByText('12°C', { exact: true }).boundingBox();
-  const condition = await weather.getByText('Clouds', { exact: true }).boundingBox();
+  const temperature = await weather.getByText(locale.temperature, { exact: true }).boundingBox();
+  const condition = await weather.getByText(locale.condition, { exact: true }).boundingBox();
   for (const text of [temperature!, condition!]) {
    const overlapWidth = Math.min(target!.x + target!.width, text.x + text.width) - Math.max(target!.x, text.x);
    const overlapHeight = Math.min(target!.y + target!.height, text.y + text.height) - Math.max(target!.y, text.y);

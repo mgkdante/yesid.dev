@@ -8,6 +8,7 @@ const srcRoot = join(import.meta.dirname, '..');
 // Existing injection files, reviewed by input provenance. Adding a new file
 // requires an explicit review; this list does not depend on source line numbers.
 const reviewedSinks = [
+	{ file: 'lib/components/about/WeatherScene.svelte', reason: 'static committed place drawings (weather/places/*.svg, contract-tested: no text, scripts, links or ids) plus a fixed steam plume path' },
 	{ file: 'lib/components/brand/SvgIcon.svelte', reason: 'static committed asset' },
 	{ file: 'lib/components/cms/blocks/CodeBlock.svelte', reason: 'server Shiki output or escaped plain code' },
 	{ file: 'lib/components/cms/blocks/Heading.svelte', reason: 'exported Editor.js inline HTML' },

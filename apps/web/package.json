@@ -40,6 +40,7 @@
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/svelte": "^5.4.2",
 		"@types/sanitize-html": "2.16.1",
+		"@types/suncalc": "1.9.2",
 		"@yesid/gates": "https://github.com/yesid-dev/yesid.design/releases/download/v0.42.0/yesid-gates-0.42.0.tgz",
 		"bits-ui": "^2.16.3",
 		"embla-carousel-svelte": "^8.6.0",
@@ -76,6 +77,7 @@
 		"sanitize-html": "2.18.1",
 		"satori": "^0.33.5",
 		"shiki": "^4.0.2",
+		"suncalc": "1.9.0",
 		"zod": "^4.3.6"
 	},
 	"imports": {

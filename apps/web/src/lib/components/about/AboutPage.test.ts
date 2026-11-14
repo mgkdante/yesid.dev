@@ -251,7 +251,7 @@ describe('AboutPage', () => {
 		});
 		const weatherWidget = screen.getByTestId('about-weather');
 		expect(weatherWidget.textContent).toContain('15°C');
-		expect(weatherWidget.textContent).toContain('clear sky');
+		expect(weatherWidget.textContent).toContain(aboutPageContent.weather.conditions.clear.en);
 	});
 
 	// Override the null weather stub to exercise hydration refresh of CDN-stale weather.
@@ -271,7 +271,7 @@ describe('AboutPage', () => {
 			await waitFor(() => {
 				expect(weatherWidget.textContent).toContain('-21°C');
 			});
-			expect(weatherWidget.textContent).toContain('blowing snow');
+			expect(weatherWidget.textContent).toContain(aboutPageContent.weather.conditions.snow.en);
 			expect(weatherWidget.textContent).not.toContain('15°C');
 		} finally {
 			globalThis.fetch = prevFetch;

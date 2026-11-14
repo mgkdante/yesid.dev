@@ -1,0 +1,33 @@
+<!-- The Ring (L'Anneau, Claude Cormier + associés, 2022): the 30 m stainless steel ring floating over the Esplanade Place Ville Marie between the two low wings, framing Mount Royal down McGill College Avenue, the tower with the lit stepped crown behind on the right. Drawn over a reference photograph supplied by the owner. -->
+<g class="wx-f">
+	<path d="M82 110V-78h80l2 3V-6h6V42h10v68z"/>
+	<path d="M182 110V48h3V36h4V110z"/>
+	<path d="M180 110V76c6-6 12-12 18-13 6 0 12 6 18 14 4 5 8 9 12 12v21z"/>
+	<path d="M233 110V54h4v-8h6v-6h9v70z"/>
+	<path d="M238 110V-35l3.1-29H292l3 174z"/>
+	<path d="M241.1 -64V-65.6h.5V-70.4h3.6V-74.7h3.3V-78.8h4.4V-82.8h2.9L261.7 -90.6l8.5 7.8h5.5V-78.8h5V-74.7h5.2V-70.4h5.2V-65.6h.9V-64z"/>
+	<path d="M300 110V2h22v-3h2V110z"/>
+</g>
+<g class="wx-n">
+	<path d="M0 110V-98h88v4h3V110z"/>
+	<path d="M82 110V3l2-3h76l20 16V110z"/>
+	<path d="M240 110V19l14-16h106v-3h40V110z"/>
+	<path class="wx-st" stroke-width="1" stroke-linecap="round" d="M74 110V57M335 110V56"/>
+</g>
+<path class="wx-face-f" d="M84 3h76v14H84zM254 5h146v13H254z"/>
+<path class="wx-face-r" d="M160 3l20 16v5l-20-7z"/>
+<path class="wx-face-l" d="M241 21l13-16v13z"/>
+<path class="wx-ground" d="M0 104h400v6H0z"/>
+<g class="wx-steam" transform="translate(372 0)"></g>
+<path class="wx-mullion" stroke-width="1.6" d="M7 -90v190M17 -90v190M27 -90v190M37 -90v190M47 -90v190M57 -90v190M67 -90v190M77 -90v190"/>
+<path class="wx-wst" stroke-width="2" stroke-dasharray="4 2.2" d="M88 -69h70M88 -60h70M88 -51h70M88 -42h70M88 -33h70M88 -24h70M88 -15h70M88 -6h70M244 -57h48M244 -50h48M243.4 -43h49M242.8 -36h49.6M242.2 -29h50.3M241.6 -22h50.9M241 -15h51.6M240.4 -8h52.2"/>
+<path class="wx-w weather-windows" d="M86 19h72v4H86zM256 20h144v4H256zM92 32h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zM92 44h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zM92 56h3v6h-3zm40 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zM140 68h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zM140 80h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zM166 30l2 1v6l-2-1zm6 4 2 1v6l-2-1zm-6 10 2 1v6l-2-1zm6 4 2 1v6l-2-1zm-6 10 2 1v6l-2-1zm6 4 2 1v6l-2-1zM262 32h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zM262 44h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zM262 56h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm72 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zM262 68h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm88 0h3v6h-3zm8 0h3v6h-3zM262 80h3v6h-3zm8 0h3v6h-3zm8 0h3v6h-3zm96 0h3v6h-3z"/>
+<path class="wx-branches" stroke-width="1.4" d="M78 110V93M337 110V93"/>
+<path class="wx-branches" stroke-width=".8" d="M78 98l-7-8-2-6M71 90l-6-2M78 96l8-9 1-7M86 87l6-3M78 93l-2-12-4-6M76 81l3-7M78 93l3-14 5-5M337 98l-7-8-2-6M330 90l-6-2M337 96l8-9 1-7M345 87l6-3M337 93l-2-12-4-6M335 81l3-7M337 93l3-14 5-5"/>
+<path class="wx-foliage" d="M58 104c-6-1-9-7-6-12-4-4-2-11 4-12-1-7 6-12 12-9 3-6 12-6 15 0 6-3 13 2 12 9 6 1 8 8 4 12 3 5 0 11-6 12-2 4-7 6-11 4-3 3-8 3-11 0-4 2-9 0-13-4zM318 104c-5-1-8-6-5-11-4-4-2-10 3-11-1-7 6-11 11-8 3-6 11-6 14 0 5-3 12 2 11 8 5 1 7 7 4 11 3 5 0 10-5 11-2 4-7 5-10 3-3 3-8 3-11 0-4 2-8 0-12-3z"/>
+<path class="wx-st wx-steel-edge" stroke-width="3.6" d="M205 23a42 42 0 1 0 .01 0z"/>
+<path class="wx-st wx-steel" stroke-width="2.2" d="M205 23a42 42 0 1 0 .01 0z"/>
+<path class="wx-h wx-ringlit" stroke-width="1.6" d="M205 23a42 42 0 1 0 .01 0z"/>
+<path class="wx-sheen" stroke-width="1" d="M171 40a42 42 0 0 1 34-17"/>
+<path class="wx-h" d="M255.8 -83.2h14.4v.7h-14.4zM252.9 -79.2h22.8v.7h-22.8zM248.5 -75.1h32.2v.7h-32.2zM245.2 -70.8h40.7v.7h-40.7zM241.6 -66h49.5v.7h-49.5zM261.2 -91.2h1v1h-1zM73 56h2v1.6h-2zM334 55h2v1.6h-2z"/>
+<path class="wx-cap" d="M84 1.6h76V3H84zM254 3.6h146V5H254zM0 -99.4h88v1.6H0zM0 108.4h400v1.6H0z"/>
