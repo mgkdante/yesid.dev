@@ -2,6 +2,7 @@
   Single blog post row in the listing page.
 -->
 <script lang="ts">
+	import { topicLabel } from "#lib/utils/blog-topics.ts";
 	import type { BlogPost } from '#lib/types.ts';
 	import { boop, cursorGlow, magnetic } from '@yesid/motion/actions';
 	import { pointerHover } from '#lib/motion/actions/pointerHover.ts';
@@ -97,7 +98,7 @@
 				<div class="blog-topic-tags mt-3 flex flex-wrap items-center gap-2" data-testid="blog-topic-tags">
 					{#each post.tags as tag}
 						<span use:magnetic={{ strength: 2, radius: 30 }}>
-							<Badge class="blog-topic-tag" variant="tag-active" size="xs" style="border-color: color-mix(in srgb, {accentColor} 30%, transparent); background: color-mix(in srgb, {accentColor} 15%, transparent); color: {accentColor}">{tag}</Badge>
+							<Badge class="blog-topic-tag" variant="tag-active" size="xs" style="border-color: color-mix(in srgb, {accentColor} 30%, transparent); background: color-mix(in srgb, {accentColor} 15%, transparent); color: {accentColor}">{topicLabel(tag, locale)}</Badge>
 						</span>
 					{/each}
 				</div>

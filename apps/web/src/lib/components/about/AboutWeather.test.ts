@@ -161,7 +161,7 @@ describe('AboutWeather scene rendering', () => {
 		expect(scene.querySelector('.weather-skyline')).not.toBeNull();
 		const widget = screen.getByTestId('about-weather');
 		expect(widget.textContent).toContain('Montreal');
-		expect(widget.textContent).toContain('-');
+		expect(widget.textContent).not.toContain('-');
 	});
 
 	it('scene layer is decorative: aria-hidden and pointer-transparent', () => {

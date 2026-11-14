@@ -14201,7 +14201,7 @@
 			},
 			"404": {
 				"label": {"en":"ROUTE NOT FOUND","fr":"ROUTE INTROUVABLE","es":"RUTA NO ENCONTRADA"},
-				"heading": {"en":"This station is under construction","fr":"Cette station est en construction","es":"Esta estación está en construcción"},
+				"heading": {"en":"Page not found","fr":"Page introuvable","es":"Página no encontrada"},
 				"description": {"en":"The route you requested doesn't exist or has been rerouted. Here are some active lines:","fr":"La route demandée n'existe pas ou a été redirigée. Voici quelques lignes actives :","es":"La ruta solicitada no existe o ha sido redirigida. Aquí hay algunas líneas activas:"},
 				"suggestions": [
 					{

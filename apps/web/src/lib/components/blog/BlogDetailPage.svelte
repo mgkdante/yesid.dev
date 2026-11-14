@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { topicLabel } from "#lib/utils/blog-topics.ts";
 	import '#lib/styles/article-body.css';
 	import { afterNavigate } from '$app/navigation';
   import type { BlogPost, BlockEditorDoc, TocHeading } from '#lib/types.ts';
@@ -229,7 +230,7 @@
               {#if post.tags.length > 0}
                 <div class="meta-list__item">
                   <dt>{metaTagsLabel}</dt>
-                  <dd>{post.tags.join(' · ')}</dd>
+                  <dd>{post.tags.map(tag => topicLabel(tag, locale)).join(' · ')}</dd>
                 </div>
               {/if}
             </dl>

@@ -7,6 +7,7 @@
 <script lang="ts">
 	import type { AboutCta } from '#lib/types.ts';
 	import { resolveLocale } from '#lib/utils/locale.ts';
+	import { localizeHref } from '#lib/utils/locale-routing.ts';
 	import { getLocale } from '#lib/utils/locale-context.ts';
 
 	const locale = getLocale();
@@ -67,7 +68,7 @@
 
 		<!-- Action row: the About view's one "talk to Yesid" conversion → yellow. -->
 		<div class="mt-3 flex flex-wrap items-center gap-3">
-			<Button variant="conversion" size="cta" href={cta.buttonHref} data-testid="about-cta-button">
+			<Button variant="conversion" size="cta" href={localizeHref(cta.buttonHref, locale)} data-testid="about-cta-button">
 				{buttonLabel}
 			</Button>
 		</div>
