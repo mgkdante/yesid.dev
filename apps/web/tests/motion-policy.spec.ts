@@ -1,3 +1,4 @@
+import { writeFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import { readRunningAnimations, unexpectedLoops, unexpectedFinite } from './_support/motion-inventory';
 const scene = `<style>@keyframes policy-loop {from{height:10px}to{height:30px}} section>*{width:10px;height:10px}</style><section data-testid="closer-section"><div class="construction-extension"></div><div data-slot="closer-floodlight"></div><div class="closer-beam"></div><span data-construction-prop="fixture"><svg width="10" height="10"></svg></span></section>`;
@@ -10,7 +11,9 @@ test('infinite animations on every kept closing target are rejected', async ({ p
  await expect.poll(async () => unexpectedLoops(await page.evaluate(readRunningAnimations)).length).toBe(4);
  const rejected = unexpectedLoops(await page.evaluate(readRunningAnimations));
  expect(rejected.every(a => a.loop && !a.closingTransition)).toBe(true);
- await info.attach('rejected-infinite', { body: JSON.stringify(rejected), contentType: 'application/json' });
+ const path = info.outputPath('infinite-rejection.json');
+ writeFileSync(path, JSON.stringify(rejected, null, 2));
+ await info.attach('rejected-infinite', { path, contentType: 'application/json' });
 });
 
 test('unrelated transitions fail on the same targets while named scroll transitions pass', async ({ page }, info) => {
@@ -33,5 +36,7 @@ test('unrelated transitions fail on the same targets while named scroll transiti
  const rejected = unexpectedFinite(records);
  expect(rejected.every(a => a.name === 'transition:width' && !a.closingTransition && !a.loop)).toBe(true);
  expect(records.filter(a => a.closingTransition)).toHaveLength(5);
- await info.attach('rejected-unrelated', { body: JSON.stringify({ rejected, allowed: records.filter(a => a.closingTransition) }), contentType: 'application/json' });
+ const path = info.outputPath('transition-policy.json');
+ writeFileSync(path, JSON.stringify({ rejected, allowed: records.filter(a => a.closingTransition) }, null, 2));
+ await info.attach('rejected-unrelated', { path, contentType: 'application/json' });
 });
