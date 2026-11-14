@@ -46,6 +46,13 @@ const mockHeadings: TocHeading[] = [
 const { backNav, entryRail } = siteLabels.blogChrome.detail;
 
 describe('BlogDetailPage', () => {
+	it.each(['en', 'fr', 'es'] as const)('keeps a title whole when a tag matches a fragment in %s', (lang) => {
+		const post = makePost({ title: 'One brain for four AI tools', tags: ['AI'], lang });
+		render(BlogDetailPage, { props: { post, body: mockBody } });
+		const heading = screen.getByRole('heading', { level: 1, name: post.title });
+		expect(heading.textContent).toBe(post.title);
+		expect(within(heading).queryByText('ai', { exact: true })).toBeNull();
+	});
 	afterEach(async () => {
 		cleanup();
 		await waitFor(() => expect(document.body.style.overflow).not.toBe('hidden'));

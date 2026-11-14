@@ -274,7 +274,6 @@
     {#snippet header()}
       <ArticleHeader
         title={post.title}
-        highlight={post.tags[0]}
         category={categoryName}
         {watermark}
         edgeLeft={fillTemplate(editionTemplate, { issue: String(postIndex).padStart(2, '0') })}
