@@ -29,11 +29,11 @@
  .manifesto__coord { font-family: var(--font-mono); font-size: 9px; line-height: 1.5; letter-spacing: 1px; color: var(--muted-foreground); text-transform: uppercase; white-space: nowrap; }
  .manifesto__separator-line { width: 24px; height: 1px; background: color-mix(in srgb, var(--primary) 20%, transparent); margin-block: 4px; }
  @media (max-width: 640px) {
-  .manifesto__edge-right { top: calc(100% + 8px); right: calc(50% - 50vw + 8px); display: grid; grid-template-columns: repeat(2, max-content); gap: 0 12px; }
+  .manifesto__edge-right { top: calc(100% + 8px); right: calc(50% - 50vw + 8px); display: flex; gap: 0; }
   .manifesto__coord { line-height: 1.3; }
   .manifesto__separator-line { display: none; }
  }
- @media (max-height: 840px) {
+ @media (max-height: 840px), (min-width: 641px) and (max-width: 819px) {
   /* The compact 35.1px readout fits in the existing 40px headline-to-pills gap. */
   .manifesto__edge-right { top: -38px; display: grid; grid-template-columns: repeat(2, max-content); gap: 0 12px; }
   .manifesto__coord { line-height: 1.3; }

@@ -3,7 +3,7 @@ import { expectDecorativeEdges } from './_support/accessibility';
 
 // Explicit viewport/locale/theme matrix, run once in the desktop project.
 test.skip(({ viewport }) => viewport?.width !== 1440, 'Explicit edge geometry matrix runs in desktop.');
-for (const locale of ['', 'fr', 'es']) for (const width of [320, 360, 390, 820, 1024, 1440, 1920]) for (const theme of ['dark', 'light']) {
+for (const locale of ['', 'fr', 'es']) for (const width of [320, 360, 390, 768, 820, 1024, 1440, 1920]) for (const theme of ['dark', 'light']) {
  test(`${locale || 'en'} ${width} ${theme}: decorative edges stay noninteractive and clear of content`, async ({ page }, info) => {
   await page.route(/web3forms|cal\.com|plausible|\/api\/event/, r => r.abort());
   await page.addInitScript(t => localStorage.setItem('theme', t), theme);
@@ -15,7 +15,7 @@ for (const locale of ['', 'fr', 'es']) for (const width of [320, 360, 390, 820, 
   await expect(page.locator('[data-decorative-edge]')).not.toHaveCount(0);
   await expectDecorativeEdges(page);
   const samples = [];
-  for (const height of [640, 900]) for (const reducedMotion of ['reduce', 'no-preference'] as const) {
+  for (const height of [640, 844, 900]) for (const reducedMotion of ['reduce', 'no-preference'] as const) {
    await page.setViewportSize({ width, height });
    await page.emulateMedia({ reducedMotion });
    await page.getByTestId('manifesto-section').scrollIntoViewIfNeeded();
