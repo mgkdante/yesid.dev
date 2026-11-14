@@ -16,13 +16,11 @@
 	import { resolveWeatherScene, isNightHour } from './weather-scene';
 
 	let {
-		showAnimationControl = true,
 		config,
 		weather,
 		stop,
 		label,
 	}: {
-		showAnimationControl?: boolean;
 		config: AboutWeatherConfig;
 		weather?: WeatherData | null;
 		stop: string;
@@ -63,7 +61,6 @@
 	<div class="relative flex h-full flex-col">
 		<!-- Stop label: ALWAYS top-left, normal flow -->
 		<StopLabel {stop} {label} as="h2" />
-		{#if showAnimationControl}<AnimationPause />{/if}
 
 		<!-- Centered content fills remaining space -->
 		<div class="flex flex-1 flex-col items-center justify-center text-center">
@@ -90,6 +87,7 @@
 				<div class="mt-0.5 h-5" aria-hidden="true"></div>
 			{/if}
 		</div>
+		<AnimationPause />
 	</div>
 </Card>
 </div>

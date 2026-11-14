@@ -11,8 +11,8 @@
 	onMount(restoreAnimationPause);
 </script>
 
-<div class="animation-control relative z-10 p-3">
-	<Button variant="outline" class="min-h-11 min-w-11 whitespace-normal"
+<div class="animation-control mt-2 flex shrink-0 justify-end">
+	<Button variant="outline" size="sm" class="h-auto min-h-6 min-w-6 max-w-full whitespace-normal px-2 py-1"
 		onclick={() => setAnimationPaused(!$animationPaused)}>
 		{words[$animationPaused ? 1 : 0]}
 	</Button>
