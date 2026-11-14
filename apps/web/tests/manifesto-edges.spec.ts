@@ -22,9 +22,9 @@ for (const locale of ['', 'fr', 'es']) for (const width of [320, 360, 390, 820, 
    await expect.poll(async () => edge.evaluate(node => {
     const box = node.getBoundingClientRect();
     const overlaps = (other: DOMRect) => box.left < other.right && box.right > other.left && box.top < other.bottom && box.bottom > other.top;
-    const obstacles = [...document.querySelectorAll('[data-testid="manifesto-prompt"], .manifesto__statement, [data-testid="manifesto-line-huge"], [data-testid="manifesto-pill"], [data-testid="manifesto-edge-bottom"]')];
+    const obstacles = [...document.querySelectorAll('[data-testid="manifesto-prompt"], .manifesto__statement, [data-testid="manifesto-line-huge"], [data-testid="manifesto-pill"], [data-testid="manifesto-edge-bottom"], .manifesto__stripe, .manifesto__badge, .manifesto__roundel, .manifesto__beck-line, .manifesto__chevrons')];
     const section = node.parentElement!.getBoundingClientRect();
-    return getComputedStyle(node).visibility === 'visible' && box.width > 0 && box.left >= section.left && box.right <= section.right && box.top >= section.top && box.bottom <= section.bottom && obstacles.every(el => !overlaps(el.getBoundingClientRect()));
+    return getComputedStyle(node).visibility === 'visible' && box.width > 0 && box.left >= section.left && box.right <= section.right && box.top >= section.top && box.bottom <= section.bottom && obstacles.filter(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; }).every(el => !overlaps(el.getBoundingClientRect()));
    })).toBe(true);
    samples.push(await edge.evaluate(node => ({ box: node.getBoundingClientRect().toJSON(), text: node.textContent })));
   }
