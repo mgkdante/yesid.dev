@@ -229,13 +229,13 @@ test.describe('weather scene system (GO Wave 4)', () => {
 		await expect(scene.locator('.weather-windows')).toHaveCount(1);
 	});
 
-	test('unknown icon code falls back to the clear scene', async ({ page }) => {
+	test('unknown icon code shows the offline scene, never invented clear weather', async ({ page }) => {
 		test.skip(page.viewportSize()!.width < 1024, 'Desktop only.');
 		await page.route('**/api/weather', (route) =>
 			route.fulfill({ json: { temp: 21, condition: 'meteor shower', icon: '77d' } })
 		);
 		await page.goto('/about');
-		await expect(page.locator(SCENE)).toHaveAttribute('data-scene', 'clear');
+		await expect(page.locator(SCENE)).toHaveAttribute('data-scene', 'offline');
 	});
 
 	test('scene is never blank: sky + skyline render', async ({

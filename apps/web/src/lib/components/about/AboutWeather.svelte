@@ -32,8 +32,9 @@
 	let freshWeather = $state<WeatherData | null>(null);
 	const currentWeather = $derived(freshWeather ?? weather ?? null);
 
-	// Prerendered pages cannot know the hour. Until mount the card wears the
-	// site theme and the drawing is hidden; the browser then sets the real sky.
+	// Prerendered pages cannot know the hour. The head boot (weather-daypart-boot.js)
+	// stamps the card's data-theme from Montréal's sun before the first paint; the
+	// drawing stays hidden until mount, when the browser sets the real sky.
 	let now = $state<number | null>(null);
 	let place = $state<WeatherPlaceId>('skyline');
 	let reduced = $state(false);
@@ -118,6 +119,7 @@
 	class="weather-card relative h-full p-3 {known ? (scene.dark ? 'theme-dark' : 'theme-light') : ''}"
 	data-testid="about-weather"
 	data-daypart={known ? (scene.dark ? 'night' : 'day') : undefined}
+	data-theme={known ? (scene.dark ? 'dark' : 'light') : undefined}
 	data-phase={known ? scene.phase : undefined}
 >
 	<WeatherScene {scene} {place} pending={!known} {reduced} {hidden} />
@@ -155,7 +157,7 @@
 		--surface-3: var(--muted);
 		--border-hairline: color-mix(in srgb, var(--foreground) 8%, transparent);
 	}
-	:global(.weather-card.theme-dark) {
+	:global(.weather-card:is(.theme-dark, [data-theme='dark'])) {
 		--border-brand: color-mix(in srgb, var(--primary) 45%, transparent);
 	}
 	:global(.weather-card) {
@@ -184,7 +186,7 @@
 		animation: none;
 	}
 	/* The stop label's lamp bezel follows the card's daypart, not the page theme. */
-	:global(.weather-card.theme-dark .stop-label::before) {
+	:global(.weather-card:is(.theme-dark, [data-theme='dark']) .stop-label::before) {
 		outline: none;
 	}
 	@media (max-width: 639px) {

@@ -140,6 +140,51 @@ async function openCard(page: Page, path: string, time: Date, icon: string, id: 
 	return card;
 }
 
+// First paint, before hydration: the app bundle is blocked, so the page is the
+// server's HTML plus the hashed head boots. An init script records the card in
+// the first animation frame that contains it, which is the frame painted next.
+for (const [daypart, time, theme, siteTheme] of [
+	['night', NIGHT_DARK, 'dark', 'light'],
+	['day', DAY, 'light', 'dark'],
+] as const)
+	test(`the first frame wears Montréal ${daypart} before hydration, site ${siteTheme}`, async ({ page }) => {
+		await page.clock.install({ time });
+		await page.addInitScript((t) => localStorage.setItem('theme', t), siteTheme);
+		await page.addInitScript(() => {
+			const look = () => {
+				const card = document.querySelector('[data-testid="about-weather"]');
+				if (!card) return requestAnimationFrame(look);
+				const cs = getComputedStyle(card);
+				(window as unknown as { firstFrame: unknown }).firstFrame = {
+					theme: card.getAttribute('data-theme'),
+					card: cs.getPropertyValue('--card').trim(),
+					color: cs.color,
+					hydrated: card.hasAttribute('data-daypart'),
+				};
+			};
+			requestAnimationFrame(look);
+		});
+		await page.route(/\/_app\/immutable\/.*\.js(\?.*)?$/, (r) => r.abort());
+		await page.goto('/about', { waitUntil: 'domcontentloaded' });
+		await expect(page.locator('html')).toHaveAttribute('data-theme', siteTheme);
+		const first = await page.waitForFunction(() => (window as unknown as { firstFrame?: unknown }).firstFrame).then((h) => h.jsonValue());
+		// The design system's own tokens for the expected theme and for the site theme.
+		const tokens = (t: string) =>
+			page.evaluate((t) => {
+				const probe = document.createElement('div');
+				probe.setAttribute('data-theme', t);
+				probe.className = 'text-card-foreground';
+				document.body.append(probe);
+				const cs = getComputedStyle(probe);
+				const out = { card: cs.getPropertyValue('--card').trim(), color: cs.color };
+				probe.remove();
+				return out;
+			}, t);
+		const expected = await tokens(theme);
+		expect((await tokens(siteTheme)).card).not.toBe(expected.card);
+		expect(first).toEqual({ theme, card: expected.card, color: expected.color, hydrated: false });
+	});
+
 for (const locale of ['', 'fr/', 'es/'])
 	for (const route of ['', 'about'])
 		for (const width of [390, 820, 1440])
@@ -182,6 +227,15 @@ for (const locale of ['', 'fr/', 'es/'])
 						await setPaused(card, true);
 						await page.waitForTimeout(900);
 						const c = await measureContrast(page, card);
+						// A storm's worst frame is its lightning: hold the flash at its peak and measure again.
+						if (label === 'night-storm') {
+							await card.evaluate((el) =>
+								el.getAnimations({ subtree: true }).forEach((a) => {
+									if (/^weather-(flash|zap)$/.test((a as CSSAnimation).animationName)) a.currentTime = 0.623 * 11000;
+								})
+							);
+							for (const [k, v] of Object.entries(await measureContrast(page, card))) c[`${k}#flash`] = v;
+						}
 						await setPaused(card, false);
 						samples[label] = c;
 						// The worst run of each text (the label has two coloured runs).

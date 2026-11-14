@@ -326,9 +326,14 @@
 	inset: 0;
 	background:
 		radial-gradient(118% 25% at 0% 0%, color-mix(in srgb, var(--card) 96%, transparent), color-mix(in srgb, var(--card) 90%, transparent) 58%, transparent),
-		radial-gradient(270px 70px at 0% 0%, color-mix(in srgb, var(--card) 96%, transparent), color-mix(in srgb, var(--card) 90%, transparent) 58%, transparent),
+		/* Tall enough for a stop label wrapped onto two lines on narrow cards, dense enough for a lightning flash. */
+		radial-gradient(280px 88px at 0% 0%, color-mix(in srgb, var(--card) 97%, transparent), color-mix(in srgb, var(--card) 93%, transparent) 62%, transparent),
 		radial-gradient(54% 34% at 50% 48%, color-mix(in srgb, var(--card) 66%, transparent), color-mix(in srgb, var(--card) 50%, transparent) 60%, transparent),
-		radial-gradient(30% 36% at 100% 100%, color-mix(in srgb, var(--card) 72%, transparent), transparent);
+		radial-gradient(30% 36% at 100% 100%, color-mix(in srgb, var(--card) 72%, transparent), transparent),
+		/* The pause icon's own haze, centred on it (12 px card padding + half the 44 px
+		   button): dense enough to keep 3:1 through a lightning flash, small enough to
+		   read as a soft corner rather than a tile. */
+		radial-gradient(46px 46px at calc(100% - 34px) calc(100% - 34px), color-mix(in srgb, var(--card) 94%, transparent), color-mix(in srgb, var(--card) 88%, transparent) 45%, transparent);
 }
 
 /* Place change: a 700 ms crossfade; the sky fades in once the hour is known. */
