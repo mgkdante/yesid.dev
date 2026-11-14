@@ -16,6 +16,7 @@ async function cardPositions(reel: Locator) {
 async function expectWholeCards(reel: Locator) {
 	let lastPosition = '';
 	let stableSince = 0;
+	// Backoff across this long resize journey can exhaust the test before the last scroll settles.
 	await expect.poll(async () => {
 		const cards = await cardPositions(reel);
 		const position = cards.map(card => card.left.toFixed(2)).join(',');
@@ -25,7 +26,7 @@ async function expectWholeCards(reel: Locator) {
 			partial: cards.filter(card => card.visible > 1 && !card.complete),
 			settled: Date.now() - stableSince >= 120,
 		};
-	}, { message: `the settled carousel at ${reel.page().viewportSize()?.width}px must contain only complete cards` }).toEqual({ hasVisibleCard: true, partial: [], settled: true });
+	}, { intervals: [100], message: `the settled carousel at ${reel.page().viewportSize()?.width}px must contain only complete cards` }).toEqual({ hasVisibleCard: true, partial: [], settled: true });
 	const visible = (await cardPositions(reel)).filter(card => card.visible > 1);
 	expect(visible.length).toBeLessThanOrEqual(3);
 	return visible;
