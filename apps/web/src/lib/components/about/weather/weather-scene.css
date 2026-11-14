@@ -325,7 +325,8 @@
 .wx-scrim {
 	inset: 0;
 	background:
-		radial-gradient(max(118%, 270px) max(25%, 70px) at 0% 0%, color-mix(in srgb, var(--card) 96%, transparent), color-mix(in srgb, var(--card) 90%, transparent) 58%, transparent),
+		radial-gradient(118% 25% at 0% 0%, color-mix(in srgb, var(--card) 96%, transparent), color-mix(in srgb, var(--card) 90%, transparent) 58%, transparent),
+		radial-gradient(270px 70px at 0% 0%, color-mix(in srgb, var(--card) 96%, transparent), color-mix(in srgb, var(--card) 90%, transparent) 58%, transparent),
 		radial-gradient(54% 34% at 50% 48%, color-mix(in srgb, var(--card) 66%, transparent), color-mix(in srgb, var(--card) 50%, transparent) 60%, transparent),
 		radial-gradient(30% 36% at 100% 100%, color-mix(in srgb, var(--card) 72%, transparent), transparent);
 }
