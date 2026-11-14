@@ -289,15 +289,22 @@ test('keyboard activation rewinds without an orange wall and supports repeated p
 	expect(await page.evaluate(() => Reflect.get(window, 'heroInkEvents'))).toEqual([...inkEvents, ...inkEvents, ...inkEvents]);
 });
 
-test('reduced motion keeps the annotation static and the metro unavailable', { tag: '@motion' }, async ({ page }) => {
+test('reduced motion keeps the annotation static and opens a still metro scene', { tag: '@motion' }, async ({ page }) => {
 	await page.goto('/');
 
-	await expect(page.getByTestId('hero-dot-replay')).toBeDisabled();
+	const dot = page.getByTestId('hero-dot-replay');
+	await expect(dot).toBeEnabled();
 	await expect(page.getByTestId('hero-banner').getByTestId('hero-dot-annotation')).toBeVisible();
 	expect(await page.getByTestId('hero-banner').getByTestId('hero-dot-annotation').evaluate(el =>
 		el.getAnimations({ subtree: true }).filter(animation => animation.playState === 'running').length)).toBe(0);
+	await dot.focus();
 	await page.keyboard.press('Enter');
+	const scene = page.getByRole('region', { name: 'Montréal metro scene' });
+	await expect(scene).toBeFocused();
+	await expect(page.locator('.pin-spacer')).toHaveCount(0);
+	await dot.focus();
 	await page.keyboard.press('Space');
-
+	await expect(scene).toHaveCount(0);
+	await expect(dot).toBeFocused();
 	await expect(page.getByTestId('metro-network-container')).toBeHidden();
 });
